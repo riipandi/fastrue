@@ -17,6 +17,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 // modules
 mod routes;
+mod utils;
 
 #[tokio::main]
 async fn main() {
@@ -50,9 +51,10 @@ async fn main() {
             get(using_connection_pool_extractor).post(using_connection_extractor),
         )
         .with_state(pool)
-        .merge(routes::root())
-        .merge(routes::get_foo())
-        .merge(routes::post_foo())
+        .merge(routes::root::root())
+        .merge(routes::root::get_foo())
+        .merge(routes::root::post_foo())
+        .merge(routes::mailer::get_send_email())
         .layer(TraceLayer::new_for_http())
         .layer(
             TraceLayer::new_for_http()
@@ -81,8 +83,8 @@ async fn main() {
     let app = app.fallback(handler_404);
 
     // Read bind address from envar or set the default.
-    set_default_envar("BIND_PORT", "3030");
-    set_default_envar("BIND_ADDR", "127.0.0.1");
+    utils::set_default_envar("BIND_PORT", "3030");
+    utils::set_default_envar("BIND_ADDR", "127.0.0.1");
     let env_port = env::var("BIND_PORT").unwrap();
     let env_addr = env::var("BIND_ADDR").unwrap();
     let bind_addr = [env_addr, env_port].join(":");
@@ -94,13 +96,6 @@ async fn main() {
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
-}
-
-// Set environment variable value
-fn set_default_envar(key: &str, value: &str) {
-    if env::var(key).is_err() {
-        env::set_var(key, value);
-    }
 }
 
 // Global 404 handler
