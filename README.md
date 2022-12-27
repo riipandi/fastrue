@@ -55,7 +55,7 @@ To run the application in development mode, follow the steps below:
 3. Change the `WASTA_SECRET` and `DATABASE_URL` variables value.
 4. Run `sqlx database create` to create the database from the specified `DATABASE_URL`
 5. Run `sqlx migrate run` to run the migrations
-6. use `sqlx migrate add <migration_name>` to add a new migration
+6. use `sqlx migrate add -r <migration_name>` to add a new migration
 
 **Note**: Use `sqlx database drop` to revert the change
 

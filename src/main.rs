@@ -34,6 +34,7 @@ async fn main() {
         .connect(&db_connection_str)
         .await
         .expect("can't connect to database");
+    println!("Successfully connected to database");
 
     let app = Router::new()
         .route(
