@@ -10,7 +10,8 @@
 
 Headless authentication server for securing your apps, inspired by Netlify GoTrue, but built with [Rust](https://www.rust-lang.org/).
 
-> **_WARNING! This project still WIP._**
+> **WARNING!** This project still in development.
+> Everything is experimental, breaking changes can happen and the long-term purpose of this project is not yet clear, use at your own risk!
 
 ## 🏁 Quick Start
 
