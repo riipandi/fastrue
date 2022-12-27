@@ -17,7 +17,7 @@ Headless authentication server for securing your apps, inspired by Netlify GoTru
 
 ### Prerequisites
 
-The following are required to run the application in development or in production environment
+The following are required to run the application in development or in production environment:
 
 -   [Rust](https://www.rust-lang.org/tools/install) v1.66 or greater.
 -   [PostgreSQL](https://www.postgresql.org/download/) PostgreSQL server v14 or greater.
@@ -51,7 +51,7 @@ Application will run at `http://localhost:3030`
 
 To run the application in development mode, follow the steps below:
 
-1. Clone Repository.
+1. Clone this repository.
 2. Copy `.env.example` to `.env`
 3. Change the `WASTA_SECRET` and `DATABASE_URL` variables value.
 4. Run `sqlx database create` to create the database from the specified `DATABASE_URL`
