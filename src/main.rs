@@ -1,5 +1,5 @@
 use axum::{http::StatusCode, response::IntoResponse, Router};
-use std::net::SocketAddr;
+use std::{env, net::SocketAddr};
 use tokio::signal;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
@@ -24,13 +24,27 @@ async fn main() {
     // add a fallback service for handling routes to unknown paths
     let app = app.fallback(handler_404);
 
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3030));
+    // Read bind address from envar or set the default.
+    set_default_envar("BIND_PORT", "3030");
+    set_default_envar("BIND_ADDR", "127.0.0.1");
+    let env_port = env::var("BIND_PORT").unwrap();
+    let env_addr = env::var("BIND_ADDR").unwrap();
+    let bind_addr = [env_addr, env_port].join(":");
+
+    let addr: SocketAddr = bind_addr.parse().expect("Unable to parse socket address");
     println!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
+}
+
+// Set environment variable value
+fn set_default_envar(key: &str, value: &str) {
+    if env::var(key).is_err() {
+        env::set_var(key, value);
+    }
 }
 
 // Global 404 handler

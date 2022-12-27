@@ -1,9 +1,9 @@
 # -----------------------------------------------------------------------------
-# References: https://kerkour.com/rust-small-docker-image
-# -----------------------------------------------------------------------------
-# Builder: docker build -t wasta:scratch -f Dockerfile.scratch .
+# Builder
 # -----------------------------------------------------------------------------
 FROM rust:1.66-slim AS builder
+
+ARG BUILD_VERSION 0.0.1
 
 RUN rustup target add x86_64-unknown-linux-musl
 RUN apt update && apt install -y musl-tools musl-dev
@@ -20,10 +20,13 @@ COPY . .
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 # -----------------------------------------------------------------------------
-# Final image: docker run -it --rm -p 3030:3030 wasta:scratch
+# Final image: https://kerkour.com/rust-small-docker-image
 # -----------------------------------------------------------------------------
 LABEL org.opencontainers.image.source="https://github.com/riipandi/wasta"
 FROM scratch
+
+ENV BIND_PORT 3030
+ENV BIND_ADDR 0.0.0.0
 
 WORKDIR /
 
@@ -34,5 +37,6 @@ COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/wasta .
 
 # Use an unprivileged user.
 USER groot:groot
+EXPOSE $BIND_PORT
 
 CMD ["/wasta"]

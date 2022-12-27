@@ -1,9 +1,9 @@
 # -----------------------------------------------------------------------------
-# References: https://kerkour.com/rust-small-docker-image
-# -----------------------------------------------------------------------------
-# Builder: docker build -t wasta:alpine -f Dockerfile .
+# Builder
 # -----------------------------------------------------------------------------
 FROM rust:1.66-slim AS builder
+
+ARG BUILD_VERSION 0.0.1
 
 RUN rustup target add x86_64-unknown-linux-musl \
   && apt update && apt install -y musl-tools musl-dev \
@@ -16,20 +16,22 @@ COPY . .
 RUN cargo build --target x86_64-unknown-linux-musl --release
 
 # -----------------------------------------------------------------------------
-# Final image: docker run -it --rm -p 3030:3030 wasta:alpine
+# Final image: https://kerkour.com/rust-small-docker-image
 # -----------------------------------------------------------------------------
 LABEL org.opencontainers.image.source="https://github.com/riipandi/wasta"
 FROM alpine:3.17 as runner
 
+ENV BIND_PORT 3030
+ENV BIND_ADDR 0.0.0.0
+
 WORKDIR /
 RUN addgroup -g 1001 -S groot && adduser -S groot -u 1001
-# RUN adduser --disabled-password --gecos "" --home "/nonexistent" \
-#   --shell "/sbin/nologin" --no-create-home --uid 1001 groot
 
-# Import from builder.
-COPY --from=builder --chown=groot:groot /app/target/x86_64-unknown-linux-musl/release/wasta .
+# Import compiled binaries from builder
+COPY --from=builder --chown=groot:groot /app/target/x86_64-unknown-linux-musl/release/wasta /usr/bin/
 
 # Use an unprivileged user.
 USER groot:groot
+EXPOSE $BIND_PORT
 
-CMD ["/wasta"]
+ENTRYPOINT ["wasta"]
