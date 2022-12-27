@@ -1880,12 +1880,13 @@ checksum = "1c38c045535d93ec4f0b4defec448e4291638ee608530863b1e2ba115d4fff7f"
 
 [[package]]
 name = "wasta"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "axum",
  "axum-extra",
  "clap",
  "lettre",
+ "rand",
  "serde",
  "serde_json",
  "sqlx",

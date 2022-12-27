@@ -33,7 +33,7 @@ fill the `application secret key` with some random string. To generate a secret 
 the following command:
 
 ```sh
-openssl rand -base64 500 | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1
+cargo run -- generate-secret
 ```
 
 ### Up and Running
