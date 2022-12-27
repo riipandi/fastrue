@@ -9,7 +9,7 @@ use axum::{
 };
 use axum_extra::routing::SpaRouter;
 use sqlx::postgres::{PgPool, PgPoolOptions};
-use std::{env, io, net::SocketAddr, time::Duration};
+use std::{env, io, net::SocketAddr, path::PathBuf, time::Duration};
 use tokio::signal;
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::Span;
@@ -41,8 +41,9 @@ pub async fn serve() {
         .expect("Can't connect to database");
     println!("Successfully connected to database");
 
-    // Static SPA assets
-    let spa = SpaRouter::new("/spa", "web").handle_error(handle_spa_error);
+    // Static SPA assets (embedded)
+    let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
+    let spa = SpaRouter::new("/spa", assets_dir).handle_error(handle_spa_error);
 
     let app = Router::new()
         .merge(spa)
@@ -134,6 +135,8 @@ async fn handle_spa_error(method: Method, uri: Uri, err: io::Error) -> String {
     format!("{} {} failed with {}", method, uri, err)
 }
 
+// ---------------------------------------------------------------------------------------------------------
+// Database coneection
 // ---------------------------------------------------------------------------------------------------------
 
 // we can extract the connection pool with `State`
