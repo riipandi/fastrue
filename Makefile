@@ -1,5 +1,5 @@
 BUILD_VERSION := $(or $(BUILD_VERSION),git-`git rev-parse --short HEAD`)
-IMAGE_NAME = ghcr.io/otentikauth/wasta
+IMAGE_NAME = ghcr.io/riipandi/wasta
 REGISTRY_USERNAME = riipandi
 CONTAINER_NAME = wasta
 

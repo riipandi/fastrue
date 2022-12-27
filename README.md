@@ -1,9 +1,9 @@
 # Wasta Authentication Server
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/otentikauth/wasta?logo=deno&style=flat-square)](https://github.com/otentikauth/wasta)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/wasta?logo=deno&style=flat-square)](https://github.com/riipandi/wasta)
 [![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=deno)](https://deno.land)
-[![Language](https://img.shields.io/github/languages/top/otentikauth/wasta?style=flat-square)](https://github.com/otentikauth/wasta)
-[![License](https://img.shields.io/github/license/otentikauth/wasta?style=flat-square)][choosealicense]
+[![Language](https://img.shields.io/github/languages/top/riipandi/wasta?style=flat-square)](https://github.com/riipandi/wasta)
+[![License](https://img.shields.io/github/license/riipandi/wasta?style=flat-square)][choosealicense]
 [![GitHub Sponsors](https://img.shields.io/static/v1?color=26B643&label=Sponsor&message=%E2%9D%A4&logo=GitHub&style=flat-square)](https://github.com/sponsors/riipandi)
 
 <hr/>
