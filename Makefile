@@ -4,7 +4,7 @@ REGISTRY_USERNAME = riipandi
 CONTAINER_NAME = wasta
 
 # Application envars
-BIND_PORT = 8080
+BIND_PORT = 3030
 
 build:
 	@echo Running Build version $(BUILD_VERSION)
@@ -13,6 +13,9 @@ build:
 
 run:
 	@cargo run --release
+
+dev:
+	@cargo watch -x run
 
 # --------------------------------------------------------------------------------------------------
 # BUILD_VERSION=0.0.0-local make docker-build
