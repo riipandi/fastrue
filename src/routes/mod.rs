@@ -16,20 +16,20 @@ pub fn root() -> Router {
 pub fn get_foo() -> Router {
     async fn handler() -> Json<Value> {
         Json(json!({
-          "message": "Hello Foo",
+          "message": "Hello from foo endpoint",
           "code": 200,
         }))
     }
 
-    route("/foo", get(handler))
+    route("/api/foo", get(handler))
 }
 
 pub fn post_foo() -> Router {
     async fn handler() -> &'static str {
-        "Hi from `POST /foo`"
+        "Hi from `POST /api/foo`"
     }
 
-    route("/foo", post(handler))
+    route("/api/foo", post(handler))
 }
 
 fn route(path: &str, method_router: MethodRouter<()>) -> Router {

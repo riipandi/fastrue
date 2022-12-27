@@ -1,14 +1,18 @@
 use axum::{
     async_trait,
+    body::Bytes,
     extract::{FromRef, FromRequestParts, State},
-    http::{request::Parts, StatusCode},
-    response::IntoResponse,
+    http::{request::Parts, HeaderMap, Method, Request, StatusCode, Uri},
+    response::{IntoResponse, Response},
     routing::get,
     Router,
 };
+use axum_extra::routing::SpaRouter;
 use sqlx::postgres::{PgPool, PgPoolOptions};
-use std::{env, net::SocketAddr};
+use std::{env, io, net::SocketAddr, time::Duration};
 use tokio::signal;
+use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
+use tracing::Span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 // modules
@@ -19,7 +23,7 @@ async fn main() {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "example_global_404_handler=debug".into()),
+                .unwrap_or_else(|_| "wasta=debug,tower_http=info".into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();
@@ -33,18 +37,45 @@ async fn main() {
         .max_connections(5)
         .connect(&db_connection_str)
         .await
-        .expect("can't connect to database");
+        .expect("Can't connect to database");
     println!("Successfully connected to database");
 
+    // Static SPA assets
+    let spa = SpaRouter::new("/spa", "web").handle_error(handle_spa_error);
+
     let app = Router::new()
+        .merge(spa)
         .route(
-            "/dbconn",
+            "/health",
             get(using_connection_pool_extractor).post(using_connection_extractor),
         )
         .with_state(pool)
         .merge(routes::root())
         .merge(routes::get_foo())
-        .merge(routes::post_foo());
+        .merge(routes::post_foo())
+        .layer(TraceLayer::new_for_http())
+        .layer(
+            TraceLayer::new_for_http()
+                .on_request(|_request: &Request<_>, _span: &Span| {
+                    // println!("message log on_request");
+                })
+                .on_response(|_response: &Response, _latency: Duration, _span: &Span| {
+                    // println!("message log on_response");
+                })
+                .on_body_chunk(|_chunk: &Bytes, _latency: Duration, _span: &Span| {
+                    // println!("message log on_body_chunk");
+                })
+                .on_eos(
+                    |_trailers: Option<&HeaderMap>, _stream_duration: Duration, _span: &Span| {
+                        // println!("message log on_eos");
+                    },
+                )
+                .on_failure(
+                    |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
+                        // println!("message log on_failure");
+                    },
+                ),
+        );
 
     // add a fallback service for handling routes to unknown paths
     let app = app.fallback(handler_404);
@@ -57,7 +88,7 @@ async fn main() {
     let bind_addr = [env_addr, env_port].join(":");
 
     let addr: SocketAddr = bind_addr.parse().expect("Unable to parse socket address");
-    println!("listening on {}", addr);
+    tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .with_graceful_shutdown(shutdown_signal())
@@ -104,13 +135,17 @@ async fn shutdown_signal() {
     println!("signal received, starting graceful shutdown");
 }
 
+async fn handle_spa_error(method: Method, uri: Uri, err: io::Error) -> String {
+    format!("{} {} failed with {}", method, uri, err)
+}
+
 // ---------------------------------------------------------------------------------------------------------
 
 // we can extract the connection pool with `State`
 async fn using_connection_pool_extractor(
     State(pool): State<PgPool>,
 ) -> Result<String, (StatusCode, String)> {
-    sqlx::query_scalar("select 'hello world from pg'")
+    sqlx::query_scalar("SELECT version()")
         .fetch_one(&pool)
         .await
         .map_err(internal_error)
