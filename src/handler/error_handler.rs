@@ -2,7 +2,7 @@ use axum::http::{Method, StatusCode, Uri};
 use axum::response::IntoResponse;
 use std::io;
 
-use crate::utils::throw_error::ThrowError;
+use crate::utils::error::ThrowError;
 
 // Global 404 handler
 pub async fn handler_404() -> impl IntoResponse {

@@ -2,10 +2,11 @@ use std::net::SocketAddr;
 use tokio::signal;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-mod api;
 mod config;
+mod handler;
 mod middleware;
 mod router;
+mod state;
 mod swagger;
 pub mod utils;
 
@@ -21,7 +22,7 @@ pub async fn run() {
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
     let pool = config::database::connection_pool().await;
-    let app = router::register_router(pool).fallback(api::error_handler::handler_404);
+    let app = router::register_router(pool).fallback(handler::error_handler::handler_404);
 
     // Start the server
     let bind_addr = config::app::bind_addr();

@@ -1,7 +1,6 @@
 use axum::{http::StatusCode, response::Html, routing::get, Router};
 
-use super::route;
-use crate::utils;
+use crate::{router::route, utils};
 
 pub fn hello() -> Router {
     async fn handler() -> Html<&'static str> {
@@ -16,7 +15,7 @@ pub fn health_check() -> Router {
         let query = sqlx::query_scalar("SELECT VERSION()")
             .fetch_one(&pool)
             .await
-            .map_err(utils::api_helpers::internal_error);
+            .map_err(utils::error::internal_error);
 
         tracing::info!("Healt check: {:?}", query);
         return query;
