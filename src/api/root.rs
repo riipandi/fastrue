@@ -7,7 +7,7 @@ pub fn hello() -> Router {
     async fn handler() -> Html<&'static str> {
         Html("<p>All is well!</p>")
     }
-    route("/", get(handler))
+    route("/api", get(handler))
 }
 
 pub fn health_check() -> Router {

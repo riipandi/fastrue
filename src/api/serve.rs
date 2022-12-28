@@ -2,7 +2,7 @@ use axum::{
     async_trait,
     extract::{FromRef, FromRequestParts},
     http::{request::Parts, Request, StatusCode},
-    response::Response,
+    response::{Redirect, Response},
     routing::get,
     Router,
 };
@@ -37,6 +37,7 @@ pub async fn serve() {
     let pool = database::connection_pool().await;
 
     let app = Router::new()
+        .route("/", get(|| async { Redirect::temporary("/spa") }))
         .merge(spa)
         .route("/health-direct", get(using_connection_extractor))
         .with_state(pool)

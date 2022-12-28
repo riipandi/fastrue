@@ -1,28 +1,36 @@
 [package]
 name = "wasta"
 version = "0.0.1"
+repository = "https://github.com/riipandi/wasta"
+description = "Headless authentication server"
+authors = ["Aris Ripandi <aris@duck.com>"]
+license = "Apache-2.0"
+rust-version = "1.66"
 edition = "2021"
 publish = false
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 axum = "0.6.1"
 axum-extra = { version = "0.4", features = ["spa"] }
 clap = { version = "4.0.32", features = ["derive"] }
+dotenvy = "0.15.6"
 lettre = { version = "0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
-sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "postgres", "sqlite", "uuid", "json" ] }
-tokio = { version = "1.23", features = ["full"] }
-tower = { version = "0.4", features = ["util"] }
-tracing = "0.1"
-tower-http = { version = "0.3.0", features = ["trace"] }
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+rand = "0.8.5"
+sea-query = { version = "0.28.0", features = ["derive", "backend-postgres", "uuid", "with-uuid"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-rand = "0.8.5"
+sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "postgres", "uuid", "json" ] }
+tokio = { version = "1.23", features = ["full"] }
+tower = { version = "0.4", features = ["util"] }
+tower-http = { version = "0.3.0", features = ["trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Reduce the Rust binary size and reduces the size of the images further.
 # https://kerkour.com/optimize-rust-binary-size
 [profile.release]
-lto = true
+panic = "abort"
 codegen-units = 1
+incremental = false
+opt-level = "s"
+lto = true

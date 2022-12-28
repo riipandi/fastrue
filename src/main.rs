@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use dotenvy::dotenv;
 use rand::{distributions::Alphanumeric, Rng};
 
 mod api;
@@ -22,6 +23,7 @@ enum Commands {
 
 #[tokio::main]
 async fn main() {
+    dotenv().ok(); // Load dotenv
     let cli = Cli::parse();
 
     // You can check for the existence of subcommands, and if found

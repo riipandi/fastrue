@@ -1,3 +1,5 @@
 /target
 # /web/*
 # !/web/.gitignore
+*.sqlite
+*.sqlite3
