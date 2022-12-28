@@ -1,13 +1,6 @@
-use axum::{http::StatusCode, response::Html, routing::get, Router};
+use axum::{http::StatusCode, routing::get, Router};
 
-use crate::{router::route, utils};
-
-pub fn hello() -> Router {
-    async fn handler() -> Html<&'static str> {
-        Html("<p>All is well!</p>")
-    }
-    route("/api", get(handler))
-}
+use crate::{routes::route, utils};
 
 pub fn health_check() -> Router {
     async fn handler() -> Result<String, (StatusCode, String)> {

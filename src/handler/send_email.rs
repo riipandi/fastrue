@@ -5,7 +5,7 @@ use axum::{
 };
 use serde_json::json;
 
-use crate::{router::route, utils};
+use crate::{routes::route, utils};
 
 pub fn get_send_email() -> Router {
     async fn handler() -> impl IntoResponse {

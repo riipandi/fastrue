@@ -28,6 +28,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Create administrator user
+    CreateAdmin {},
     /// Generate application secret key
     GenerateSecret {},
     /// Run the database migration
@@ -37,16 +39,18 @@ enum Commands {
 #[tokio::main]
 async fn main() {
     dotenv().ok(); // Load dotenv
-    let cli = Cli::parse();
 
     // You can check for the existence of subcommands, and if found
     // use their matches just as you would the top level cmd.
-    match &cli.command {
+    match Cli::parse().command {
         Some(Commands::GenerateSecret {}) => {
             println!("{}", generate_secret());
         }
         Some(Commands::Migrate {}) => {
             run_migration().await;
+        }
+        Some(Commands::CreateAdmin {}) => {
+            println!("Not yet implemented!");
         }
         None => wasta::run().await,
     }

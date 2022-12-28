@@ -1,4 +1,10 @@
-pub mod error_handler;
-pub mod root;
+pub mod admin;
+pub mod health;
+pub mod logout;
+pub mod recover;
 pub mod send_email;
+pub mod settings;
+pub mod signup;
+pub mod token;
 pub mod user;
+pub mod verify;

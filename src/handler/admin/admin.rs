@@ -7,11 +7,11 @@ use serde_json::json;
 
 use crate::routes::route;
 
-pub fn user() -> Router {
+pub fn get_all_admin() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
           "message": "Not yet implemented"
         }))
     }
-    route("/user", get(handler))
+    route("/admin", get(handler))
 }

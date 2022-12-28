@@ -5,7 +5,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 mod config;
 mod handler;
 mod middleware;
-mod router;
+mod routes;
 mod state;
 mod swagger;
 pub mod utils;
@@ -22,11 +22,13 @@ pub async fn run() {
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
     let pool = config::database::connection_pool().await;
-    let app = router::register_router(pool).fallback(handler::error_handler::handler_404);
+    let app = routes::register_routes(pool).fallback(routes::handler_404);
 
     // Start the server
-    let bind_addr = config::app::bind_addr();
-    let addr: SocketAddr = bind_addr.parse().expect("Unable to parse socket address");
+    let addr: SocketAddr = config::app::bind_addr()
+        .parse()
+        .expect("Unable to parse socket address");
+
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
