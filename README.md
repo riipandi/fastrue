@@ -64,6 +64,12 @@ To run the application in development mode, follow the steps below:
 
 > **_TODO!_**
 
+## 🧑🏻‍💻 Contributing
+
+Welcome, and thank you for your interest in contributing to Wasta!
+There are many ways in which you can contribute, beyond writing code.
+You can read this repository’s [Contributing Guidelines](./CONTRIBUTING.md) to learn how to contribute.
+
 ## Maintainer
 
 Currently, [Aris Ripandi](htps://ripandis.com) ([@riipandi](https://twitter.com/riipandi)) is the only maintainer.
@@ -77,3 +83,7 @@ Copyrights in this project are retained by their contributors.
 See the [license file](./LICENSE) for more information.
 
 [choosealicense]: https://choosealicense.com/licenses/apache-2.0/
+
+---
+
+<sub>🤫 Psst! You can [support my work here](https://github.com/sponsors/riipandi).</sub>
