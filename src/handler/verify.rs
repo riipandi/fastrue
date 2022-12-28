@@ -1,6 +1,6 @@
 use axum::{
     response::{IntoResponse, Json},
-    routing::get,
+    routing::post,
     Router,
 };
 use serde_json::json;
@@ -13,5 +13,5 @@ pub fn verify() -> Router {
           "message": "Not yet implemented"
         }))
     }
-    route("/verify", get(handler))
+    route("/verify", post(handler))
 }

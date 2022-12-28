@@ -3,7 +3,7 @@ use lettre::transport::smtp::authentication::Credentials;
 use lettre::{AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor};
 use std::env;
 
-use super::set_default_envar;
+use crate::config::set_default_envar;
 
 // Email sending function
 pub async fn send_email_smtp(

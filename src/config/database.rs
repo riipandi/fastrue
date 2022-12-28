@@ -1,7 +1,7 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
 use std::env;
 
-use crate::utils::set_default_envar;
+use super::set_default_envar;
 
 // pub async fn connection_pool() -> Result<sqlx::Pool<PgConnection, SqliteConnection>, Box<dyn std::error::Error>> {
 pub async fn connection_pool() -> PgPool {

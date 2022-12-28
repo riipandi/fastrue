@@ -1,17 +1,17 @@
 use axum::{
     response::{IntoResponse, Json},
-    routing::get,
+    routing::post,
     Router,
 };
 use serde_json::json;
 
 use crate::routes::route;
 
-pub fn token() -> Router {
+pub fn post_token() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
           "message": "Not yet implemented"
         }))
     }
-    route("/token", get(handler))
+    route("/token", post(handler))
 }

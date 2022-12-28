@@ -1,17 +1,17 @@
 use axum::{
     response::{IntoResponse, Json},
-    routing::get,
+    routing::post,
     Router,
 };
 use serde_json::json;
 
 use crate::routes::route;
 
-pub fn recover() -> Router {
+pub fn post_recover() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
           "message": "Not yet implemented"
         }))
     }
-    route("/recover", get(handler))
+    route("/recover", post(handler))
 }
