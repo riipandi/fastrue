@@ -1,19 +1,12 @@
-use axum::{
-    http::Request,
-    response::{Redirect, Response},
-    routing::get,
-    Router,
-};
-use axum_extra::routing::SpaRouter;
-use std::{env, net::SocketAddr, path::PathBuf, time::Duration};
+use std::net::SocketAddr;
 use tokio::signal;
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
-use tracing::Span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod api;
 mod config;
 mod middleware;
+mod router;
+mod swagger;
 pub mod utils;
 
 pub async fn run() {
@@ -25,48 +18,13 @@ pub async fn run() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    // This should be call create_router procedure
-
-    // Static SPA assets (embedded)
-    let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
-    let spa =
-        SpaRouter::new("/spa", assets_dir).handle_error(api::error_handler::handler_spa_error);
-
-    // setup connection pool
+    // Setup connection pool and register application router
+    // Add a fallback service for handling routes to unknown paths
     let pool = config::database::connection_pool().await;
+    let app = router::register_router(pool).fallback(api::error_handler::handler_404);
 
-    let app = Router::new()
-        .route("/", get(|| async { Redirect::temporary("/spa") }))
-        .with_state(pool)
-        .merge(api::root::hello())
-        .merge(api::root::health_check())
-        .merge(api::send_email::get_send_email())
-        .merge(spa)
-        .layer(
-            TraceLayer::new_for_http()
-                .on_request(|request: &Request<_>, _span: &Span| {
-                    tracing::info!("Request {} {}", request.method(), request.uri());
-                })
-                .on_response(|response: &Response, latency: Duration, _span: &Span| {
-                    tracing::info!("Response {} {:?}", response.status(), latency);
-                })
-                .on_failure(
-                    |error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
-                        tracing::error!("Failure {} {:?}", error, latency);
-                    },
-                ),
-        );
-
-    // add a fallback service for handling routes to unknown paths
-    let app = app.fallback(api::error_handler::handler_404);
-
-    // Read bind address from envar or set the default.
-    utils::set_default_envar("BIND_PORT", "3030");
-    utils::set_default_envar("BIND_ADDR", "127.0.0.1");
-    let env_port = env::var("BIND_PORT").unwrap();
-    let env_addr = env::var("BIND_ADDR").unwrap();
-    let bind_addr = [env_addr, env_port].join(":");
-
+    // Start the server
+    let bind_addr = config::app::bind_addr();
     let addr: SocketAddr = bind_addr.parse().expect("Unable to parse socket address");
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)

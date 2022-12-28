@@ -25,6 +25,8 @@ tower = { version = "0.4", features = ["util"] }
 tower-http = { version = "0.3.0", features = ["trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+utoipa = { version = "2.4.2", features = ["axum_extras"] }
+utoipa-swagger-ui = { version = "3.0.1", features = ["axum"] }
 
 # Reduce the Rust binary size and reduces the size of the images further.
 # https://kerkour.com/optimize-rust-binary-size
