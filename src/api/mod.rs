@@ -1,5 +1,6 @@
 use axum::{routing::MethodRouter, Router};
 
+pub mod error_handler;
 pub mod root;
 pub mod send_email;
 pub mod serve;

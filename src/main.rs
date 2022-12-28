@@ -2,6 +2,8 @@ use clap::{Parser, Subcommand};
 use rand::{distributions::Alphanumeric, Rng};
 
 mod api;
+mod config;
+mod middleware;
 mod utils;
 
 #[derive(Parser)]

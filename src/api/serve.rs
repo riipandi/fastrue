@@ -2,21 +2,21 @@ use axum::{
     async_trait,
     body::Bytes,
     extract::{FromRef, FromRequestParts, State},
-    http::{request::Parts, HeaderMap, Method, Request, StatusCode, Uri},
-    response::{IntoResponse, Response},
+    http::{request::Parts, HeaderMap, Request, StatusCode},
+    response::Response,
     routing::get,
     Router,
 };
 use axum_extra::routing::SpaRouter;
 use sqlx::postgres::{PgPool, PgPoolOptions};
-use std::{env, io, net::SocketAddr, path::PathBuf, time::Duration};
+use std::{env, net::SocketAddr, path::PathBuf, time::Duration};
 use tokio::signal;
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::Span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
-    api::{root, send_email},
+    api::{error_handler, root, send_email},
     utils,
 };
 
@@ -43,7 +43,7 @@ pub async fn serve() {
 
     // Static SPA assets (embedded)
     let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
-    let spa = SpaRouter::new("/spa", assets_dir).handle_error(handle_spa_error);
+    let spa = SpaRouter::new("/spa", assets_dir).handle_error(error_handler::handler_spa_error);
 
     let app = Router::new()
         .merge(spa)
@@ -81,7 +81,7 @@ pub async fn serve() {
         );
 
     // add a fallback service for handling routes to unknown paths
-    let app = app.fallback(handler_404);
+    let app = app.fallback(error_handler::handler_404);
 
     // Read bind address from envar or set the default.
     utils::set_default_envar("BIND_PORT", "3030");
@@ -97,11 +97,6 @@ pub async fn serve() {
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();
-}
-
-// Global 404 handler
-async fn handler_404() -> impl IntoResponse {
-    (StatusCode::NOT_FOUND, "nothing to see here")
 }
 
 // Graceful shutdown
@@ -129,10 +124,6 @@ async fn shutdown_signal() {
     }
 
     println!("signal received, starting graceful shutdown");
-}
-
-async fn handle_spa_error(method: Method, uri: Uri, err: io::Error) -> String {
-    format!("{} {} failed with {}", method, uri, err)
 }
 
 // ---------------------------------------------------------------------------------------------------------
