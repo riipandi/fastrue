@@ -1,8 +1,7 @@
 use axum::{
     async_trait,
-    body::Bytes,
     extract::{FromRef, FromRequestParts},
-    http::{request::Parts, HeaderMap, Request, StatusCode},
+    http::{request::Parts, Request, StatusCode},
     response::Response,
     routing::get,
     Router,
@@ -46,23 +45,15 @@ pub async fn serve() {
         .merge(send_email::get_send_email())
         .layer(
             TraceLayer::new_for_http()
-                .on_request(|_request: &Request<_>, _span: &Span| {
-                    // println!("message log on_request");
+                .on_request(|request: &Request<_>, _span: &Span| {
+                    tracing::info!("Request {} {}", request.method(), request.uri());
                 })
-                .on_response(|_response: &Response, _latency: Duration, _span: &Span| {
-                    // println!("message log on_response");
+                .on_response(|response: &Response, latency: Duration, _span: &Span| {
+                    tracing::info!("Response {} {:?}", response.status(), latency);
                 })
-                .on_body_chunk(|_chunk: &Bytes, _latency: Duration, _span: &Span| {
-                    // println!("message log on_body_chunk");
-                })
-                .on_eos(
-                    |_trailers: Option<&HeaderMap>, _stream_duration: Duration, _span: &Span| {
-                        // println!("message log on_eos");
-                    },
-                )
                 .on_failure(
-                    |_error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
-                        // println!("message log on_failure");
+                    |error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
+                        tracing::error!("Failure {} {:?}", error, latency);
                     },
                 ),
         );

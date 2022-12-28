@@ -25,7 +25,7 @@ pub fn get_send_email() -> Router {
                 }))
             }
             Err(e) => {
-                tracing::debug!("Could not send email: {:?}", e);
+                tracing::error!("Could not send email: {:?}", e);
                 Json(json!({
                   "message": "Could not send email",
                   "code": 500,
