@@ -13,10 +13,13 @@ pub fn hello() -> Router {
 pub fn health_check() -> Router {
     async fn handler() -> Result<String, (StatusCode, String)> {
         let pool = crate::config::database::connection_pool().await;
-        sqlx::query_scalar("SELECT VERSION()")
+        let query = sqlx::query_scalar("SELECT VERSION()")
             .fetch_one(&pool)
             .await
-            .map_err(utils::api_helpers::internal_error)
+            .map_err(utils::api_helpers::internal_error);
+
+        tracing::info!("Healt check: {:?}", query);
+        return query;
     }
     route("/health", get(handler))
 }

@@ -1,11 +1,6 @@
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
-use rand::{distributions::Alphanumeric, Rng};
-
-mod api;
-mod config;
-mod middleware;
-mod utils;
+use wasta::utils::string::generate_secret;
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
@@ -19,6 +14,8 @@ struct Cli {
 enum Commands {
     /// Generate application secret key
     GenerateSecret {},
+    /// Run the database migration
+    Migrate {},
 }
 
 #[tokio::main]
@@ -30,13 +27,11 @@ async fn main() {
     // use their matches just as you would the top level cmd.
     match &cli.command {
         Some(Commands::GenerateSecret {}) => {
-            let s: String = rand::thread_rng()
-                .sample_iter(&Alphanumeric)
-                .take(40)
-                .map(char::from)
-                .collect();
-            println!("{}", s);
+            println!("{}", generate_secret());
         }
-        None => api::serve::serve().await,
+        Some(Commands::Migrate {}) => {
+            println!("Not yet implemented!");
+        }
+        None => wasta::run().await,
     }
 }

@@ -1,26 +1,22 @@
 use axum::{
-    async_trait,
-    extract::{FromRef, FromRequestParts},
-    http::{request::Parts, Request, StatusCode},
+    http::Request,
     response::{Redirect, Response},
     routing::get,
     Router,
 };
 use axum_extra::routing::SpaRouter;
-use sqlx::postgres::PgPool;
 use std::{env, net::SocketAddr, path::PathBuf, time::Duration};
 use tokio::signal;
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::Span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::{
-    api::{error_handler, root, send_email},
-    config::database,
-    utils,
-};
+mod api;
+mod config;
+mod middleware;
+pub mod utils;
 
-pub async fn serve() {
+pub async fn run() {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
@@ -29,21 +25,23 @@ pub async fn serve() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    // This should be call create_router procedure
+
     // Static SPA assets (embedded)
     let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
-    let spa = SpaRouter::new("/spa", assets_dir).handle_error(error_handler::handler_spa_error);
+    let spa =
+        SpaRouter::new("/spa", assets_dir).handle_error(api::error_handler::handler_spa_error);
 
     // setup connection pool
-    let pool = database::connection_pool().await;
+    let pool = config::database::connection_pool().await;
 
     let app = Router::new()
         .route("/", get(|| async { Redirect::temporary("/spa") }))
-        .merge(spa)
-        .route("/health-direct", get(using_connection_extractor))
         .with_state(pool)
-        .merge(root::hello())
-        .merge(root::health_check())
-        .merge(send_email::get_send_email())
+        .merge(api::root::hello())
+        .merge(api::root::health_check())
+        .merge(api::send_email::get_send_email())
+        .merge(spa)
         .layer(
             TraceLayer::new_for_http()
                 .on_request(|request: &Request<_>, _span: &Span| {
@@ -60,7 +58,7 @@ pub async fn serve() {
         );
 
     // add a fallback service for handling routes to unknown paths
-    let app = app.fallback(error_handler::handler_404);
+    let app = app.fallback(api::error_handler::handler_404);
 
     // Read bind address from envar or set the default.
     utils::set_default_envar("BIND_PORT", "3030");
@@ -103,42 +101,4 @@ async fn shutdown_signal() {
     }
 
     println!("signal received, starting graceful shutdown");
-}
-
-// ---------------------------------------------------------------------------------------------------------
-// Database coneection
-// ---------------------------------------------------------------------------------------------------------
-
-// we can also write a custom extractor that grabs a connection from the pool
-// which setup is appropriate depends on your application
-struct DatabaseConnection(sqlx::pool::PoolConnection<sqlx::Postgres>);
-
-#[async_trait]
-impl<S> FromRequestParts<S> for DatabaseConnection
-where
-    PgPool: FromRef<S>,
-    S: Send + Sync,
-{
-    type Rejection = (StatusCode, String);
-
-    async fn from_request_parts(_parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
-        let pool = PgPool::from_ref(state);
-
-        let conn = pool
-            .acquire()
-            .await
-            .map_err(utils::api_helpers::internal_error)?;
-
-        Ok(Self(conn))
-    }
-}
-
-async fn using_connection_extractor(
-    DatabaseConnection(conn): DatabaseConnection,
-) -> Result<String, (StatusCode, String)> {
-    let mut conn = conn;
-    sqlx::query_scalar("SELECT VERSION()")
-        .fetch_one(&mut conn)
-        .await
-        .map_err(utils::api_helpers::internal_error)
 }
