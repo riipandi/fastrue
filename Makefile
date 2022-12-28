@@ -18,7 +18,7 @@ migrate:
 	@cargo run -- migrate
 
 dev:
-	@cargo watch -x run
+	@cargo watch -qcx run
 
 # --------------------------------------------------------------------------------------------------
 # BUILD_VERSION=0.0.0-local make docker-build
