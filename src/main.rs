@@ -38,7 +38,7 @@ enum Commands {
 
 #[tokio::main]
 async fn main() {
-    dotenv().ok(); // Load dotenv
+    dotenv().ok(); // Load environment variables
 
     // You can check for the existence of subcommands, and if found
     // use their matches just as you would the top level cmd.
