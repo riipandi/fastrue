@@ -8,6 +8,7 @@ pub fn set_default_envar(key: &str, value: &str) {
 }
 
 pub mod api_helpers;
+pub mod migration;
 pub mod sendmail;
 pub mod string;
 pub mod throw_error;

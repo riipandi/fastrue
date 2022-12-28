@@ -14,6 +14,9 @@ build:
 run:
 	@cargo run --release
 
+migrate:
+	@cargo run -- migrate
+
 dev:
 	@cargo watch -x run
 

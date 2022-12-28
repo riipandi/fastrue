@@ -1,6 +1,6 @@
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
-use wasta::utils::string::generate_secret;
+use wasta::utils::{migration::run_migration, string::generate_secret};
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
@@ -30,7 +30,7 @@ async fn main() {
             println!("{}", generate_secret());
         }
         Some(Commands::Migrate {}) => {
-            println!("Not yet implemented!");
+            run_migration().await;
         }
         None => wasta::run().await,
     }
