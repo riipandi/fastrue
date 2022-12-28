@@ -1,34 +1,22 @@
-use axum::{
-    response::{IntoResponse, Json},
-    routing::{get, post},
-    Router,
-};
-use serde_json::{json, Value};
+use axum::{http::StatusCode, response::Html, routing::get, Router};
 
 use super::route;
+use crate::utils;
 
-pub fn root() -> Router {
-    route(
-        "/",
-        get(|| async { String::from("Hello, world!").into_response() }),
-    )
+pub fn hello() -> Router {
+    async fn handler() -> Html<&'static str> {
+        Html("<p>All is well!</p>")
+    }
+    route("/", get(handler))
 }
 
-pub fn get_foo() -> Router {
-    async fn handler() -> Json<Value> {
-        Json(json!({
-          "message": "Hello from foo endpoint",
-          "code": 200,
-        }))
+pub fn health_check() -> Router {
+    async fn handler() -> Result<String, (StatusCode, String)> {
+        let pool = crate::config::database::connection_pool().await;
+        sqlx::query_scalar("SELECT VERSION()")
+            .fetch_one(&pool)
+            .await
+            .map_err(utils::api_helpers::internal_error)
     }
-
-    route("/api/foo", get(handler))
-}
-
-pub fn post_foo() -> Router {
-    async fn handler() -> &'static str {
-        "Hi from `POST /api/foo`"
-    }
-
-    route("/api/foo", post(handler))
+    route("/health", get(handler))
 }

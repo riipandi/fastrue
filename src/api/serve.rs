@@ -1,14 +1,14 @@
 use axum::{
     async_trait,
     body::Bytes,
-    extract::{FromRef, FromRequestParts, State},
+    extract::{FromRef, FromRequestParts},
     http::{request::Parts, HeaderMap, Request, StatusCode},
     response::Response,
     routing::get,
     Router,
 };
 use axum_extra::routing::SpaRouter;
-use sqlx::postgres::{PgPool, PgPoolOptions};
+use sqlx::postgres::PgPool;
 use std::{env, net::SocketAddr, path::PathBuf, time::Duration};
 use tokio::signal;
 use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
@@ -17,6 +17,7 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use crate::{
     api::{error_handler, root, send_email},
+    config::database,
     utils,
 };
 
@@ -29,34 +30,20 @@ pub async fn serve() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    // Read database connection from envars
-    let db_connection_str = std::env::var("DATABASE_URL")
-        .unwrap_or_else(|_| "postgres://postgres:postgres@127.0.0.1:5432".to_string());
-
-    // setup connection pool
-    let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&db_connection_str)
-        .await
-        .expect("Can't connect to database");
-    println!("Successfully connected to database");
-
     // Static SPA assets (embedded)
     let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
     let spa = SpaRouter::new("/spa", assets_dir).handle_error(error_handler::handler_spa_error);
 
+    // setup connection pool
+    let pool = database::connection_pool().await;
+
     let app = Router::new()
         .merge(spa)
-        .route(
-            "/health",
-            get(using_connection_pool_extractor).post(using_connection_extractor),
-        )
+        .route("/health-direct", get(using_connection_extractor))
         .with_state(pool)
-        .merge(root::root())
-        .merge(root::get_foo())
-        .merge(root::post_foo())
+        .merge(root::hello())
+        .merge(root::health_check())
         .merge(send_email::get_send_email())
-        .layer(TraceLayer::new_for_http())
         .layer(
             TraceLayer::new_for_http()
                 .on_request(|_request: &Request<_>, _span: &Span| {
@@ -130,16 +117,6 @@ async fn shutdown_signal() {
 // Database coneection
 // ---------------------------------------------------------------------------------------------------------
 
-// we can extract the connection pool with `State`
-async fn using_connection_pool_extractor(
-    State(pool): State<PgPool>,
-) -> Result<String, (StatusCode, String)> {
-    sqlx::query_scalar("SELECT version()")
-        .fetch_one(&pool)
-        .await
-        .map_err(internal_error)
-}
-
 // we can also write a custom extractor that grabs a connection from the pool
 // which setup is appropriate depends on your application
 struct DatabaseConnection(sqlx::pool::PoolConnection<sqlx::Postgres>);
@@ -155,7 +132,10 @@ where
     async fn from_request_parts(_parts: &mut Parts, state: &S) -> Result<Self, Self::Rejection> {
         let pool = PgPool::from_ref(state);
 
-        let conn = pool.acquire().await.map_err(internal_error)?;
+        let conn = pool
+            .acquire()
+            .await
+            .map_err(utils::api_helpers::internal_error)?;
 
         Ok(Self(conn))
     }
@@ -165,16 +145,8 @@ async fn using_connection_extractor(
     DatabaseConnection(conn): DatabaseConnection,
 ) -> Result<String, (StatusCode, String)> {
     let mut conn = conn;
-    sqlx::query_scalar("select 'hello world from pg'")
+    sqlx::query_scalar("SELECT VERSION()")
         .fetch_one(&mut conn)
         .await
-        .map_err(internal_error)
-}
-
-// Utility function for mapping any error into a `500 Internal Server Error` response.
-fn internal_error<E>(err: E) -> (StatusCode, String)
-where
-    E: std::error::Error,
-{
-    (StatusCode::INTERNAL_SERVER_ERROR, err.to_string())
+        .map_err(utils::api_helpers::internal_error)
 }

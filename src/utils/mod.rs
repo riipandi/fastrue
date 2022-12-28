@@ -7,4 +7,5 @@ pub fn set_default_envar(key: &str, value: &str) {
     }
 }
 
+pub mod api_helpers;
 pub mod sendmail;
