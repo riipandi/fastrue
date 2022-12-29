@@ -1,6 +1,8 @@
-use axum::{http::StatusCode, routing::get, Router};
+use axum::response::{IntoResponse, Json};
+use axum::{routing::get, Router};
+use serde_json::json;
 
-use crate::{routes::route, utils};
+use crate::routes::route;
 
 #[utoipa::path(
     get,
@@ -11,15 +13,12 @@ use crate::{routes::route, utils};
     )
 )]
 pub fn health_check() -> Router {
-    async fn handler() -> Result<String, (StatusCode, String)> {
-        let pool = crate::config::database::connection_pool().await;
-        let query = sqlx::query_scalar("SELECT VERSION()")
-            .fetch_one(&pool)
-            .await
-            .map_err(utils::error::internal_error);
+    async fn handler() -> impl IntoResponse {
+        let pool = crate::config::connection_pool().await;
+        let result = sqlx::query!(r#"SELECT VERSION()"#).fetch_one(&pool).await;
 
-        tracing::info!("Healt check: {:?}", query);
-        return query;
+        tracing::info!("Health check: {:?}", result);
+        Json(json!({ "message": "All is well", "code": 200 }))
     }
     route("/health", get(handler))
 }

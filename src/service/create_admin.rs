@@ -4,12 +4,12 @@ use uuid::Uuid;
 
 use crate::{
     config,
-    utils::{hash::create_hash, validator::is_valid_email},
+    utils::{create_hash, is_valid_email},
 };
 
 #[derive(Debug)]
 #[allow(dead_code)]
-pub struct Account {
+struct Account {
     email: String,
     password: String,
 }
@@ -50,11 +50,10 @@ pub async fn prompt() {
     }
 }
 
-// fn create_admin(email: String, password: String) -> Result<(), Box<dyn std::error::Error>> {
 async fn create_admin(email: String, password: String) -> Result<Account, sqlx::Error> {
     let id = Uuid::new_v4();
     let password_hash: String = create_hash(password.clone());
-    let pool = config::database::connection_pool().await;
+    let pool = config::connection_pool().await;
 
     query(
         r#"INSERT INTO users (id, email, encrypted_password, is_super_admin)

@@ -1,7 +1,7 @@
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 pub fn is_valid_email(email: &str) -> bool {
-    let parts: Vec<&str> = email.split("@").collect();
+    let parts: Vec<&str> = email.split('@').collect();
     if parts.len() != 2 {
         return false;
     }
@@ -25,7 +25,7 @@ pub fn is_valid_email(email: &str) -> bool {
         Err(_) => match domain.parse::<Ipv6Addr>() {
             Ok(_) => true,
             Err(_) => {
-                let domain_parts: Vec<&str> = domain.split(".").collect();
+                let domain_parts: Vec<&str> = domain.split('.').collect();
                 if domain_parts.len() < 2 {
                     return false;
                 }

@@ -43,7 +43,7 @@ pub fn register_swagger() -> SwaggerUi {
         .persist_authorization(false)
         .use_base_layout();
 
-    return SwaggerUi::new("/swagger")
+    SwaggerUi::new("/swagger")
         .url(open_api_url, ApiDoc::openapi())
-        .config(config);
+        .config(config)
 }

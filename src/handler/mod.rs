@@ -7,3 +7,13 @@ pub mod signup;
 pub mod token;
 pub mod user;
 pub mod verify;
+
+pub use self::admin::*;
+pub use self::health::*;
+pub use self::logout::*;
+pub use self::recover::*;
+pub use self::settings::*;
+pub use self::signup::*;
+pub use self::token::*;
+pub use self::user::*;
+pub use self::verify::*;

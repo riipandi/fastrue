@@ -6,7 +6,7 @@ use std::env;
 use crate::config::set_default_envar;
 
 // Email sending function
-pub(crate) async fn send_email_smtp(
+pub async fn send_email_smtp(
     from: &str,
     to: &str,
     subject: &str,

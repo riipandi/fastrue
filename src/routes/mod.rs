@@ -17,6 +17,9 @@ use crate::{
 pub mod admin;
 pub mod auth;
 
+pub use self::admin::*;
+pub use self::auth::*;
+
 pub fn register_routes(pool: Pool<Postgres>) -> Router {
     // Configure logging middleware
     let trace_layer = TraceLayer::new_for_http()
@@ -32,16 +35,16 @@ pub fn register_routes(pool: Pool<Postgres>) -> Router {
             },
         );
 
-    return Router::new()
+    Router::new()
         .with_state(pool)
         // .route("/", get(|| async { Redirect::temporary("/settings") }))
         .merge(swagger::register_swagger())
         .merge(settings::settings())
         .merge(health::health_check())
-        .merge(auth::register_auth_routes())
-        .merge(admin::register_admin_routes())
+        .merge(register_auth_routes())
+        .merge(register_admin_routes())
         .merge(register_spa())
-        .layer(trace_layer);
+        .layer(trace_layer)
 }
 
 pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
@@ -49,12 +52,12 @@ pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
 }
 
 // Global 404 handler
-pub(crate) async fn handler_404() -> impl IntoResponse {
+pub async fn handler_404() -> impl IntoResponse {
     ThrowError::new(StatusCode::NOT_FOUND, "Not found")
 }
 
+// Static SPA assets (embedded)
 fn register_spa() -> SpaRouter {
-    // Static SPA assets (embedded)
     let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
-    return SpaRouter::new("/", assets_dir);
+    SpaRouter::new("/", assets_dir)
 }

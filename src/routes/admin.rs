@@ -1,9 +1,9 @@
 use axum::Router;
 
-use crate::handler::admin;
+use crate::handler::{get_all_admin, invite_by_admin};
 
 pub fn register_admin_routes() -> Router {
-    return Router::new()
-        .merge(admin::invite::invite_by_admin())
-        .merge(admin::admin::get_all_admin());
+    Router::new()
+        .merge(invite_by_admin())
+        .merge(get_all_admin())
 }

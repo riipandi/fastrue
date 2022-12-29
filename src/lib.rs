@@ -22,7 +22,7 @@ pub async fn run() {
 
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
-    let pool = config::database::connection_pool().await;
+    let pool = config::connection_pool().await;
     let app = routes::register_routes(pool).fallback(routes::handler_404);
 
     // Start the server
