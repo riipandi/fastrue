@@ -39,6 +39,10 @@ enum Commands {
 
 #[tokio::main]
 async fn main() {
+    better_panic::Settings::debug()
+        .most_recent_first(false)
+        .lineno_suffix(true)
+        .install();
     dotenv().ok(); // Load environment variables
 
     // You can check for the existence of subcommands, and if found

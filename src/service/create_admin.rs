@@ -53,8 +53,6 @@ pub async fn prompt() {
 async fn create_admin(email: String, password: String) -> Result<Account, sqlx::Error> {
     let id = Uuid::new_v4();
     let password_hash: String = create_hash(password.clone());
-
-    // FIXME: Fix database connection when build inside Docker
     let pool = config::connection_pool().await;
 
     query(
@@ -67,11 +65,6 @@ async fn create_admin(email: String, password: String) -> Result<Account, sqlx::
     .bind(true)
     .execute(&pool)
     .await?;
-
-    // Check that inserted todo can be fetched inside the uncommitted transaction
-    let _ = query!(r#"SELECT FROM users WHERE id = $1"#, id)
-        .fetch_one(&pool)
-        .await?;
 
     // Result to pass
     let data = Account { email, password };

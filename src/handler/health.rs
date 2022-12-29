@@ -14,8 +14,9 @@ use crate::routes::route;
 )]
 pub fn health_check() -> Router {
     async fn handler() -> impl IntoResponse {
-        // FIXME: Fix database connection when build inside Docker
         let pool = crate::config::connection_pool().await;
+
+        // FIXME: Fix database connection when build inside Docker
         let result = sqlx::query!(r#"SELECT VERSION()"#).fetch_one(&pool).await;
 
         tracing::info!("Health check: {:?}", result);
