@@ -3,9 +3,10 @@ use tokio::signal;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 mod config;
-mod handler;
+pub mod handler;
 mod middleware;
-mod routes;
+pub mod routes;
+pub mod service;
 mod state;
 mod swagger;
 pub mod utils;

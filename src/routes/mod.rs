@@ -49,7 +49,7 @@ pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
 }
 
 // Global 404 handler
-pub async fn handler_404() -> impl IntoResponse {
+pub(crate) async fn handler_404() -> impl IntoResponse {
     ThrowError::new(StatusCode::NOT_FOUND, "Not found")
 }
 

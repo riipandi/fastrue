@@ -10,23 +10,26 @@ edition = "2021"
 publish = false
 
 [dependencies]
-axum = "0.6.1"
+axum = "0.6"
 axum-extra = { version = "0.4", features = ["spa"] }
-clap = { version = "4.0.32", features = ["derive"] }
-dotenvy = "0.15.6"
+bcrypt = "0.13"
+clap = { version = "4.0", features = ["derive"] }
+dialoguer = { version ="0.10", features = ["password", "zeroize"] }
+dotenvy = "0.15"
 lettre = { version = "0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
-rand = "0.8.5"
-sea-query = { version = "0.28.0", default-features = false, features = ["derive", "backend-postgres", "with-uuid", "with-json", "with-time"] }
+rand = "0.8"
+sea-query = { version = "0.28", default-features = false, features = ["derive", "backend-postgres", "with-uuid", "with-json", "with-time"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 sqlx = { version = "0.6", default-features = true, features = [ "runtime-tokio-rustls", "migrate", "postgres", "uuid", "json" ] }
 tokio = { version = "1.23", features = ["full"] }
 tower = { version = "0.4", features = ["util"] }
-tower-http = { version = "0.3.0", features = ["trace"] }
+tower-http = { version = "0.3", features = ["trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-utoipa = { version = "2.4.2", features = ["axum_extras"] }
+utoipa = { version = "2.4", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "3.0.1", features = ["axum"] }
+uuid = { version = "1.2", features = ["v4", "v5", "fast-rng", "serde"] }
 
 # Reduce the Rust binary size and reduces the size of the images further.
 # https://kerkour.com/optimize-rust-binary-size

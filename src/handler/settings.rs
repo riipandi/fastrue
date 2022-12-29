@@ -1,12 +1,17 @@
-use axum::{
-    response::{IntoResponse, Json},
-    routing::get,
-    Router,
-};
+use axum::response::{IntoResponse, Json};
+use axum::{routing::get, Router};
 use serde_json::json;
 
 use crate::routes::route;
 
+#[utoipa::path(
+    get,
+    path = "/settings",
+    tag = "Information",
+    responses(
+        (status = 200, description = "Settings endpoint")
+    ),
+)]
 pub fn settings() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({

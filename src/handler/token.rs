@@ -7,6 +7,14 @@ use serde_json::json;
 
 use crate::routes::route;
 
+#[utoipa::path(
+    post,
+    path = "/token",
+    tag = "Authentication",
+    responses(
+        (status = 200, description = "Retrieve a token")
+    ),
+)]
 pub fn post_token() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({

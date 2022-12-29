@@ -7,6 +7,16 @@ use serde_json::json;
 
 use crate::{routes::route, utils};
 
+#[utoipa::path(
+    post,
+    path = "/invite",
+    tag = "Administration",
+    responses((status = 200, description = "Invite user by admin")),
+    params(
+      ("email" = String, Path, description = "Pet database id to get Pet for"),
+      ("x-csrf-token", Header, description = "CSRF token in header", deprecated)
+    ),
+)]
 pub fn invite_by_admin() -> Router {
     async fn handler() -> impl IntoResponse {
         // Email content variables

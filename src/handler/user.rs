@@ -7,6 +7,14 @@ use serde_json::json;
 
 use crate::routes::route;
 
+#[utoipa::path(
+    get,
+    path = "/user",
+    tag = "User Account",
+    responses(
+        (status = 200, description = "Get all users")
+    ),
+)]
 pub fn get_user() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
@@ -16,6 +24,14 @@ pub fn get_user() -> Router {
     route("/user", get(handler))
 }
 
+#[utoipa::path(
+    put,
+    path = "/user",
+    tag = "User Account",
+    responses(
+        (status = 200, description = "Update a user")
+    ),
+)]
 pub fn put_user() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({

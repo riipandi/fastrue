@@ -3,8 +3,8 @@ use std::env;
 
 use super::set_default_envar;
 
-// pub async fn connection_pool() -> Result<sqlx::Pool<PgConnection, SqliteConnection>, Box<dyn std::error::Error>> {
-pub async fn connection_pool() -> PgPool {
+// pub(crate) async fn connection_pool() -> Result<sqlx::Pool<PgConnection, SqliteConnection>, Box<dyn std::error::Error>> {
+pub(crate) async fn connection_pool() -> PgPool {
     // let connection_str = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let default_conn_str = "postgres://postgres:postgres@127.0.0.1:5432/wasta";
     set_default_envar("DATABASE_URL", default_conn_str);

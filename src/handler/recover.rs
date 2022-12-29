@@ -7,6 +7,14 @@ use serde_json::json;
 
 use crate::routes::route;
 
+#[utoipa::path(
+    post,
+    path = "/recover",
+    tag = "Authentication",
+    responses(
+        (status = 200, description = "Password recovery")
+    ),
+)]
 pub fn post_recover() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
