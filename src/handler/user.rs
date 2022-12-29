@@ -34,6 +34,8 @@ pub fn get_user() -> Router {
 )]
 pub fn put_user() -> Router {
     async fn handler() -> impl IntoResponse {
+        // let pool = config::database::connection_pool().await;
+        // query(r#"select * from users"#).execute(&pool).await?;
         Json(json!({
           "message": "Not yet implemented"
         }))

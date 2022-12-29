@@ -46,7 +46,7 @@ async fn main() {
     match Cli::parse().command {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),
         Some(Commands::Migrate {}) => run_migration().await,
-        Some(Commands::CreateAdmin {}) => create_admin::prompt(),
+        Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
         None => wasta::run().await,
     }
 }

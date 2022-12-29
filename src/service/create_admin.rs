@@ -1,22 +1,27 @@
 use dialoguer::{theme::ColorfulTheme, Confirm, Input, Password};
+use sqlx::query;
+use uuid::Uuid;
 
-use crate::utils::{hash::create_hash, validator::is_valid_email};
+use crate::{
+    config,
+    utils::{hash::create_hash, validator::is_valid_email},
+};
 
 #[derive(Debug)]
 #[allow(dead_code)]
-pub struct Config {
+pub struct Account {
     email: String,
     password: String,
 }
 
-pub fn prompt() {
+pub async fn prompt() {
     println!("Welcome to the setup wizard");
 
     let email = Input::with_theme(&ColorfulTheme::default())
         .with_prompt("Email address")
         .validate_with({
             move |input: &String| -> Result<(), &str> {
-                if is_valid_email(&input) {
+                if is_valid_email(input) {
                     Ok(())
                 } else {
                     Err("This is not a mail address!")
@@ -36,18 +41,39 @@ pub fn prompt() {
         .interact()
         .unwrap()
     {
-        match create_admin(email.unwrap(), password.unwrap()) {
-            Ok(_) => tracing::info!("Admin has been created"),
-            Err(e) => tracing::error!("Could not create admin: {:?}", e),
+        match create_admin(email.unwrap(), password.unwrap()).await {
+            Ok(v) => println!("Admin with email {:?} has been created!", v.email),
+            Err(e) => println!("Could not create admin: {:?}", e),
         }
     } else {
         println!("Sayonara 👋");
     }
 }
 
-fn create_admin(email: String, password: String) -> Result<(), Box<dyn std::error::Error>> {
-    let password_hash: String = create_hash(password);
-    println!("{:?} {:?}", email, password_hash);
+// fn create_admin(email: String, password: String) -> Result<(), Box<dyn std::error::Error>> {
+async fn create_admin(email: String, password: String) -> Result<Account, sqlx::Error> {
+    let id = Uuid::new_v4();
+    let password_hash: String = create_hash(password.clone());
+    let pool = config::database::connection_pool().await;
 
-    Ok(())
+    query(
+        r#"INSERT INTO users (id, email, encrypted_password, is_super_admin)
+        VALUES ($1, $2, $3, $4)"#,
+    )
+    .bind(id)
+    .bind(email.to_string())
+    .bind(password_hash.to_string())
+    .bind(true)
+    .execute(&pool)
+    .await?;
+
+    // Check that inserted todo can be fetched inside the uncommitted transaction
+    let _ = query!(r#"SELECT FROM users WHERE id = $1"#, id)
+        .fetch_one(&pool)
+        .await?;
+
+    // Result to pass
+    let data = Account { email, password };
+
+    Ok(data)
 }
