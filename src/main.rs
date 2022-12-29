@@ -34,7 +34,11 @@ enum Commands {
     /// Generate application secret key
     GenerateSecret {},
     /// Run the database migration
-    Migrate {},
+    Migrate {
+        /// Set force run
+        #[arg(short, long, default_value_t = false)]
+        force: bool,
+    },
 }
 
 #[tokio::main]
@@ -47,9 +51,10 @@ async fn main() {
 
     // You can check for the existence of subcommands, and if found
     // use their matches just as you would the top level cmd.
-    match Cli::parse().command {
+    let cli = Cli::parse();
+    match cli.command {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),
-        Some(Commands::Migrate {}) => run_migration().await,
+        Some(Commands::Migrate { force }) => run_migration(force).await,
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
         None => wasta::run().await,
     }

@@ -5,16 +5,26 @@ use std::path::PathBuf;
 
 use crate::config::progressbar_style;
 
-pub async fn run_migration() {
-    if Confirm::with_theme(&ColorfulTheme::default())
+pub async fn run_migration(force: bool) {
+    let success_message = "Database migration succes";
+    let failed_message = "Could not execute database migration";
+
+    if force {
+        let success_message = success_message;
+        match migrate_up().await {
+            Ok(_) => println!("{}", success_message),
+            Err(e) => println!("{}: {:?}", failed_message, e),
+        }
+    } else if Confirm::with_theme(&ColorfulTheme::default())
         .with_prompt("Do you want to continue?")
         .wait_for_newline(true)
         .interact()
         .unwrap()
     {
+        let success_message = success_message;
         match migrate_up().await {
-            Ok(_) => println!("Database migration succes"),
-            Err(e) => println!("Could not execute database migration: {:?}", e),
+            Ok(_) => println!("{}", success_message),
+            Err(e) => println!("{}: {:?}", failed_message, e),
         }
     } else {
         println!("Sayonara 👋");
