@@ -53,6 +53,8 @@ pub async fn prompt() {
 async fn create_admin(email: String, password: String) -> Result<Account, sqlx::Error> {
     let id = Uuid::new_v4();
     let password_hash: String = create_hash(password.clone());
+
+    // FIXME: Fix database connection when build inside Docker
     let pool = config::connection_pool().await;
 
     query(

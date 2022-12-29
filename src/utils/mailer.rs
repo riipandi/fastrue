@@ -1,9 +1,8 @@
 extern crate lettre;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor};
-use std::env;
 
-use crate::config::set_default_envar;
+use crate::config::get_envar;
 
 // Email sending function
 pub async fn send_email_smtp(
@@ -13,17 +12,11 @@ pub async fn send_email_smtp(
     body: String,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Read smtp configuration from envar or set the default.
-    set_default_envar("SMTP_HOST", "localhost");
-    set_default_envar("SMTP_PORT", "1025");
-    set_default_envar("SMTP_USERNAME", "");
-    set_default_envar("SMTP_PASSWORD", "");
-    set_default_envar("SMTP_SECURE", "false");
-
-    let env_smtp_port = env::var("SMTP_PORT").unwrap();
-    let smtp_host = env::var("SMTP_HOST").unwrap();
-    let smtp_username = env::var("SMTP_USERNAME").unwrap();
-    let smtp_password = env::var("SMTP_PASSWORD").unwrap();
-    let smtp_secure = env::var("SMTP_SECURE").unwrap();
+    let smtp_host = get_envar("SMTP_HOST", Some("localhost"));
+    let env_smtp_port = get_envar("SMTP_PORT", Some("1025"));
+    let smtp_username = get_envar("SMTP_USERNAME", None);
+    let smtp_password = get_envar("SMTP_PASSWORD", None);
+    let smtp_secure = get_envar("SMTP_SECURE", None);
     let smtp_port: u16 = env_smtp_port.parse().unwrap();
 
     // Build email message

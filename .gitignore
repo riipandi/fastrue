@@ -1,3 +1,6 @@
 /target
 # /web/*
 # !/web/.gitignore
+
+*.env.*
+!*.env.example

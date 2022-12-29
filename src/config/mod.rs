@@ -6,9 +6,12 @@ pub mod database;
 pub use self::app::*;
 pub use self::database::*;
 
-// Set environment variable value
-pub fn set_default_envar(key: &str, value: &str) {
-    if env::var(key).is_err() {
-        env::set_var(key, value);
+pub fn get_envar(key: &str, default: Option<&str>) -> String {
+    match env::var(key) {
+        Ok(val) => val,
+        Err(_) => match default {
+            Some(val) => val.to_string(),
+            None => "".to_string(),
+        },
     }
 }

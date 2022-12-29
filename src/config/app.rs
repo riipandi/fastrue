@@ -1,13 +1,7 @@
-use std::env;
-
-use super::set_default_envar;
+use super::get_envar;
 
 pub fn bind_addr() -> String {
-    // Read bind address from envar or set the default.
-    set_default_envar("BIND_PORT", "3030");
-    set_default_envar("BIND_ADDR", "127.0.0.1");
-    let env_port = env::var("BIND_PORT").unwrap();
-    let env_addr = env::var("BIND_ADDR").unwrap();
-
+    let env_addr = get_envar("BIND_ADDR", Some("127.0.0.1"));
+    let env_port = get_envar("BIND_PORT", Some("3030"));
     [env_addr, env_port].join(":")
 }

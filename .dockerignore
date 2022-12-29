@@ -1,6 +1,7 @@
 .vscode
 .gitignore
 .env.example
-.env
+.env*
 README.md
 target
+docs/

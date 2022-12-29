@@ -4,6 +4,8 @@
 FROM rust:1.66-slim AS builder
 
 ARG BUILD_VERSION 0.0.1
+ARG DATABASE_URL
+ENV DATABASE_URL $DATABASE_URL
 
 RUN rustup target add x86_64-unknown-linux-musl \
   && apt update && apt install -y musl-tools musl-dev \
@@ -21,8 +23,25 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 LABEL org.opencontainers.image.source="https://github.com/riipandi/wasta"
 FROM alpine:3.17 as runner
 
+ARG AUTH_SECRET_KEY
+ARG AUTH_DB_NAMESPACE
+ARG DATABASE_URL
+ARG SMTP_HOST
+ARG SMTP_PORT
+ARG SMTP_USERNAME
+ARG SMTP_PASSWORD
+ARG SMTP_SECURE
+
 ENV BIND_PORT 3030
 ENV BIND_ADDR 0.0.0.0
+ENV AUTH_SECRET_KEY $AUTH_SECRET_KEY
+ENV AUTH_DB_NAMESPACE $AUTH_DB_NAMESPACE
+ENV DATABASE_URL $DATABASE_URL
+ENV SMTP_HOST $SMTP_HOST
+ENV SMTP_PORT $SMTP_PORT
+ENV SMTP_USERNAME $SMTP_USERNAME
+ENV SMTP_PASSWORD $SMTP_PASSWORD
+ENV SMTP_SECURE $SMTP_SECURE
 
 WORKDIR /
 RUN addgroup -g 1001 -S groot && adduser -S groot -u 1001
