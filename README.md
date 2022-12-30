@@ -1,7 +1,7 @@
 # Wasta Authentication Server
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/wasta?logo=deno&style=flat-square)](https://github.com/riipandi/wasta)
-[![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=deno)](https://deno.land)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/icondns?logo=rust&style=flat-square)](https://github.com/riipandi/icondns)
+[![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 [![Language](https://img.shields.io/github/languages/top/riipandi/wasta?style=flat-square)](https://github.com/riipandi/wasta)
 [![License](https://img.shields.io/github/license/riipandi/wasta?style=flat-square)][choosealicense]
 [![GitHub Sponsors](https://img.shields.io/static/v1?color=26B643&label=Sponsor&message=%E2%9D%A4&logo=GitHub&style=flat-square)](https://github.com/sponsors/riipandi)
@@ -19,12 +19,12 @@ Headless authentication server for securing your apps, inspired by Netlify GoTru
 
 The following are required to run the application in development or in production environment:
 
--   [Rust](https://www.rust-lang.org/tools/install) v1.66 or greater.
--   [PostgreSQL](https://www.postgresql.org/download/) PostgreSQL server v14 or greater.
--   [sqlx](https://crates.io/crates/sqlx) for interacting with the database.
--   [sqlx-cli](https://crates.io/crates/sqlx-cli) a command line tool for sqlx.
--   [cargo watch](https://crates.io/crates/cargo-watch), a tool for watching the project files and recompiling when they change.
--   [Docker](https://docs.docker.com/engine/install), v2.10 or greater. This is optional, only required when building container image.
+- [Rust](https://www.rust-lang.org/tools/install) v1.66 or greater.
+- [PostgreSQL](https://www.postgresql.org/download/) PostgreSQL server v14 or greater.
+- [sqlx](https://crates.io/crates/sqlx) for interacting with the database.
+- [sqlx-cli](https://crates.io/crates/sqlx-cli) a command line tool for sqlx.
+- [cargo watch](https://crates.io/crates/cargo-watch), a tool for watching the project files and recompiling when they change.
+- [Docker](https://docs.docker.com/engine/install), v2.10 or greater. This is optional, only required when building container image.
 
 ### Generate Secret Key
 
