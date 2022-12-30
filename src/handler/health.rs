@@ -20,7 +20,11 @@ pub fn health_check() -> Router {
         // let result = sqlx::query(r#"SELECT VERSION()"#).fetch_one(&pool).await;
 
         // tracing::info!("Health check: {:?}", result);
-        Json(json!({ "message": "All is well", "code": 200 }))
+        Json(json!({
+          "description": "Wasta is a user registration and authentication API",
+          "name": "Wasta",
+          "version": "0.0.1"
+        }))
     }
     route("/health", get(handler))
 }

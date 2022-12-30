@@ -1,5 +1,6 @@
 pub mod admin;
 pub mod health;
+pub mod invite;
 pub mod logout;
 pub mod recover;
 pub mod settings;
@@ -10,6 +11,7 @@ pub mod verify;
 
 pub use self::admin::*;
 pub use self::health::*;
+pub use self::invite::*;
 pub use self::logout::*;
 pub use self::recover::*;
 pub use self::settings::*;

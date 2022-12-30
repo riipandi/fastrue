@@ -1,14 +1,19 @@
-use std::net::SocketAddr;
+use axum::http::Request;
+use axum::response::Response;
+use axum::Router;
+use std::{net::SocketAddr, time::Duration};
 use tokio::signal;
+use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
+use tracing::Span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-mod config;
+pub mod config;
 pub mod handler;
-mod middleware;
+pub mod middleware;
 pub mod routes;
 pub mod service;
-mod state;
-mod swagger;
+pub mod state;
+pub mod swagger;
 pub mod utils;
 
 pub async fn run() {
@@ -23,16 +28,34 @@ pub async fn run() {
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
     let pool = config::connection_pool().await;
-    let app = routes::register_routes(pool).fallback(routes::handler_404);
+    let app = routes::register_routes(pool).fallback(routes::handler_404_api);
 
-    // Start the server
+    tokio::join!(serve(app));
+}
+
+// Start the server
+async fn serve(app: Router) {
+    // Configure logging middleware
+    let trace_layer = TraceLayer::new_for_http()
+        .on_request(|request: &Request<_>, _span: &Span| {
+            tracing::info!("Request {} {}", request.method(), request.uri());
+        })
+        .on_response(|response: &Response, latency: Duration, _span: &Span| {
+            tracing::info!("Response {} {:?}", response.status(), latency);
+        })
+        .on_failure(
+            |error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
+                tracing::error!("Failure {} {:?}", error, latency);
+            },
+        );
+
     let addr: SocketAddr = config::app::bind_addr()
         .parse()
         .expect("Unable to parse socket address");
 
     tracing::debug!("listening on {}", addr);
     axum::Server::bind(&addr)
-        .serve(app.into_make_service())
+        .serve(app.layer(trace_layer).into_make_service())
         .with_graceful_shutdown(shutdown_signal())
         .await
         .unwrap();

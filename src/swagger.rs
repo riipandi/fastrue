@@ -2,8 +2,7 @@ use utoipa::OpenApi;
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
 use crate::handler::{
-    admin::{admin, invite},
-    health, logout, recover, settings, signup, token, user, verify,
+    admin, health, invite, logout, recover, settings, signup, token, user, verify,
 };
 
 #[derive(OpenApi)]

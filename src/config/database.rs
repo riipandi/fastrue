@@ -1,6 +1,6 @@
 use sqlx::{postgres::PgPoolOptions, PgPool};
 
-use crate::config::get_envar;
+use super::get_envar;
 
 // pub async fn connection_pool() -> Result<sqlx::Pool<PgConnection, SqliteConnection>, Box<dyn std::error::Error>> {
 pub async fn connection_pool() -> PgPool {

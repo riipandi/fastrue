@@ -1,12 +1,13 @@
-use axum::http::{Request, StatusCode};
-use axum::response::{IntoResponse, Response};
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
 // use axum::{response::Redirect, routing::get};
-use axum::{routing::MethodRouter, Router};
-use axum_extra::routing::SpaRouter;
+use axum::{
+    routing::{get_service, MethodRouter},
+    Router,
+};
 use sqlx::{Pool, Postgres};
-use std::{path::PathBuf, time::Duration};
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
-use tracing::Span;
+use std::{io, path::PathBuf};
+use tower_http::services::{ServeDir, ServeFile};
 
 use crate::{
     handler::{health, settings},
@@ -14,27 +15,13 @@ use crate::{
     utils::error::ThrowError,
 };
 
-pub mod admin;
-pub mod auth;
+mod admin;
+mod auth;
 
 pub use self::admin::*;
 pub use self::auth::*;
 
 pub fn register_routes(pool: Pool<Postgres>) -> Router {
-    // Configure logging middleware
-    let trace_layer = TraceLayer::new_for_http()
-        .on_request(|request: &Request<_>, _span: &Span| {
-            tracing::info!("Request {} {}", request.method(), request.uri());
-        })
-        .on_response(|response: &Response, latency: Duration, _span: &Span| {
-            tracing::info!("Response {} {:?}", response.status(), latency);
-        })
-        .on_failure(
-            |error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
-                tracing::error!("Failure {} {:?}", error, latency);
-            },
-        );
-
     Router::new()
         .with_state(pool)
         // .route("/", get(|| async { Redirect::temporary("/settings") }))
@@ -44,7 +31,6 @@ pub fn register_routes(pool: Pool<Postgres>) -> Router {
         .merge(register_auth_routes())
         .merge(register_admin_routes())
         .merge(register_spa())
-        .layer(trace_layer)
 }
 
 pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
@@ -52,12 +38,25 @@ pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
 }
 
 // Global 404 handler
-pub async fn handler_404() -> impl IntoResponse {
+pub async fn handler_404_api() -> impl IntoResponse {
     ThrowError::new(StatusCode::NOT_FOUND, "Not found")
 }
 
 // Static SPA assets (embedded)
-fn register_spa() -> SpaRouter {
-    let assets_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
-    SpaRouter::new("/", assets_dir)
+// `ServeDir` allows setting a fallback if an asset is not found. So with this
+// `GET /assets/doesnt-exist.ext` will return `index.html` rather than a 404.
+// Reference: https://github.com/tokio-rs/axum/blob/main/examples/static-file-server/src/main.rs#L67
+fn register_spa() -> Router {
+    let spa_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web");
+    let spa_index = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web/index.html");
+    let serve_dir = ServeDir::new(spa_dir).not_found_service(ServeFile::new(spa_index));
+    let serve_dir = get_service(serve_dir).handle_error(handler_404_spa);
+
+    Router::new()
+        .nest_service("/", serve_dir.clone())
+        .fallback_service(serve_dir)
+}
+
+async fn handler_404_spa(_err: io::Error) -> impl IntoResponse {
+    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
 }
