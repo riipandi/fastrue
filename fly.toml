@@ -15,13 +15,11 @@ processes = []
   dockerfile = "Dockerfile"
 
 [build.args]
-  DATABASE_URL= "unknown"
   BUILD_DATE = "2022-12-10T20:29:41Z"
-  BUILD_VERSION = "0.0.1-fly"
 
 [deploy]
   strategy = "canary"
-  release_command = "wasta migrate"
+  release_command = "wasta migrate --force"
 
 [env]
   PORT = "3030"

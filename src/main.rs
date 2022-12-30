@@ -27,6 +27,9 @@ struct Cli {
     command: Option<Commands>,
 }
 
+/*
+ * More example here: https://github.com/dirien/rust-cli/blob/main/src/main.rs
+ */
 #[derive(Subcommand)]
 enum Commands {
     /// Create administrator user
@@ -35,8 +38,8 @@ enum Commands {
     GenerateSecret {},
     /// Run the database migration
     Migrate {
-        /// Set force run
-        #[arg(short, long, default_value_t = false)]
+        /// Force run, disable confirmation prompt
+        #[arg(short = 'f', long = "force", default_value_t = false)]
         force: bool,
     },
 }

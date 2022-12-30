@@ -14,12 +14,12 @@ use crate::routes::route;
 )]
 pub fn health_check() -> Router {
     async fn handler() -> impl IntoResponse {
-        let pool = crate::config::connection_pool().await;
+        // let pool = crate::config::connection_pool().await;
 
         // FIXME: Fix database connection when build inside Docker
-        let result = sqlx::query!(r#"SELECT VERSION()"#).fetch_one(&pool).await;
+        // let result = sqlx::query(r#"SELECT VERSION()"#).fetch_one(&pool).await;
 
-        tracing::info!("Health check: {:?}", result);
+        // tracing::info!("Health check: {:?}", result);
         Json(json!({ "message": "All is well", "code": 200 }))
     }
     route("/health", get(handler))
