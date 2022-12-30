@@ -28,7 +28,7 @@ pub async fn run() {
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
     let pool = config::connection_pool().await;
-    let app = routes::register_routes(pool).fallback(routes::handler_404_api);
+    let app = routes::register_routes(pool);
 
     tokio::join!(serve(app));
 }
