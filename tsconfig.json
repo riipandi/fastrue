@@ -24,11 +24,11 @@
     "incremental": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["src-web/*"],
       "~/*": ["public/*"]
     }
   },
-  "include": ["src"],
+  "include": ["src-web"],
   "exclude": ["node_modules"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

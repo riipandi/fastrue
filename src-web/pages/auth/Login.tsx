@@ -80,7 +80,7 @@ export default function Login() {
 
           <div className='mt-8 text-center'>
             <p className='text-sm text-gray-600 dark:text-gray-400'>
-              <Link to='/' className='text-blue-600 decoration-2 hover:underline'>
+              <Link to='/ui' className='text-blue-600 decoration-2 hover:underline'>
                 &larr; Go back to homepage
               </Link>
             </p>

@@ -27,10 +27,20 @@ export default defineConfig({
       { find: '~', replacement: resolve(__dirname, 'public') },
     ],
   },
-  base: '/',
+  base: '/ui/',
   server: {
     port: 3000,
-    base: '/',
-    proxy: {},
+    base: '/ui/',
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:3030',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\//, ''),
+      },
+      '/swagger': {
+        target: 'http://127.0.0.1:3030',
+        changeOrigin: true,
+      },
+    },
   },
 })

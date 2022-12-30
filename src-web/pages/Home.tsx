@@ -26,7 +26,7 @@ export default function Home() {
         <div className='mt-4 flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-3'>
           <Button
             as={Link}
-            to='/dashboard'
+            to='/ui/dashboard'
             variant='primary'
             className='inline-flex items-center justify-center'
           >
@@ -34,7 +34,7 @@ export default function Home() {
           </Button>
           <Button
             as={Link}
-            to='/admin'
+            to='/ui/admin'
             variant='danger'
             className='inline-flex items-center justify-center'
           >
@@ -58,7 +58,7 @@ export default function Home() {
         <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
           <p className='text-sm tracking-wide text-gray-600 dark:text-gray-400'>
             &copy; {new Date().getFullYear()} - Made by{' '}
-            <Link to='https://ripandis.com' className='hover:underline'>
+            <Link to='/uihttps://ripandis.com' className='hover:underline'>
               Aris Ripandi
             </Link>{' '}
             in 🇮🇩

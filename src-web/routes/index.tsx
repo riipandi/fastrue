@@ -10,20 +10,20 @@ import { UserDashboard } from '@/pages/users'
 
 export const AppRoutes = () => {
   return useRoutes([
-    { path: '/', element: <Home /> },
+    { path: '/ui', element: <Home /> },
     {
       element: <AuthLayout />,
       children: [
-        { path: 'login', element: withLoggedOut(Login)() },
-        { path: 'recovery', element: withLoggedOut(Recovery)() },
-        { path: 'reset-password', element: withLoggedOut(ResetPassword)() },
+        { path: '/ui/login', element: withLoggedOut(Login)() },
+        { path: '/ui/recovery', element: withLoggedOut(Recovery)() },
+        { path: '/ui/reset-password', element: withLoggedOut(ResetPassword)() },
       ],
     },
     {
       element: <AppLayout />,
       children: [
-        { path: 'dashboard', element: withLoggedIn(UserDashboard)() },
-        { path: 'admin', element: withAdmin(AdminDashboard)() },
+        { path: '/ui/dashboard', element: withLoggedIn(UserDashboard)() },
+        { path: '/ui/admin', element: withAdmin(AdminDashboard)() },
       ],
     },
     { path: '*', element: <Error404 /> },

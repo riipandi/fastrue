@@ -61,7 +61,7 @@ export default function ResetPassword() {
           <div className='p-4 sm:px-7 sm:pb-8'>
             <Alert variant='success'>{success}</Alert>
             <div className='mt-6 grid w-full text-center'>
-              <Button as={Link} variant='primary' to='/login'>
+              <Button as={Link} variant='primary' to='/ui/login'>
                 Continue to your account &rarr;
               </Button>
             </div>
@@ -98,7 +98,7 @@ export default function ResetPassword() {
           <div className='mt-8 text-center'>
             <p className='text-sm text-gray-600 dark:text-gray-400'>
               {'Remember your password? '}
-              <Link to='/login' className='text-blue-600 decoration-2 hover:underline'>
+              <Link to='/ui/login' className='text-blue-600 decoration-2 hover:underline'>
                 Sign in here
               </Link>
             </p>

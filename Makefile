@@ -14,19 +14,19 @@ deps:
 	@pnpm install
 	@cargo update
 
+run:
+	@cargo run --release
+
+dev:
+	@pnpm concurrently --kill-others "cargo watch -qcx run" "pnpm dev"
+
 build:
 	@echo Running Build version $(BUILD_VERSION)
 	@pnpm build && cargo build --release
 	@ls -lh target/release
 
-run:
-	@cargo run --release
-
 migrate:
 	@cargo run -- migrate
-
-dev:
-	@cargo watch -qcx run
 
 # --------------------------------------------------------------------------------------------------
 # BUILD_VERSION=0.0.0-local make docker-build

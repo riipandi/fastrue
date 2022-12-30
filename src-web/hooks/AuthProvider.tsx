@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
   // This methods would communicate with a backend, obtain/verify a token, etc.
   const login = () => {
     setLoggedIn(true)
-    navigate('/')
+    navigate('/ui')
   }
 
   // Clear stored cookies and set false for loggedIn state.
@@ -51,7 +51,7 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
       .then((_response: any) => {
         setLoggedIn(false)
         setLoggedOut(true)
-        navigate('/login?loggedOut=true')
+        navigate('/ui/login?loggedOut=true')
       })
       .catch((error: any) => {
         console.info('Failed to logout user: %o', error)

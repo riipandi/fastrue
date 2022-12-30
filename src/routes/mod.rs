@@ -1,6 +1,6 @@
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-// use axum::{response::Redirect, routing::get};
+use axum::{response::Redirect, routing::get};
 use axum::{routing::MethodRouter, Router};
 use sqlx::{Pool, Postgres};
 
@@ -9,13 +9,12 @@ use crate::{handler::health, swagger, utils::error::ThrowError};
 mod auth_route;
 mod spa_route;
 
-// pub use self::admin::*;
 pub use self::auth_route::*;
 
 pub fn register_routes(pool: Pool<Postgres>) -> Router {
     Router::new()
         .with_state(pool)
-        // .route("/", get(|| async { Redirect::temporary("/ui") }))
+        .route("/", get(|| async { Redirect::temporary("/ui") }))
         .nest_service("/api", register_auth_routes())
         .merge(swagger::register_swagger())
         .merge(health::health_check())

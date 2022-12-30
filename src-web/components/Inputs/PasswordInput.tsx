@@ -64,7 +64,7 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
           </label>
           {withResetLink && (
             <Link
-              to='/recovery'
+              to='/ui/recovery'
               className='text-sm text-blue-600 decoration-2 hover:underline'
               tabIndex={-1}
             >
