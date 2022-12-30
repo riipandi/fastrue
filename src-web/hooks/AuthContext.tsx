@@ -22,12 +22,12 @@ export function withCondition(
 /** A higher-order component implementation for Admin-only restricted pages */
 export const withAdmin = (Component: FunctionComponent) => {
   const { loggedIn, isAdmin } = useAuthentication()
-  return withCondition(Component, loggedIn && isAdmin, '/ui/login?as=admin')
+  return withCondition(Component, loggedIn && isAdmin, '/ui/admin/login')
 }
 
 /** A higher-order wrapper, binding the "user logged in" condition and redirect */
 export const withLoggedIn = (Component: FunctionComponent) =>
-  withCondition(Component, useAuthentication().loggedIn, '/ui/login?as=user')
+  withCondition(Component, useAuthentication().loggedIn, '/ui/login')
 
 /** The inverse, showing a page only if a user is logged OUT */
 export const withLoggedOut = (Component: FunctionComponent) =>

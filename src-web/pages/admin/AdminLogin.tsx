@@ -5,9 +5,7 @@ import { Link } from 'react-router-dom'
 import { Alert } from '@/components/Alerts/Alert'
 import { Button } from '@/components/Buttons'
 import { Card } from '@/components/Containers'
-import { HorizontalDivider } from '@/components/Dividers'
 import { PasswordInput, TextInput } from '@/components/Inputs'
-import { GoogleButton } from '@/components/SocialButton'
 import { auth, useAuthentication } from '@/hooks/AuthProvider'
 
 interface LoginTypes {
@@ -15,7 +13,7 @@ interface LoginTypes {
   password: string
 }
 
-export default function Login() {
+export default function AdminLogin() {
   const { login, loggedOut } = useAuthentication()
   const [failed, setFailed] = useState<string | null>()
 
@@ -45,9 +43,6 @@ export default function Login() {
 
       <Card>
         <div className='p-4 sm:px-7 sm:py-8'>
-          <GoogleButton />
-          <HorizontalDivider label='Or' />
-
           <form autoComplete='off' onSubmit={handleSubmit(handleLogin)}>
             <div className='grid gap-y-4'>
               <div>
@@ -80,8 +75,8 @@ export default function Login() {
 
           <div className='mt-8 text-center'>
             <p className='text-sm text-gray-600 dark:text-gray-400'>
-              <Link to='/ui/admin/login' className='text-blue-600 decoration-2 hover:underline'>
-                Login as Administrator
+              <Link to='/ui/login' className='text-blue-600 decoration-2 hover:underline'>
+                Login as User
               </Link>
             </p>
           </div>
