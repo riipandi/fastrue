@@ -6,9 +6,17 @@ CONTAINER_NAME = wasta
 # Application envars
 BIND_PORT = 3030
 
+clean:
+	@cargo clean
+
+deps:
+	@echo Installing dependencies
+	@pnpm install
+	@cargo update
+
 build:
 	@echo Running Build version $(BUILD_VERSION)
-	@cargo build --release
+	@pnpm build && cargo build --release
 	@ls -lh target/release
 
 run:

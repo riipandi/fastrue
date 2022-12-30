@@ -1,0 +1,16 @@
+.cache/
+.fleet/
+.vercel/
+build/
+migrations/
+target/
+dist/
+docs/
+src/
+web/
+out/
+node_modules/
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+public/

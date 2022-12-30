@@ -7,8 +7,9 @@ use tower_http::services::{ServeDir, ServeFile};
 // `GET /assets/doesnt-exist.ext` will return `index.html` rather than a 404.
 // Reference: https://github.com/tokio-rs/axum/blob/main/examples/static-file-server/src/main.rs#L67
 pub fn register_spa(path: &str, dir: &str) -> Router {
+    let spa_index_file = [dir, "index.html"].join("/");
     let spa_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(dir);
-    let spa_index = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("web/index.html");
+    let spa_index = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(spa_index_file);
     let serve_dir = ServeDir::new(spa_dir).not_found_service(ServeFile::new(spa_index));
     let serve_dir = get_service(serve_dir).handle_error(handler_404_spa);
 
