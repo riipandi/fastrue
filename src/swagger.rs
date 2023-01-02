@@ -1,26 +1,24 @@
 use utoipa::OpenApi;
 use utoipa_swagger_ui::{Config, SwaggerUi};
 
-use crate::handler::{
-    admin, health, invite, logout, recover, settings, signup, token, user, verify,
-};
+use crate::handler::{admin, appinfo, auth, user};
 
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        settings::settings,
-        health::health_check,
+        admin::get_all_users,
+        admin::invite_by_admin,
+        appinfo::health_check,
+        appinfo::settings,
+        auth::logout,
+        auth::recover,
+        auth::token,
+        auth::signup,
+        auth::verify,
+        user::get_user,
         user::get_user,
         user::put_user,
-        signup::signup,
-        verify::verify,
-        token::post_token,
-        user::get_user,
         user::put_user,
-        logout::post_logout,
-        recover::post_recover,
-        admin::get_all_admin,
-        invite::invite_by_admin,
     ),
     components(),
     modifiers(),

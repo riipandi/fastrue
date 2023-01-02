@@ -15,7 +15,7 @@ use crate::routes::route;
         (status = 200, description = "Password recovery")
     ),
 )]
-pub fn post_recover() -> Router {
+pub fn recover() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
           "message": "Not yet implemented"

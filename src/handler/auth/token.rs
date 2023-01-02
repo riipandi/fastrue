@@ -15,7 +15,7 @@ use crate::routes::route;
         (status = 200, description = "Retrieve a token")
     ),
 )]
-pub fn post_token() -> Router {
+pub fn token() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
           "message": "Not yet implemented"

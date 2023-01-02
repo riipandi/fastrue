@@ -15,7 +15,7 @@ use crate::routes::route;
         (status = 200, description = "Logout endpoint")
     ),
 )]
-pub fn post_logout() -> Router {
+pub fn logout() -> Router {
     async fn handler() -> impl IntoResponse {
         Json(json!({
           "message": "Not yet implemented"
