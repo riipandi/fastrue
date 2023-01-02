@@ -22,11 +22,11 @@ processes = []
   release_command = "trusty migrate --force"
 
 [env]
-  PORT = "3030"
+  PORT = "9999"
   FLY_REGION = "sjc"
 
 [[services]]
-  internal_port = 3030
+  internal_port = 9999
   processes = ["app"]
   protocol = "tcp"
   script_checks = []

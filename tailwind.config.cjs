@@ -4,8 +4,8 @@ const path = require('path')
 module.exports = {
   darkMode: 'class',
   content: [
-    path.resolve(__dirname, 'src-web/**/*.{js,ts,jsx,tsx}'),
-    path.resolve(__dirname, 'src-web/index.html'),
+    path.resolve(__dirname, 'websrc/**/*.{js,ts,jsx,tsx}'),
+    path.resolve(__dirname, 'websrc/index.html'),
   ],
   theme: {
     extend: {

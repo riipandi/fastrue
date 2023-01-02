@@ -11,19 +11,19 @@ export default defineConfig({
   envPrefix: ['TRUSTY_'],
   // test: { globals: true, environment: 'jsdom' },
   publicDir: resolve(__dirname, 'public'),
-  root: resolve(__dirname, 'src-web'),
+  root: resolve(__dirname, 'websrc'),
   build: {
     emptyOutDir: true,
     outDir: resolve(__dirname, 'web'),
     rollupOptions: {
       input: {
-        app: resolve(__dirname, 'src-web/index.html'),
+        app: resolve(__dirname, 'websrc/index.html'),
       },
     },
   },
   resolve: {
     alias: [
-      { find: '@', replacement: resolve(__dirname, 'src-web') },
+      { find: '@', replacement: resolve(__dirname, 'websrc') },
       { find: '~', replacement: resolve(__dirname, 'public') },
     ],
   },
@@ -33,12 +33,12 @@ export default defineConfig({
     base: '/ui/',
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:3030',
+        target: 'http://127.0.0.1:9999',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\//, ''),
       },
       '/swagger': {
-        target: 'http://127.0.0.1:3030',
+        target: 'http://127.0.0.1:9999',
         changeOrigin: true,
       },
     },

@@ -4,7 +4,7 @@ REGISTRY_USERNAME = riipandi
 CONTAINER_NAME = trusty
 
 # Application envars
-BIND_PORT = 3030
+BIND_PORT = 9999
 
 clean:
 	@cargo clean
