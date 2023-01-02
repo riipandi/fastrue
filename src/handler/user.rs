@@ -26,7 +26,7 @@ pub fn get_user() -> Router {
 
 #[utoipa::path(
     put,
-    path = "/user",
+    path = "/api/user",
     tag = "User Account",
     responses(
         (status = 200, description = "Update a user")
