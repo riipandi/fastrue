@@ -4,7 +4,7 @@ import { Button } from '@/components/Buttons'
 import { Card, Container } from '@/components/Containers'
 import { useAuthentication } from '@/hooks/AuthProvider'
 
-export default function UserDashboard() {
+export default function UserAccount() {
   const { user, logout } = useAuthentication()
 
   return (
@@ -18,7 +18,7 @@ export default function UserDashboard() {
           This should be a dashboard page for general user.
         </p>
         <div className='mt-8 grid flex-col items-center gap-2 text-center sm:flex-row sm:gap-3'>
-          <Button as={Link} to='/ui' variant='primary'>
+          <Button as={Link} to='/ui/' variant='primary'>
             Back to homepage
           </Button>
           <Button onClick={logout}>Sign Out</Button>

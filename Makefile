@@ -22,9 +22,7 @@ dev:
 
 build:
 	@echo Running Build version $(BUILD_VERSION)
-	@mv $(PWD)/.env $(PWD)/.env.build
 	@pnpm build && cargo build --release
-	@mv $(PWD)/.env.build $(PWD)/.env
 	@ls -lh target/release
 
 migrate:

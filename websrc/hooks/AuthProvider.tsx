@@ -41,7 +41,7 @@ export function AuthProvider({ children }: { children?: ReactNode }) {
   // This methods would communicate with a backend, obtain/verify a token, etc.
   const login = () => {
     setLoggedIn(true)
-    navigate('/ui')
+    navigate('/ui/')
   }
 
   // Clear stored cookies and set false for loggedIn state.

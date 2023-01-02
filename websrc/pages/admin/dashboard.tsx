@@ -18,7 +18,7 @@ export default function AdminDashboard() {
           This should be a dashboard page for admin.
         </p>
         <div className='mt-8 grid flex-col items-center gap-2 text-center sm:flex-row sm:gap-3'>
-          <Button as={Link} to='/ui' variant='danger'>
+          <Button as={Link} to='/ui/' variant='danger'>
             Back to homepage
           </Button>
           <Button onClick={logout}>Sign Out</Button>

@@ -31,4 +31,4 @@ export const withLoggedIn = (Component: FunctionComponent) =>
 
 /** The inverse, showing a page only if a user is logged OUT */
 export const withLoggedOut = (Component: FunctionComponent) =>
-  withCondition(Component, !useAuthentication().loggedIn, '/ui')
+  withCondition(Component, !useAuthentication().loggedIn, '/ui/')

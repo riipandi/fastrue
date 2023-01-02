@@ -26,5 +26,5 @@ pub fn health_check() -> Router {
           "version": "0.0.1"
         }))
     }
-    route("/health", get(handler))
+    route("/api/health", get(handler))
 }

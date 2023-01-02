@@ -10,7 +10,7 @@ export default defineConfig({
   envDir: join(__dirname),
   envPrefix: ['TRUSTY_'],
   // test: { globals: true, environment: 'jsdom' },
-  publicDir: resolve(__dirname, 'public'),
+  publicDir: resolve(__dirname, 'websrc/assets/public'),
   root: resolve(__dirname, 'websrc'),
   build: {
     emptyOutDir: true,
@@ -24,7 +24,7 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, 'websrc') },
-      { find: '~', replacement: resolve(__dirname, 'public') },
+      { find: '~', replacement: resolve(__dirname, 'websrc/assets') },
     ],
   },
   base: '/ui/',
