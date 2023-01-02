@@ -1,9 +1,11 @@
 [package]
 name = "trusty"
 version = "0.0.1"
-repository = "https://github.com/riipandi/trusty"
 description = "Headless authentication server"
+repository = "https://github.com/riipandi/trusty"
 authors = ["Aris Ripandi <aris@duck.com>"]
+categories = ["web-programming::http-server", "authentication"]
+keywords = ["oauth", "server", "oauth2", "jwt"]
 license = "Apache-2.0"
 rust-version = "1.66"
 edition = "2021"
@@ -13,6 +15,7 @@ publish = false
 axum = "0.6"
 axum-extra = { version = "0.4", features = ["spa"] }
 bcrypt = "0.13"
+cookie = "0.16"
 clap = { version = "4.0", features = ["derive"] }
 dialoguer = { version ="0.10", features = ["password", "zeroize"] }
 dotenvy = "0.15"
@@ -20,6 +23,7 @@ indicatif = { version = "0.17.2", features = ["tokio"] }
 jsonwebtoken = {version = "8", default-features = false }
 lettre = { version = "0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
 rand = "0.8"
+reqwest = { version = "0.11", optional = true, default-features = false, features = ["blocking"] }
 sea-query = { version = "^0", default-features = false, features = ["derive", "backend-postgres", "with-uuid", "with-json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -32,6 +36,9 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 utoipa = { version = "2.4", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "3.0.1", features = ["axum"] }
 uuid = { version = "1.2", features = ["v4", "fast-rng", "serde"] }
+
+[dev-dependencies]
+
 
 # Reduce the Rust binary size and reduces the size of the images further.
 # https://kerkour.com/optimize-rust-binary-size
