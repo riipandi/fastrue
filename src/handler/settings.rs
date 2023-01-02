@@ -6,7 +6,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     get,
-    path = "/settings",
+    path = "/api/settings",
     tag = "Information",
     responses(
         (status = 200, description = "Settings endpoint")

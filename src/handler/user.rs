@@ -9,7 +9,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     get,
-    path = "/user",
+    path = "/api/user",
     tag = "User Account",
     responses(
         (status = 200, description = "Get all users")

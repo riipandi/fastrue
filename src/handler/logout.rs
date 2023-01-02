@@ -9,7 +9,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     post,
-    path = "/logout",
+    path = "/api/logout",
     tag = "Authentication",
     responses(
         (status = 200, description = "Logout endpoint")

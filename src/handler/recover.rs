@@ -9,7 +9,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     post,
-    path = "/recover",
+    path = "/api/recover",
     tag = "Authentication",
     responses(
         (status = 200, description = "Password recovery")

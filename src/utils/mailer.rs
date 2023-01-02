@@ -12,11 +12,11 @@ pub async fn send_email_smtp(
     body: String,
 ) -> Result<(), Box<dyn std::error::Error>> {
     // Read smtp configuration from envar or set the default.
-    let smtp_host = get_envar("SMTP_HOST", Some("localhost"));
-    let env_smtp_port = get_envar("SMTP_PORT", Some("1025"));
-    let smtp_username = get_envar("SMTP_USERNAME", None);
-    let smtp_password = get_envar("SMTP_PASSWORD", None);
-    let smtp_secure = get_envar("SMTP_SECURE", None);
+    let smtp_host = get_envar("TRUSTY_SMTP_HOST", Some("localhost"));
+    let env_smtp_port = get_envar("TRUSTY_SMTP_PORT", Some("1025"));
+    let smtp_username = get_envar("TRUSTY_SMTP_USERNAME", None);
+    let smtp_password = get_envar("TRUSTY_SMTP_PASSWORD", None);
+    let smtp_secure = get_envar("TRUSTY_SMTP_SECURE", None);
     let smtp_port: u16 = env_smtp_port.parse().unwrap();
 
     // Build email message

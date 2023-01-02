@@ -9,7 +9,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     post,
-    path = "/token",
+    path = "/api/token",
     tag = "Authentication",
     responses(
         (status = 200, description = "Retrieve a token")

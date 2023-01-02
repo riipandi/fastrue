@@ -9,7 +9,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     post,
-    path = "/verify",
+    path = "/api/verify",
     tag = "Authentication",
     responses(
         (status = 200, description = "Verify email address")

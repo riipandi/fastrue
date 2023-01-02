@@ -9,7 +9,7 @@ use crate::{routes::route, utils};
 
 #[utoipa::path(
     post,
-    path = "/invite",
+    path = "/api/invite",
     tag = "Administration",
     responses((status = 200, description = "Invite user by admin")),
     params(

@@ -9,7 +9,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     get,
-    path = "/signup",
+    path = "/api/signup",
     tag = "Authentication",
     responses(
         (status = 200, description = "Register an account")

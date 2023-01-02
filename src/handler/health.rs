@@ -6,7 +6,7 @@ use crate::routes::route;
 
 #[utoipa::path(
     get,
-    path = "/health",
+    path = "/api/health",
     tag = "Information",
     responses(
         (status = 200, description = "Health check endpoint")
