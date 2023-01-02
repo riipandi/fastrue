@@ -1,6 +1,6 @@
 # Created by Aris Ripandi (29 Dec 2022)
 
-app = "wasta"
+app = "trusty"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -11,7 +11,7 @@ processes = []
   auto_rollback = true
 
 [build]
-  # image = "ghcr.io/riipandi/wasta:latest"
+  # image = "ghcr.io/riipandi/trusty:latest"
   dockerfile = "Dockerfile"
 
 [build.args]
@@ -19,7 +19,7 @@ processes = []
 
 [deploy]
   strategy = "canary"
-  release_command = "wasta migrate --force"
+  release_command = "trusty migrate --force"
 
 [env]
   PORT = "3030"

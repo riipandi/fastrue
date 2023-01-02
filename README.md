@@ -1,9 +1,9 @@
-# Wasta Authentication Server
+# Trusty Authentication Server
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/icondns?logo=rust&style=flat-square)](https://github.com/riipandi/icondns)
 [![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
-[![Language](https://img.shields.io/github/languages/top/riipandi/wasta?style=flat-square)](https://github.com/riipandi/wasta)
-[![License](https://img.shields.io/github/license/riipandi/wasta?style=flat-square)][choosealicense]
+[![Language](https://img.shields.io/github/languages/top/riipandi/trusty?style=flat-square)](https://github.com/riipandi/trusty)
+[![License](https://img.shields.io/github/license/riipandi/trusty?style=flat-square)][choosealicense]
 [![GitHub Sponsors](https://img.shields.io/static/v1?color=26B643&label=Sponsor&message=%E2%9D%A4&logo=GitHub&style=flat-square)](https://github.com/sponsors/riipandi)
 
 <hr/>
@@ -66,7 +66,7 @@ To run the application in development mode, follow the steps below:
 
 ## 🧑🏻‍💻 Contributing
 
-Welcome, and thank you for your interest in contributing to Wasta!
+Welcome, and thank you for your interest in contributing to Trusty!
 There are many ways in which you can contribute, beyond writing code.
 You can read this repository’s [Contributing Guidelines](./CONTRIBUTING.md) to learn how to contribute.
 

@@ -22,7 +22,7 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
 # -----------------------------------------------------------------------------
-LABEL org.opencontainers.image.source="https://github.com/riipandi/wasta"
+LABEL org.opencontainers.image.source="https://github.com/riipandi/trusty"
 FROM scratch
 
 ENV BIND_PORT 3030
@@ -33,10 +33,10 @@ WORKDIR /
 # Import user from builder.
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/wasta .
+COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/trusty .
 
 # Use an unprivileged user.
 USER groot:groot
 EXPOSE $BIND_PORT
 
-CMD ["/wasta"]
+CMD ["/trusty"]

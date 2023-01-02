@@ -8,7 +8,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   envDir: join(__dirname),
-  envPrefix: ['WASTA_'],
+  envPrefix: ['TRUSTY_'],
   // test: { globals: true, environment: 'jsdom' },
   publicDir: resolve(__dirname, 'public'),
   root: resolve(__dirname, 'src-web'),

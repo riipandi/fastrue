@@ -1,7 +1,7 @@
 BUILD_VERSION := $(or $(BUILD_VERSION),git-`git rev-parse --short HEAD`)
-IMAGE_NAME = ghcr.io/riipandi/wasta
+IMAGE_NAME = ghcr.io/riipandi/trusty
 REGISTRY_USERNAME = riipandi
-CONTAINER_NAME = wasta
+CONTAINER_NAME = trusty
 
 # Application envars
 BIND_PORT = 3030
@@ -52,4 +52,4 @@ docker-shell:
 	docker run --rm -it --entrypoint sh $(IMAGE_NAME):latest
 
 docker-migrate:
-	docker exec --env-file=env.docker $(CONTAINER_NAME) /usr/bin/wasta migrate
+	docker exec --env-file=env.docker $(CONTAINER_NAME) /usr/bin/trusty migrate

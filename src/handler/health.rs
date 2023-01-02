@@ -21,8 +21,8 @@ pub fn health_check() -> Router {
 
         // tracing::info!("Health check: {:?}", result);
         Json(json!({
-          "description": "Wasta is a user registration and authentication API",
-          "name": "Wasta",
+          "description": "Trusty is a user registration and authentication API",
+          "name": "Trusty",
           "version": "0.0.1"
         }))
     }
