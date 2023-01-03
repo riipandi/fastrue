@@ -19,7 +19,7 @@ processes = []
   BUILD_DATE = "2022-12-10T20:29:41Z"
 
 [deploy]
-  strategy = "canary"
+  strategy = "immediate"
   release_command = "migrate --force"
 
 [env]

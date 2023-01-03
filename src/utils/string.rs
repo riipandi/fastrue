@@ -1,14 +1,15 @@
 extern crate bcrypt;
 use bcrypt::{hash, verify, DEFAULT_COST};
-use rand::{distributions::Alphanumeric, Rng};
 
 pub fn generate_secret() -> String {
-    rand::thread_rng()
-        .sample_iter(&Alphanumeric)
+    std::iter::repeat_with(fastrand::alphanumeric)
         .take(40)
-        .map(char::from)
         .collect()
 }
+
+// pub fn random_number_between(lower_bound: i32, upper_bound: i32) -> i32 {
+//     fastrand::i32(lower_bound..upper_bound)
+// }
 
 pub fn create_hash(plaintext: String) -> String {
     hash(plaintext, DEFAULT_COST).unwrap()
