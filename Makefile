@@ -20,13 +20,24 @@ run:
 dev:
 	@pnpm concurrently --kill-others "cargo watch -qcx run" "pnpm dev"
 
-build:
+build-web:
+	@pnpm build
+
+build: build-web
 	@echo Running Build version $(BUILD_VERSION)
-	@pnpm build && cargo build --release
+	@RUSTFLAGS="-C target-cpu=native" cargo build --release
+	@ls -lh target/release
+
+build-m1: build-web
+	@echo Running Build version $(BUILD_VERSION)
+	@RUSTFLAGS="-C target-cpu=apple-m1" cargo build --release
 	@ls -lh target/release
 
 migrate:
 	@cargo run -- migrate
+
+load-test:
+	@k6 run --iterations=100 --vus=100 --summary-trend-stats="med,p(95),p(99.9)" $(PWD)/test_script.js
 
 # --------------------------------------------------------------------------------------------------
 # BUILD_VERSION=0.0.0-local make docker-build
