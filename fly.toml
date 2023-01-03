@@ -14,16 +14,17 @@ processes = []
   # image = "ghcr.io/riipandi/trusty:latest"
   dockerfile = "Dockerfile"
 
+# https://fly.io/docs/reference/configuration/#specify-docker-build-arguments
 [build.args]
   BUILD_DATE = "2022-12-10T20:29:41Z"
 
 [deploy]
   strategy = "canary"
-  release_command = "trusty migrate --force"
+  release_command = "/usr/bin/trusty migrate -f"
 
 [env]
   PORT = "9999"
-  FLY_REGION = "sjc"
+  PRIMARY_REGION = "sjc"
 
 [[services]]
   internal_port = 9999

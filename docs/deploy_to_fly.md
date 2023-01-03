@@ -6,7 +6,7 @@
 # Create Fly.io app
 fly apps create trusty --org personal
 
-# Create volume for the data.
+# Create POstgres database instance.
 fly postgres create --org personal --name trusty-db --region sjc --password $(openssl rand -hex 8)
 ```
 
@@ -21,7 +21,7 @@ fly secrets set $(cat .env.production | xargs -I %s echo %s)
 fly secrets list
 
 # Deploy the app
-fly deploy --remote-only
+fly deploy -e PRIMARY_REGION=sjc --remote-only
 ```
 
 ### Setup custom domain
