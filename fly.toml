@@ -20,7 +20,7 @@ processes = []
 
 [deploy]
   strategy = "canary"
-  release_command = "/usr/bin/trusty migrate -f"
+  release_command = "migrate --force"
 
 [env]
   PORT = "9999"
