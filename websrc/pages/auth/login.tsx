@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
 
 import { Alert } from '@/components/Alerts/Alert'
 import { Button } from '@/components/Buttons'
 import { Card } from '@/components/Containers'
 import { HorizontalDivider } from '@/components/Dividers'
 import { PasswordInput, TextInput } from '@/components/Inputs'
-import { GoogleButton } from '@/components/SocialButton'
+import { GitHubButton, GoogleButton } from '@/components/SocialButton'
 import { auth, useAuthentication } from '@/hooks/AuthProvider'
 
 interface LoginTypes {
@@ -45,7 +44,10 @@ export default function Login() {
 
       <Card>
         <div className='p-4 sm:px-7 sm:py-8'>
-          <GoogleButton />
+          <div className='space-y-2'>
+            <GoogleButton />
+            <GitHubButton />
+          </div>
           <HorizontalDivider label='Or' />
 
           <form autoComplete='off' onSubmit={handleSubmit(handleLogin)}>
