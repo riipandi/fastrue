@@ -77,14 +77,6 @@ export default function Login() {
               </Button>
             </div>
           </form>
-
-          <div className='mt-8 text-center'>
-            <p className='text-sm text-gray-600 dark:text-gray-400'>
-              <Link to='/ui/admin/login' className='text-blue-600 decoration-2 hover:underline'>
-                Login as Administrator
-              </Link>
-            </p>
-          </div>
         </div>
       </Card>
     </main>
