@@ -37,7 +37,7 @@ migrate:
 	@cargo run -- migrate
 
 load-test:
-	@k6 run --iterations=100 --vus=100 --summary-trend-stats="med,p(95),p(99.9)" $(PWD)/test_script.js
+	@k6 run --vus 1000 --iterations 10000 $(PWD)/test_script.js
 
 # --------------------------------------------------------------------------------------------------
 # BUILD_VERSION=0.0.0-local make docker-build
