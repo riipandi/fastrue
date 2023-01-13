@@ -17,6 +17,9 @@ deps:
 run:
 	@cargo run --release
 
+run-docs:
+	@cd docs && zola serve
+
 dev:
 	@pnpm concurrently --kill-others "cargo watch -qcx run" "pnpm dev"
 
