@@ -18,7 +18,7 @@ minify_html = false
 
 # The taxonomies to be rendered for the site and their configuration.
 taxonomies = [
-  {name = "authors"}, # Basic definition: no feed or pagination
+  { name = "authors" }, # Basic definition: no feed or pagination
 ]
 
 # Whether to build a search index to be used later on by a JavaScript library
@@ -26,8 +26,8 @@ taxonomies = [
 # content for `default_language`.
 build_search_index = true
 
-[languages.fi]
-title="AdiDoks"
+[languages.id]
+title = "Trusty"
 
 [search]
 # Whether to include the title of the page/section in the index
@@ -45,7 +45,7 @@ highlight_code = true
 
 [extra]
 # Put all your custom variables here
-author = "Aaran Xu"
+author = "Aris Ripandi"
 github = "https://github.com/riipandi"
 twitter = "https://twitter.com/riipandi"
 email = "aris@duck.com"

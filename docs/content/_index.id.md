@@ -1,7 +1,6 @@
 +++
 title = "Nykyaikainen teema dokumentaatiolle"
 
-
 # The homepage contents
 [extra]
 lead = '<b>AdiDoks</b> on nykyaikainen teema dokumentaatiosivustoille. Se on portattu Zolalle Hugo-teemasta nimeltä <a href="https://github.com/h-enk/">Doks</a>.'
