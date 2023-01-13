@@ -12,11 +12,6 @@ tasks:
 # Ports to expose on workspace startup
 ports:
   -
-    port: 9999
-    onOpen: open-preview
-    name: Open the API
-    description: Preview API
-  -
     port: 3000
     onOpen: open-preview
     name: Open the Web UI
