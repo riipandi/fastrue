@@ -62,7 +62,7 @@ To run the application in development mode, follow the steps below:
 
 ## 🚀 Deployment
 
-> **_TODO!_**
+Please see the [documentation page](https://trusty-auth.netlify.app/docs/deployment/) for more detailed information.
 
 ## 👀 Endpoints
 
