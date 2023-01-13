@@ -1,15 +1,15 @@
 +++
-title = "Headless authentication server"
+title = "Trusty Authentication Server"
 
 
 # The homepage contents
 [extra]
-lead = '<b>Trusty</b> is blazing fast headless authentication server for securing your apps, inspired by <a href="https://github.com/netlify/gotrue">Netlify GoTrue</a>.'
+lead = '<b>Trusty</b> is blazing fast headless authentication server for securing your apps, inspired by <a href="https://github.com/netlify/gotrue" target="_blank" rel="noreferrer noopener">Netlify GoTrue</a>.'
 url = "/docs/getting-started/introduction/"
 url_button = "Get started"
 repo_version = "GitHub v0.1.0"
-repo_license = "Open-source MIT License."
-repo_url = "https://github.com/aaranxu/adidoks"
+repo_license = "Apache 2.0 License."
+repo_url = "https://github.com/riipandi/trusty"
 
 # Menu items
 [[extra.menu.main]]

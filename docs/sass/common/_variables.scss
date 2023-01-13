@@ -10,19 +10,19 @@ $gray-600: #6c757d;
 $gray-700: #495057;
 $gray-800: #343a40;
 $gray-900: #212529;
-$black:    #000;
+$black:    #1c1917;
 
 $yellow:   #ffe000;
-$black:    #1d2d35;
+$black:    #1c1917;
 $beige:    #fbf7f0;
-// $red:      #e55235;
+$red:      #F44747;
 $purple:   #5d2f86;
 $brown:    #aa9c84;
 
 $blue-300: #8ed6fb;
 $pink-500: #d32e9d;
 
-$primary: $purple;
+$primary: $red;
 
 // Options
 //
@@ -100,20 +100,20 @@ $border-color:                $gray-200;
 // Font, line-height, and color for body text, headings, and more.
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif:      "Jost", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$font-family-sans-serif:      "Mona Sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 $font-family-monospace:       sfmono-regular, menlo, monaco, consolas, "Liberation Mono", "Courier New", monospace;
 $font-family-base:            $font-family-sans-serif;
 // stylelint-enable value-keyword-case
 
-$font-size-base:              1rem; // Assumes the browser default, typically `16px`
+$font-size-base:              0.9rem; // Assumes the browser default, typically `16px`
 $font-size-xl:                $font-size-base * 1.375;
 $font-size-lg:                $font-size-base * 1.25;
 $font-size-md:                $font-size-base * 1.125;
 $font-size-sm:                $font-size-base * 0.875;
 
-$line-height-base:            1.5;
+$line-height-base:            1.6;
 
-$headings-font-family:        null;
+$headings-font-family:        "Hubot Sans", -apple-system, blinkmacsystemfont, "Segoe UI", roboto, "Helvetica Neue", arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";;
 $headings-font-weight:        700;
 
 $lead-font-weight:            400;

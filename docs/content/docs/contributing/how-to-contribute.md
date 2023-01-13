@@ -18,7 +18,7 @@ top = false
 
 ## Contribute to Doks
 
-👉 The AdiDoks code lives in the [`adidoks` repository](https://github.com/aaranxu/adidoks)
+👉 The AdiDoks code lives in the [GitHub repository](https://github.com/aaranxu/adidoks)
 
 - Follow the [GitHub flow](https://guides.github.com/introduction/flow/).
 - Follow the [Conventional Commits Specification](https://www.conventionalcommits.org/en/v1.0.0/)

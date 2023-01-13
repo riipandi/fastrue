@@ -1,6 +1,8 @@
 {% macro resource() %}
-  <link rel="preload" as="font" href="{{ get_url(path="fonts/vendor/jost/jost-v4-latin-regular.woff2") | safe }}" type="font/woff2" crossorigin>
-  <link rel="preload" as="font" href="{{ get_url(path="fonts/vendor/jost/jost-v4-latin-700.woff2") | safe }}"  type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="{{ get_url(path="fonts/mona-sans/Mona-Sans.woff2") | safe }}" type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="{{ get_url(path="fonts/mona-sans/Mona-Sans.woff") | safe }}"  type="font/woff" crossorigin>
+  <link rel="preload" as="font" href="{{ get_url(path="fonts/mona-sans/Hubot-Sans.woff2") | safe }}" type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="{{ get_url(path="fonts/mona-sans/Hubot-Sans.woff") | safe }}"  type="font/woff" crossorigin>
 {% endmacro %}
 
 
@@ -111,8 +113,7 @@
       <meta property="og:video" content="{{ get_url(path=video) }}">
     {% endfor %}
   {% endif %}
-  <!-- <meta property="article:publisher" content="https://www.facebook.com/{{ config.extra.open.facebook_publisher }}"> -->
-  <!-- <meta property="article:author" content="https://www.facebook.com/{{ config.extra.open.facebook_author }}"> -->
+
   <meta property="og:locale" content="{{ config.extra.open.og_locale }}">
 {% endif %}
 
