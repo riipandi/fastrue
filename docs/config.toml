@@ -86,8 +86,8 @@ enable = true
 image = "doks.png"
 twitter_site = "riipandi"
 twitter_creator = "riipandi"
-facebook_author = "ichunyun"
-facebook_publisher = "ichunyun"
+# facebook_author = "ichunyun"
+# facebook_publisher = "ichunyun"
 og_locale = "en_US"
 
 ## JSON-LD
