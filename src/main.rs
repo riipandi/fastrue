@@ -49,7 +49,7 @@ async fn main() {
     dotenv().ok(); // Load environment variables
 
     // You can check for the existence of subcommands, and if found
-    // use their matches just as you would the top level cmd.
+    // use their matches just as you would the top level command.
     let cli = Cli::parse();
     match cli.command {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),

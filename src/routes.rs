@@ -4,14 +4,14 @@ use axum::{http::StatusCode, Router};
 use std::{io, path::PathBuf};
 use tower_http::services::{ServeDir, ServeFile};
 
-use crate::app_state::AppState;
 use crate::config::get_envar;
 use crate::handler::{admin, appinfo, auth, user};
+use crate::state::AppState;
 use crate::{swagger, utils::error::ThrowError};
 
-pub fn register_routes(app_state: AppState) -> Router {
+pub fn register_routes(state: AppState) -> Router {
     Router::new()
-        .with_state(app_state.clone())
+        .with_state(state.clone())
         .route("/", get(|| async { Redirect::temporary("/ui") }))
         .nest_service("/api", register_api_routes())
         .merge(swagger::register_swagger())

@@ -9,9 +9,8 @@ use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
 use tracing::Span;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::app_state::AppState;
+use crate::state::AppState;
 
-pub mod app_state;
 pub mod config;
 pub mod handler;
 pub mod middleware;
@@ -30,14 +29,14 @@ pub async fn run() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let app_state = AppState {
+    let state = AppState {
         db: config::connection_pool().await,
     };
 
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
 
-    let app = routes::register_routes(app_state);
+    let app = routes::register_routes(state);
 
     tokio::join!(serve(app));
 }
