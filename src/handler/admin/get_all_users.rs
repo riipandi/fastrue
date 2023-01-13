@@ -5,7 +5,7 @@ use axum::{
 };
 use serde_json::json;
 
-use crate::routes::route;
+use crate::{config, routes::route, service::user::User};
 
 #[utoipa::path(
     get,
@@ -17,9 +17,17 @@ use crate::routes::route;
 )]
 pub fn get_all_users() -> Router {
     async fn handler() -> impl IntoResponse {
-        Json(json!({
-          "message": "Not yet implemented"
-        }))
+        let pool = config::connection_pool().await;
+        let query = sqlx::query_as::<_, User>("SELECT * FROM users")
+            .fetch_all(&pool)
+            .await;
+
+        match query {
+            Ok(users) => Json(json!(users)),
+            Err(_) => Json(json!({
+              "message": "No user found"
+            })),
+        }
     }
     route("/admin", get(handler))
 }

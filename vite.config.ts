@@ -9,7 +9,14 @@ export default defineConfig({
   plugins: [react()],
   envDir: join(__dirname),
   envPrefix: ['TRUSTY_'],
-  // test: { globals: true, environment: 'jsdom' },
+  test: {
+    globals: true,
+    cache: {
+      dir: './node_modules/.vitest',
+    },
+    environment: 'jsdom',
+    include: ['websrc/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+  },
   publicDir: resolve(__dirname, 'websrc/assets/public'),
   root: resolve(__dirname, 'websrc'),
   build: {

@@ -1,17 +1,17 @@
 use axum::response::{IntoResponse, Redirect};
 use axum::routing::{get, get_service, MethodRouter};
 use axum::{http::StatusCode, Router};
-use sqlx::{Pool, Postgres};
 use std::{io, path::PathBuf};
 use tower_http::services::{ServeDir, ServeFile};
 
+use crate::app_state::AppState;
 use crate::config::get_envar;
 use crate::handler::{admin, appinfo, auth, user};
 use crate::{swagger, utils::error::ThrowError};
 
-pub fn register_routes(pool: Pool<Postgres>) -> Router {
+pub fn register_routes(app_state: AppState) -> Router {
     Router::new()
-        .with_state(pool)
+        .with_state(app_state.clone())
         .route("/", get(|| async { Redirect::temporary("/ui") }))
         .nest_service("/api", register_api_routes())
         .merge(swagger::register_swagger())

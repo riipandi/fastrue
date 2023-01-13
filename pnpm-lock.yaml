@@ -26,6 +26,7 @@ specifiers:
   gotrue-js: ^0.9.29
   jotai: ^1.12.1
   jsdom: ^20.0.3
+  lucide-react: 0.105.0-alpha.4
   postcss: ^8.4.20
   prettier: ^2.8.1
   prettier-plugin-tailwindcss: ^0.2.1
@@ -48,6 +49,7 @@ dependencies:
   clsx: 1.2.1
   gotrue-js: 0.9.29
   jotai: 1.12.1_react@18.2.0
+  lucide-react: 0.105.0-alpha.4_react@18.2.0
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.41.3_react@18.2.0
@@ -2324,6 +2326,14 @@ packages:
     dependencies:
       yallist: 4.0.0
     dev: true
+
+  /lucide-react/0.105.0-alpha.4_react@18.2.0:
+    resolution: {integrity: sha512-QclWOzKYj7sDW33jTQK4enmxL1LmI2SHFqEEP56EWhvs4mmlbbFe6ALYcdcdGysNISNovEbH5WBHg8tN5DLn0w==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.2.0
+    dev: false
 
   /lz-string/1.4.4:
     resolution: {integrity: sha512-0ckx7ZHRPqb0oUm8zNr+90mtf9DQB60H1wMCjBtfi62Kl3a7JbHob6gA2bC+xRvZoOL+1hzUK8jeuEIQE8svEQ==}
