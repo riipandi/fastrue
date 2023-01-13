@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://trusty.ripandis.com"
+base_url = "https://trusty-auth.netlify.app"
 title = "Trusty"
 description = "Headless authentication server."
 
