@@ -40,12 +40,12 @@ export default defineConfig({
     base: '/ui/',
     proxy: {
       '/api': {
-        target: 'http://127.0.0.1:9999',
+        target: 'http://0.0.0.0:9999',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\//, ''),
       },
       '/swagger': {
-        target: 'http://127.0.0.1:9999',
+        target: 'http://0.0.0.0:9999',
         changeOrigin: true,
       },
     },
