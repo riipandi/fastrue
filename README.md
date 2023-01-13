@@ -64,7 +64,7 @@ To run the application in development mode, follow the steps below:
 
 > **_TODO!_**
 
-## 👀 Endpoint
+## 👀 Endpoints
 
 | Method | Path                   | Description                                                                                                                                                                                                                                        |
 | ------ | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -88,7 +88,7 @@ To run the application in development mode, follow the steps below:
 | GET    | /authorize             | Get `access_token` from external oauth provider.                                                                                                                                                                                                   |
 | GET    | /callback              | External provider should redirect to here.                                                                                                                                                                                                         |
 
-For more detailed API documentation, go to the [`http://localhost:9999/swagger`](http://localhost:9999/swagger) page.
+For more detailed API documentation, go to: [`http://localhost:9999/swagger`](http://localhost:9999/swagger)
 
 ## 🧑🏻‍💻 Contributing
 
