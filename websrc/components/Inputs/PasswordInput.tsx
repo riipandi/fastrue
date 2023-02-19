@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 import { FieldError } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid'
+import { HeroSolidEye, HeroSolidEyeSlash } from '@twistail/icons'
 
 type PropsToOmit<P> = keyof P
 
 // This is the first reusable type utility we built
 type PolymorphicComponentProp<
   T extends React.ElementType,
-  Props = {}
+  Props = {},
 > = React.PropsWithChildren<Props> & Omit<React.ComponentPropsWithoutRef<T>, PropsToOmit<T>>
 
 // This is a new type utitlity with ref!
 type PolymorphicComponentPropWithRef<
   T extends React.ElementType,
-  Props = {}
+  Props = {},
 > = PolymorphicComponentProp<T, Props> & { ref?: PolymorphicRef<T> }
 
 // This is the type for the "ref" only
@@ -38,7 +38,7 @@ type PasswordInputProps<T extends React.ElementType> = PolymorphicComponentPropW
  * This is the type used in the type annotation for the component
  */
 type PasswordInputComponent = <T extends React.ElementType = 'input'>(
-  props: PasswordInputProps<T>
+  props: PasswordInputProps<T>,
 ) => React.ReactElement | null
 
 export const PasswordInput: PasswordInputComponent = React.forwardRef(
@@ -51,10 +51,10 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
       error,
       ...props
     }: PasswordInputProps<T>,
-    ref?: PolymorphicRef<T>
+    ref?: PolymorphicRef<T>,
   ) => {
     const [reveal, setReveal] = useState<boolean>(false)
-    const RevealIcon = reveal ? EyeIcon : EyeSlashIcon
+    const RevealIcon = reveal ? HeroSolidEye : HeroSolidEyeSlash
 
     return (
       <fieldset disabled={disabled}>
@@ -108,5 +108,5 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
         )}
       </fieldset>
     )
-  }
+  },
 )

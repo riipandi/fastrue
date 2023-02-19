@@ -13,11 +13,11 @@ publish = false
 
 [dependencies]
 axum = "0.6"
-axum-extra = { version = "0.4", features = ["spa"] }
-bcrypt = "0.13"
+axum-extra = { version = "0.5", features = ["spa"] }
+bcrypt = "0.14"
 chrono = { version = "0.4.23", features = ["serde"] }
 clap = { version = "4.0", features = ["derive"] }
-cookie = "0.16"
+cookie = "0.17"
 dialoguer = { version ="0.10", features = ["password", "zeroize"] }
 dotenvy = "0.15"
 fastrand = "1.8"
@@ -34,7 +34,7 @@ tower = { version = "0.4", features = ["util"] }
 tower-http = { version = "0.3", features = ["trace"] }
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-utoipa = { version = "2.4", features = ["axum_extras"] }
+utoipa = { version = "3.0", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "3.0.1", features = ["axum"] }
 uuid = { version = "1.2", features = ["v4", "fast-rng", "serde"] }
 

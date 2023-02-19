@@ -31,8 +31,7 @@ dist-ssr
 
 # Rust code
 /target
-/web/*
-!/web/.gitkeep
+/web
 
 # Zola
 public
