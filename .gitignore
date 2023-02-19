@@ -33,3 +33,6 @@ dist-ssr
 /target
 /web/*
 !/web/.gitkeep
+
+# Zola
+public
