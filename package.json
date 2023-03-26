@@ -1,0 +1,42 @@
+{
+    "name": "fastrue-js",
+    "version": "0.0.1",
+    "description": "This is a JavaScript client library for the Fastrue API.",
+    "author": "Aris Ripandi <aris@duck.com>",
+    "contributors": [],
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "build": "tsup src/index.ts",
+        "start": "pnpm build -- --watch",
+        "publish": "pnpm build && npm-packlist",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "devDependencies": {
+        "npm-packlist": "^7.0.4",
+        "tsup": "^6.6.3",
+        "typescript": "^4.9.5"
+    },
+    "exports": {
+        "default": "./dist/index.cjs",
+        "require": "./dist/index.cjs",
+        "import": "./dist/index.mjs",
+        "node": "./dist/index.cjs"
+    },
+    "license": "MIT",
+    "homepage": "https://fastrue.ripandis.com",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/riipandi/fastrue-js"
+    },
+    "bugs": {
+        "url": "https://github.com/riipandi/fastrue-js/issues"
+    },
+    "keywords": [
+        "api",
+        "identity"
+    ],
+    "publishConfig": {
+        "access": "public"
+    }
+}

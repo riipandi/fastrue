@@ -1,0 +1,11 @@
+# Essentials
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.env.*
+!.env.example
+
+dist/
