@@ -66,23 +66,23 @@ To run the application in development mode, follow the steps below:
 
 **Note**: Use `sqlx database drop` to revert the change
 
-## 🚀 Deployment
-
-Please see the [documentation page](https://fastrue.netlify.app/docs/getting-started/introduction/) for more detailed information.
-
-## Publish Docker Image
+### Publish Docker Image
 
 ```sh
 echo $GH_TOKEN | docker login ghcr.io --username CHANGEME --password-stdin
 ```
 
-## Simple Load Testing
+### Simple Load Testing
 
 Using [`hey`](https://github.com/rakyll/hey) to perform a simple load testing.
 
 ```sh
 hey -m GET -n 200 -z 10s http://127.0.0.1:9999/api
 ```
+
+## 🚀 Deployment
+
+Please see the [documentation page](https://fastrue.netlify.app/docs/getting-started/introduction/) for more detailed information.
 
 ## 🧑🏻‍💻 Contributing
 
