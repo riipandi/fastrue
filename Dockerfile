@@ -12,8 +12,7 @@ RUN npm config set loglevel error && npm install --no-audit && npm run build
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/rust:1.69 AS builder
 WORKDIR /app
-COPY . .
-COPY --from=buildweb /app/web /app/web
+COPY --from=buildweb /app /app
 RUN cargo build --release
 
 # -----------------------------------------------------------------------------
@@ -25,6 +24,7 @@ FROM cgr.dev/chainguard/glibc-dynamic:latest as runner
 ARG DATABASE_URL
 ARG FASTRUE_SECRET_KEY
 ARG FASTRUE_DB_NAMESPACE
+ARG FASTRUE_AUTO_MIGRATE
 ARG FASTRUE_HEADLESS_MODE
 ARG FASTRUE_SMTP_HOST
 ARG FASTRUE_SMTP_PORT
@@ -35,6 +35,7 @@ ARG FASTRUE_SMTP_SECURE
 ENV DATABASE_URL $DATABASE_URL
 ENV FASTRUE_SECRET_KEY $FASTRUE_SECRET_KEY
 ENV FASTRUE_DB_NAMESPACE $FASTRUE_DB_NAMESPACE
+ENV FASTRUE_AUTO_MIGRATE $FASTRUE_AUTO_MIGRATE
 ENV FASTRUE_HEADLESS_MODE $FASTRUE_HEADLESS_MODE
 ENV FASTRUE_SMTP_HOST $FASTRUE_SMTP_HOST
 ENV FASTRUE_SMTP_PORT $FASTRUE_SMTP_PORT

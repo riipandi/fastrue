@@ -9,8 +9,8 @@ use std::path::PathBuf;
 use crate::config::progressbar_style;
 
 pub async fn run_migration(force: bool) {
-    let success_message = "Database migration succes";
-    let failed_message = "Could not execute database migration";
+    let success_message = "🍀 Database migration succes";
+    let failed_message = "🍀 Could not execute database migration";
 
     if force {
         let success_message = success_message;

@@ -57,8 +57,5 @@ docker-run:
 	@docker run --rm -it --name $(CONTAINER_NAME) --env-file $(PWD)/.env.docker \
 		-p $(BIND_PORT):$(BIND_PORT) $(IMAGE_NAME):latest
 
-docker-shell:
-	docker run --rm -it --entrypoint sh $(IMAGE_NAME):latest
-
 docker-migrate:
-	docker exec --env-file $(PWD)/.env.docker $(CONTAINER_NAME) /sbin/fastrue migrate
+	@docker run --rm -it --env-file $(PWD)/.env.docker -e ARGS="migrate --force" $(IMAGE_NAME):latest

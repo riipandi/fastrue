@@ -3,6 +3,7 @@
 
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
+use fastrue::config::get_envar;
 use fastrue::service::create_admin;
 use fastrue::utils::{migration::run_migration, string::generate_secret};
 
@@ -42,6 +43,13 @@ async fn main() {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),
         Some(Commands::Migrate { force }) => run_migration(force).await,
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
-        None => fastrue::run().await,
+        None => {
+            let auto_migrate = get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
+            if auto_migrate.trim().parse().unwrap() {
+                println!("🍀 Running automatic database migration");
+                run_migration(true).await
+            }
+            fastrue::run().await;
+        }
     }
 }

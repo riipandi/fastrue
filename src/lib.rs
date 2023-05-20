@@ -64,7 +64,7 @@ async fn serve(app: Router) {
         .parse()
         .expect("Unable to parse socket address");
 
-    tracing::debug!("listening on {}", addr);
+    tracing::debug!("👀 Server listening on {}", addr);
     axum::Server::bind(&addr)
         .serve(app.layer(trace_layer).into_make_service())
         .with_graceful_shutdown(shutdown_signal())
