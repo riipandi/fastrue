@@ -1,0 +1,37 @@
+version: '3.6'
+
+services:
+  pgsql:
+    image: postgres:15-alpine
+    container_name: pgsql
+    hostname: postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastrue
+    healthcheck:
+      test: ["CMD", "pg_isready -U user"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks: fastnet
+
+  fastrue:
+    image: ghcr.io/riipandi/fastrue:latest
+    container_name: fastrue
+    hostname: fastrue
+    ports:
+      - 9999:9999
+    env_file: .env.docker
+    networks: fastnet
+    depends_on: pgsql
+
+networks:
+  fastnet:
+    driver: bridge
+
+volumes:
+  pg_data:
+    driver: local

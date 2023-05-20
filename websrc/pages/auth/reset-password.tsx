@@ -38,7 +38,7 @@ export default function ResetPassword() {
           .update({ password: data.password })
           .then((result) => {
             setSuccess(
-              `Password has been reset. Now, you can login with your email address: ${result.email}`
+              `Password has been reset. Now, you can login with your email address: ${result.email}`,
             )
           })
           .catch((error) => setFailed(`Failed to reset your password: ${error.message}`))

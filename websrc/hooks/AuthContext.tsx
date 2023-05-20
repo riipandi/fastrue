@@ -12,7 +12,7 @@ import { useAuthentication } from '@/hooks/AuthProvider'
 export function withCondition(
   Component: FunctionComponent,
   condition: boolean,
-  redirectTo: string
+  redirectTo: string,
 ) {
   return function InnerComponent(props?: any) {
     return condition ? <Component {...props} /> : <Navigate to={redirectTo} replace />

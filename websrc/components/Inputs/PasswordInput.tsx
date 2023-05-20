@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { FieldError } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { HeroSolidEye, HeroSolidEyeSlash } from '@twistail/icons'
+import { Eye, EyeSlash } from '@phosphor-icons/react'
 
 type PropsToOmit<P> = keyof P
 
@@ -54,7 +54,7 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
     ref?: PolymorphicRef<T>,
   ) => {
     const [reveal, setReveal] = useState<boolean>(false)
-    const RevealIcon = reveal ? HeroSolidEye : HeroSolidEyeSlash
+    const RevealIcon = reveal ? Eye : EyeSlash
 
     return (
       <fieldset disabled={disabled}>
@@ -76,7 +76,7 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
           <input
             id={name}
             name={name}
-            className='block w-full rounded-md border-gray-200 py-3 px-4 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'
+            className='block w-full rounded-md border-gray-200 px-4 py-3 text-sm focus:border-blue-500 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400'
             type={reveal ? 'text' : 'password'}
             aria-describedby={`${name}-error`}
             disabled={disabled}
@@ -85,7 +85,7 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
           />
           <div className='absolute inset-y-0 right-0 flex items-center pr-3'>
             <button type='button' onClick={() => setReveal((prevState) => !prevState)}>
-              <RevealIcon className='h-6 w-6 text-gray-500' />
+              <RevealIcon className='h-6 w-6 text-gray-500' size={28} weight='regular' />
             </button>
           </div>
           <div className='pointer-events-none absolute inset-y-0 right-0 hidden items-center pr-3'>

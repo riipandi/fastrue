@@ -1,0 +1,43 @@
+version: '3.6'
+
+services:
+  pgsql:
+    image: postgres:15-alpine
+    container_name: pgsql
+    hostname: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: fastrue
+    healthcheck:
+      test: ["CMD", "pg_isready -U user"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  inbucket:
+    image: inbucket/inbucket:3.0.4
+    container_name: inbucket
+    restart: always
+    volumes:
+      - inbucket_storage:/storage
+    ports:
+      - '1110:1100'
+      - '1025:2500'
+      - '8025:9000'
+    environment:
+      # Ref: https://github.com/inbucket/inbucket/blob/main/doc/config.md
+      INBUCKET_SMTP_DOMAIN: localhost
+      INBUCKET_MAILBOXNAMING: local
+      INBUCKET_STORAGE_TYPE: file
+      INBUCKET_STORAGE_PARAMS: path:/storage
+
+volumes:
+  pg_data:
+    driver: local
+  inbucket_storage:
+    driver: local

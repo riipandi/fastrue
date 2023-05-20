@@ -1,63 +1,60 @@
-# Created by Aris Ripandi (29 Dec 2022)
+# fly.toml app configuration file generated for fastrue on 2023-05-20T18:10:21+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = "fastrue"
+primary_region = "sjc"
 kill_signal = "SIGINT"
-kill_timeout = 5
-processes = []
+kill_timeout = "5s"
 
 [experimental]
-  private_network = true
-  allowed_public_ports = []
+  # cmd = ["entrypoint.sh"]
+  # entrypoint = ["sh"]
   auto_rollback = true
 
 [build]
-  # image = "ghcr.io/riipandi/fastrue:latest"
   dockerfile = "Dockerfile"
-
-# https://fly.io/docs/reference/configuration/#specify-docker-build-arguments
-[build.args]
-  BUILD_DATE = "2022-12-10T20:29:41Z"
+  [build.args]
+    BUILD_DATE = "2022-12-10T20:29:41Z"
 
 [deploy]
-  strategy = "immediate"
-  release_command = "migrate --force"
+  strategy = "rolling"
+  # release_command = "fastrue migrate --force"
 
 [env]
   PORT = "9999"
   PRIMARY_REGION = "sjc"
 
 [[services]]
+  protocol = "tcp"
   internal_port = 9999
   processes = ["app"]
-  protocol = "tcp"
-  script_checks = []
 
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
   [services.concurrency]
     type = "connections"
     hard_limit = 25
     soft_limit = 20
 
-  [[services.ports]]
-    force_https = true
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
-
   [[services.tcp_checks]]
-    grace_period = "1s"
     interval = "15s"
-    restart_limit = 0
     timeout = "2s"
+    grace_period = "1s"
+    restart_limit = 0
 
   [[services.http_checks]]
     interval = "10s"
-    grace_period = "5s"
-    method = "get"
-    path = "/api/health"
-    protocol = "http"
     timeout = "2s"
-    tls_skip_verify = false
-    headers = {}
+    grace_period = "5s"
+    restart_limit = 0
+    method = "get"
+    path = "/health"
+    protocol = "http"

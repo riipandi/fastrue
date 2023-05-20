@@ -41,6 +41,10 @@ cargo run -- generate-secret
 ### Up and Running
 
 ```sh
+docker-compose -f compose-development.yaml up -d
+```
+
+```sh
 make dev             # run in development
 make build           # build binary file
 make docker-build    # build docker container

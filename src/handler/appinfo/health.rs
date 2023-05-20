@@ -4,6 +4,8 @@ use serde_json::json;
 
 use crate::routes::route;
 
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
 #[utoipa::path(
     get,
     path = "/api/health",
@@ -23,7 +25,7 @@ pub fn health_check() -> Router {
         Json(json!({
           "description": "Fastrue is a user registration and authentication API",
           "name": "Fastrue",
-          "version": "0.0.1"
+          "version": VERSION
         }))
     }
     route("/api/health", get(handler))

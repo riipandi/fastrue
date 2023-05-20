@@ -17,7 +17,7 @@ export const Alert: FC<AlertProps> = ({ children, variant = 'info', className })
         variant == 'danger' && 'border border-red-200 bg-red-50 text-sm text-red-600',
         variant == 'warning' && 'border border-orange-200 bg-orange-50 text-sm text-orange-600',
         variant == 'subtle' && 'border-white/[.1 bg-white/[.1] text-gray-600 dark:text-gray-400',
-        className
+        className,
       )}
       role='alert'
     >
