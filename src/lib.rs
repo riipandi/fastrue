@@ -3,16 +3,15 @@
 
 extern crate cookie;
 
-use axum::http::Request;
-use axum::response::Response;
-use axum::Router;
-use std::{net::SocketAddr, time::Duration};
-use tokio::signal;
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
-use tracing::Span;
+use salvo::prelude::*;
+use salvo::proxy::Proxy;
+use salvo::serve_static::static_embed;
+
+use crate::handler::{error::throw_response, root::health_check};
+use std::net::SocketAddr;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::state::AppState;
+// use crate::state::AppState;
 
 pub mod config;
 pub mod handler;
@@ -23,6 +22,10 @@ pub mod state;
 pub mod swagger;
 pub mod utils;
 
+#[derive(rust_embed::RustEmbed)]
+#[folder = "web/"]
+struct Assets;
+
 pub async fn run() {
     tracing_subscriber::registry()
         .with(
@@ -32,69 +35,68 @@ pub async fn run() {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let state = AppState {
-        db: config::connection_pool().await,
-    };
+    // let state = AppState {
+    //     db: config::connection_pool().await,
+    // };
 
     // Setup connection pool and register application router
     // Add a fallback service for handling routes to unknown paths
 
-    let app = routes::register_routes(state);
+    let web_ui: Router = if cfg!(debug_assertions) {
+        Router::with_path("<**rest>").handle(Proxy::new(vec!["http://localhost:3000"]))
+    } else {
+        Router::with_path("ui/<**path>").get(static_embed::<Assets>().fallback("index.html"))
+    };
 
-    tokio::join!(serve(app));
+    let router = Router::new()
+        .get(health_check)
+        .push(Router::with_path("api").get(health_check))
+        .push(Router::with_path("health").get(health_check))
+        .push(Router::with_path("error").get(throw_response))
+        .push(web_ui);
+
+    tokio::join!(serve(router));
 }
 
 // Start the server
-async fn serve(app: Router) {
-    // Configure logging middleware
-    let trace_layer = TraceLayer::new_for_http()
-        .on_request(|request: &Request<_>, _span: &Span| {
-            tracing::info!("Request {} {}", request.method(), request.uri());
-        })
-        .on_response(|response: &Response, latency: Duration, _span: &Span| {
-            tracing::info!("Response {} {:?}", response.status(), latency);
-        })
-        .on_failure(
-            |error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
-                tracing::error!("Failure {} {:?}", error, latency);
-            },
-        );
-
+async fn serve(router: Router) {
     let addr: SocketAddr = config::app::bind_addr()
         .parse()
         .expect("Unable to parse socket address");
 
-    tracing::debug!("👀 Server listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.layer(trace_layer).into_make_service())
-        .with_graceful_shutdown(shutdown_signal())
-        .await
-        .unwrap();
+    if cfg!(debug_assertions) {
+        tracing::debug!("👀 [DEV] Server listening on http://{}", addr);
+    } else {
+        tracing::debug!("👀 Server listening on http://{}", addr);
+    }
+
+    let acceptor = TcpListener::new(addr).bind().await;
+    Server::new(acceptor).serve(router).await;
 }
 
 // Graceful shutdown
-async fn shutdown_signal() {
-    let ctrl_c = async {
-        signal::ctrl_c()
-            .await
-            .expect("failed to install Ctrl+C handler");
-    };
+// async fn shutdown_signal() {
+//     let ctrl_c = async {
+//         signal::ctrl_c()
+//             .await
+//             .expect("failed to install Ctrl+C handler");
+//     };
 
-    #[cfg(unix)]
-    let terminate = async {
-        signal::unix::signal(signal::unix::SignalKind::terminate())
-            .expect("failed to install signal handler")
-            .recv()
-            .await;
-    };
+//     #[cfg(unix)]
+//     let terminate = async {
+//         signal::unix::signal(signal::unix::SignalKind::terminate())
+//             .expect("failed to install signal handler")
+//             .recv()
+//             .await;
+//     };
 
-    #[cfg(not(unix))]
-    let terminate = std::future::pending::<()>();
+//     #[cfg(not(unix))]
+//     let terminate = std::future::pending::<()>();
 
-    tokio::select! {
-        _ = ctrl_c => {},
-        _ = terminate => {},
-    }
+//     tokio::select! {
+//         _ = ctrl_c => {},
+//         _ = terminate => {},
+//     }
 
-    println!("signal received, starting graceful shutdown");
-}
+//     println!("signal received, starting graceful shutdown");
+// }

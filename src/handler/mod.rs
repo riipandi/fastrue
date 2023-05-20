@@ -4,6 +4,8 @@
 pub mod admin;
 pub mod appinfo;
 pub mod auth;
+pub mod error;
+pub mod root;
 pub mod user;
 
 // pub use self::admin::*;

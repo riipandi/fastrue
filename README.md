@@ -76,6 +76,14 @@ Please see the [documentation page](https://fastrue.netlify.app/docs/getting-sta
 echo $GH_TOKEN | docker login ghcr.io --username CHANGEME --password-stdin
 ```
 
+## Simple Load Testing
+
+Using [`hey`](https://github.com/rakyll/hey) to perform a simple load testing.
+
+```sh
+hey -m GET -n 200 -z 10s http://127.0.0.1:9999/api
+```
+
 ## 🧑🏻‍💻 Contributing
 
 Welcome, and thank you for your interest in contributing to Fastrue! There are many ways in which you can contribute,

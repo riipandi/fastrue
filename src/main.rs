@@ -47,7 +47,8 @@ async fn main() {
             let auto_migrate = get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
             if auto_migrate.trim().parse().unwrap() {
                 println!("🍀 Running automatic database migration");
-                run_migration(true).await
+                // TODO enable in the future
+                // run_migration(true).await
             }
             fastrue::run().await;
         }
