@@ -1,6 +1,5 @@
 BUILD_VERSION := $(or $(BUILD_VERSION),git-`git rev-parse --short HEAD`)
 IMAGE_NAME = ghcr.io/riipandi/fastrue
-REGISTRY_USERNAME = riipandi
 CONTAINER_NAME = fastrue
 
 # Application envars
@@ -51,7 +50,6 @@ docker-build:
 		-t $(IMAGE_NAME):latest .
 
 docker-push:
-	echo $GITHUB_TOKEN | docker login ghcr.io --username $(REGISTRY_USERNAME) --password-stdin
 	docker push $(IMAGE_NAME):$(BUILD_VERSION)
 	docker push $(IMAGE_NAME):latest
 

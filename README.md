@@ -70,6 +70,12 @@ To run the application in development mode, follow the steps below:
 
 Please see the [documentation page](https://fastrue.netlify.app/docs/getting-started/introduction/) for more detailed information.
 
+## Publish Docker Image
+
+```sh
+echo $GH_TOKEN | docker login ghcr.io --username CHANGEME --password-stdin
+```
+
 ## 🧑🏻‍💻 Contributing
 
 Welcome, and thank you for your interest in contributing to Fastrue! There are many ways in which you can contribute,
