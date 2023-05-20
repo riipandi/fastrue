@@ -9,7 +9,7 @@
 [![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/icondns?logo=rust&style=flat-square)](https://github.com/riipandi/icondns)
 [![Language](https://img.shields.io/github/languages/top/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue-auth/deploys)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue/deploys)
 [![License](https://img.shields.io/github/license/riipandi/fastrue?style=flat-square)][choosealicense]
 
 <hr/>
@@ -68,7 +68,7 @@ To run the application in development mode, follow the steps below:
 
 ## 🚀 Deployment
 
-Please see the [documentation page](https://fastrue-auth.netlify.app/docs/getting-started/introduction/) for more detailed information.
+Please see the [documentation page](https://fastrue.netlify.app/docs/getting-started/introduction/) for more detailed information.
 
 ## 🧑🏻‍💻 Contributing
 

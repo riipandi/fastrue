@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://fastrue-auth.netlify.app"
+base_url = "https://fastrue.netlify.app"
 title = "Fastrue"
 description = "Headless authentication server."
 
