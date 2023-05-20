@@ -8,7 +8,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   envDir: join(__dirname),
-  envPrefix: ['TRUSTY_'],
+  envPrefix: ['FASTRUE_'],
   test: {
     globals: true,
     cache: {

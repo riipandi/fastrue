@@ -43,7 +43,7 @@ pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
 // Reference: https://github.com/tokio-rs/axum/blob/main/examples/static-file-server/src/main.rs#L67
 fn register_spa(path: &str, dir: &str) -> Router {
     // Disable SPA user interface when HEADLESS_MODE = true
-    let headless_mode = get_envar("TRUSTY_HEADLESS_MODE", Some("false"));
+    let headless_mode = get_envar("FASTRUE_HEADLESS_MODE", Some("false"));
     if headless_mode.trim().parse().unwrap() {
         Router::new().fallback(handler_404_api)
     } else {

@@ -59,7 +59,7 @@ To run the application in development mode, follow the steps below:
 
 1. Clone this repository.
 2. Copy `.env.example` to `.env`
-3. Change the `TRUSTY_SECRET_KEY` and `DATABASE_URL` variables value.
+3. Change the `FASTRUE_SECRET_KEY` and `DATABASE_URL` variables value.
 4. Run `sqlx database create` to create the database from the specified `DATABASE_URL`
 5. Run `sqlx migrate run` to run the migrations
 6. use `sqlx migrate add -r <migration_name>` to add a new migration
