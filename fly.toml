@@ -1,6 +1,6 @@
 # Created by Aris Ripandi (29 Dec 2022)
 
-app = "trusty"
+app = "fastrue"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []
@@ -11,7 +11,7 @@ processes = []
   auto_rollback = true
 
 [build]
-  # image = "ghcr.io/riipandi/trusty:latest"
+  # image = "ghcr.io/riipandi/fastrue:latest"
   dockerfile = "Dockerfile"
 
 # https://fly.io/docs/reference/configuration/#specify-docker-build-arguments

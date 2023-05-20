@@ -17,7 +17,7 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
 # -----------------------------------------------------------------------------
-LABEL org.opencontainers.image.source="https://github.com/riipandi/trusty"
+LABEL org.opencontainers.image.source="https://github.com/riipandi/fastrue"
 FROM alpine:3.17 as runner
 
 ARG TRUSTY_SECRET_KEY
@@ -44,10 +44,10 @@ WORKDIR /
 RUN addgroup -g 1001 -S groot && adduser -S groot -u 1001
 
 # Import compiled binaries from builder
-COPY --from=builder --chown=groot:groot /app/target/x86_64-unknown-linux-musl/release/trusty /usr/bin/
+COPY --from=builder --chown=groot:groot /app/target/x86_64-unknown-linux-musl/release/fastrue /usr/bin/
 
 # Use an unprivileged user.
 USER groot:groot
 EXPOSE $BIND_PORT
 
-ENTRYPOINT ["trusty"]
+ENTRYPOINT ["fastrue"]

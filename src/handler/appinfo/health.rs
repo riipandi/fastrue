@@ -21,8 +21,8 @@ pub fn health_check() -> Router {
 
         // tracing::info!("Health check: {:?}", result);
         Json(json!({
-          "description": "Trusty is a user registration and authentication API",
-          "name": "Trusty",
+          "description": "Fastrue is a user registration and authentication API",
+          "name": "Fastrue",
           "version": "0.0.1"
         }))
     }

@@ -8,7 +8,7 @@ url = "/docs/getting-started/introduction/"
 url_button = "Aloita"
 repo_version = "GitHub v0.1.0"
 repo_license = "Apache 2.0 License."
-repo_url = "https://github.com/riipandi/trusty"
+repo_url = "https://github.com/riipandi/fastrue"
 
 # Menu items
 [[extra.menu.main]]

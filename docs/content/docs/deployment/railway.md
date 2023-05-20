@@ -1,6 +1,6 @@
 +++
 title = "Deploy to Render"
-description = "How to deploy Trusty to Render."
+description = "How to deploy Fastrue to Render."
 date = 2021-05-01T08:00:00+00:00
 updated = 2021-05-01T08:00:00+00:00
 draft = false
@@ -16,21 +16,23 @@ top = false
 
 ## Quick Start
 
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/template/mlDOsy?referralCode=aris)
+
 ### Create app instances
 
 ```sh
 # Create Fly.io app
-fly apps create trusty --org personal
+fly apps create fastrue --org personal
 
 # Create POstgres database instance.
-fly postgres create --org personal --name trusty-db --region sjc --password $(openssl rand -hex 8)
+fly postgres create --org personal --name fastrue-db --region sjc --password $(openssl rand -hex 8)
 ```
 
 ### Launch and deploy
 
 ```sh
 # Attach Postgres database
-fly postgres attach trusty-db -a trusty
+fly postgres attach fastrue-db -a fastrue
 
 # Load secrets from dotenv file then initialize deployment
 fly secrets set $(cat .env.production | xargs -I %s echo %s)
@@ -43,11 +45,11 @@ fly deploy -e PRIMARY_REGION=sjc --remote-only
 ### Setup custom domain
 
 Point DNS A Record to the assigned IP address.
-Or, if using subdomain you can point `trusty.fly.dev` CNAME record.
+Or, if using subdomain you can point `fastrue.fly.dev` CNAME record.
 
 ```sh
 # Allocate IPs and setup custom domain (optional)
-fly ips allocate-v4 -a trusty
-fly ips allocate-v6 -a trusty
-fly certs create auth.example.com -a trusty
+fly ips allocate-v4 -a fastrue
+fly ips allocate-v6 -a fastrue
+fly certs create auth.example.com -a fastrue
 ```

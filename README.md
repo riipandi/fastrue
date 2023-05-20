@@ -1,11 +1,16 @@
-# Trusty Authentication Server
+# Fastrue Authentication Server
 
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/icondns?logo=rust&style=flat-square)](https://github.com/riipandi/icondns)
+[![Creator Badge](https://badgen.net/badge/icon/Made%20by%20Aris%20Ripandi?icon=bitcoin-lightning&label&color=blue&labelColor=black&style=flat-square)](https://ripandis.com)
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
+[![GitHub contributors](https://img.shields.io/github/contributors/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue/graphs/contributors)
+[![Github Sponsor](https://badgen.net/badge/icon/sponsors?icon=github&label&color=green&labelColor=black&style=flat-square)](https://github.com/sponsors/riipandi)
+[![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
+
 [![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
-[![Language](https://img.shields.io/github/languages/top/riipandi/trusty?style=flat-square)](https://github.com/riipandi/trusty)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/trusty-auth/deploys)
-[![License](https://img.shields.io/github/license/riipandi/trusty?style=flat-square)][choosealicense]
-[![GitHub Sponsors](https://img.shields.io/static/v1?color=26B643&label=Sponsor&message=%E2%9D%A4&logo=GitHub&style=flat-square)](https://github.com/sponsors/riipandi)
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/icondns?logo=rust&style=flat-square)](https://github.com/riipandi/icondns)
+[![Language](https://img.shields.io/github/languages/top/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue-auth/deploys)
+[![License](https://img.shields.io/github/license/riipandi/fastrue?style=flat-square)][choosealicense]
 
 <hr/>
 
@@ -63,11 +68,11 @@ To run the application in development mode, follow the steps below:
 
 ## 🚀 Deployment
 
-Please see the [documentation page](https://trusty-auth.netlify.app/docs/getting-started/introduction/) for more detailed information.
+Please see the [documentation page](https://fastrue-auth.netlify.app/docs/getting-started/introduction/) for more detailed information.
 
 ## 🧑🏻‍💻 Contributing
 
-Welcome, and thank you for your interest in contributing to Trusty! There are many ways in which you can contribute,
+Welcome, and thank you for your interest in contributing to Fastrue! There are many ways in which you can contribute,
 beyond writing code. You can read this repository’s [Contributing Guidelines](./CONTRIBUTING.md) to learn how to contribute.
 
 ## Maintainer

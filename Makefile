@@ -1,7 +1,7 @@
 BUILD_VERSION := $(or $(BUILD_VERSION),git-`git rev-parse --short HEAD`)
-IMAGE_NAME = ghcr.io/riipandi/trusty
+IMAGE_NAME = ghcr.io/riipandi/fastrue
 REGISTRY_USERNAME = riipandi
-CONTAINER_NAME = trusty
+CONTAINER_NAME = fastrue
 
 # Application envars
 BIND_PORT = 9999
@@ -66,4 +66,4 @@ docker-shell:
 	docker run --rm -it --entrypoint sh $(IMAGE_NAME):latest
 
 docker-migrate:
-	docker exec --env-file=env.docker $(CONTAINER_NAME) /usr/bin/trusty migrate
+	docker exec --env-file=env.docker $(CONTAINER_NAME) /usr/bin/fastrue migrate

@@ -24,7 +24,7 @@ pub async fn run() {
     tracing_subscriber::registry()
         .with(
             tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "trusty=debug,tower_http=info".into()),
+                .unwrap_or_else(|_| "fastrue=debug,tower_http=info".into()),
         )
         .with(tracing_subscriber::fmt::layer())
         .init();

@@ -1,8 +1,8 @@
 [package]
-name = "trusty"
+name = "fastrue"
 version = "0.0.1"
 description = "Headless authentication server"
-repository = "https://github.com/riipandi/trusty"
+repository = "https://github.com/riipandi/fastrue"
 authors = ["Aris Ripandi <aris@duck.com>"]
 categories = ["web-programming::http-server", "authentication"]
 keywords = ["oauth", "server", "oauth2", "jwt"]

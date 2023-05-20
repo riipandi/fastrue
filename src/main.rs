@@ -16,8 +16,8 @@
 
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
-use trusty::service::create_admin;
-use trusty::utils::{migration::run_migration, string::generate_secret};
+use fastrue::service::create_admin;
+use fastrue::utils::{migration::run_migration, string::generate_secret};
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
@@ -55,6 +55,6 @@ async fn main() {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),
         Some(Commands::Migrate { force }) => run_migration(force).await,
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
-        None => trusty::run().await,
+        None => fastrue::run().await,
     }
 }
