@@ -12,7 +12,8 @@ RUN npm config set loglevel error && npm install --no-audit && npm run build
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/rust:1.69 AS builder
 WORKDIR /app
-COPY --from=buildweb /app /app
+COPY . .
+COPY --from=buildweb /app/web /app/web
 RUN cargo build --release
 
 # -----------------------------------------------------------------------------
@@ -21,18 +22,20 @@ RUN cargo build --release
 LABEL org.opencontainers.image.source="https://github.com/riipandi/fastrue"
 FROM cgr.dev/chainguard/glibc-dynamic:latest as runner
 
+ARG DATABASE_URL
 ARG FASTRUE_SECRET_KEY
 ARG FASTRUE_DB_NAMESPACE
-ARG DATABASE_URL
+ARG FASTRUE_HEADLESS_MODE
 ARG FASTRUE_SMTP_HOST
 ARG FASTRUE_SMTP_PORT
 ARG FASTRUE_SMTP_USERNAME
 ARG FASTRUE_SMTP_PASSWORD
 ARG FASTRUE_SMTP_SECURE
 
+ENV DATABASE_URL $DATABASE_URL
 ENV FASTRUE_SECRET_KEY $FASTRUE_SECRET_KEY
 ENV FASTRUE_DB_NAMESPACE $FASTRUE_DB_NAMESPACE
-ENV DATABASE_URL $DATABASE_URL
+ENV FASTRUE_HEADLESS_MODE $FASTRUE_HEADLESS_MODE
 ENV FASTRUE_SMTP_HOST $FASTRUE_SMTP_HOST
 ENV FASTRUE_SMTP_PORT $FASTRUE_SMTP_PORT
 ENV FASTRUE_SMTP_USERNAME $FASTRUE_SMTP_USERNAME

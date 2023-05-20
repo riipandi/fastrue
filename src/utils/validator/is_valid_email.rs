@@ -1,3 +1,6 @@
+// Copyright 2022-current Aris Ripandi <aris@duck.com>
+// SPDX-License-Identifier: Apache-2.0
+
 use std::net::{Ipv4Addr, Ipv6Addr};
 
 pub fn is_valid_email(email: &str) -> bool {

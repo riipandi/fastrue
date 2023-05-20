@@ -3,6 +3,7 @@
 node_modules/
 docs/
 target/
+web/
 .env*
 .gitignore
 pnpm-lock.yaml

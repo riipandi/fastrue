@@ -1,3 +1,6 @@
+// Copyright 2022-current Aris Ripandi <aris@duck.com>
+// SPDX-License-Identifier: Apache-2.0
+
 extern crate lettre;
 use lettre::transport::smtp::authentication::Credentials;
 use lettre::{AsyncSmtpTransport, AsyncTransport, Message, Tokio1Executor};

@@ -1,3 +1,6 @@
+// Copyright 2022-current Aris Ripandi <aris@duck.com>
+// SPDX-License-Identifier: Apache-2.0
+
 use axum::{
     response::{IntoResponse, Json},
     routing::get,

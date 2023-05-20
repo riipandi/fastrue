@@ -1,3 +1,6 @@
+// Copyright 2022-current Aris Ripandi <aris@duck.com>
+// SPDX-License-Identifier: Apache-2.0
+
 use dialoguer::{theme::ColorfulTheme, Confirm, Input, Password};
 use sqlx::query;
 use uuid::Uuid;
