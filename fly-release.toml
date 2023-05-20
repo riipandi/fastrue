@@ -8,22 +8,14 @@ primary_region = "sjc"
 kill_signal = "SIGINT"
 kill_timeout = "5s"
 
-[experimental]
-  # cmd = ["entrypoint.sh"]
-  # entrypoint = ["sh"]
-  auto_rollback = true
-
 [build]
-  dockerfile = "Dockerfile"
-  [build.args]
-    BUILD_DATE = "2022-12-10T20:29:41Z"
+  image = "ghcr.io/riipandi/fastrue:latest"
 
 [deploy]
   strategy = "rolling"
-  # release_command = "fastrue migrate --force"
+  # release_command = "/sbin/fastrue migrate --force"
 
 [env]
-  PORT = "9999"
   PRIMARY_REGION = "sjc"
 
 [[services]]

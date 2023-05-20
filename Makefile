@@ -39,9 +39,6 @@ build-m1: build-web
 migrate:
 	@cargo run -- migrate
 
-load-test:
-	@k6 run --vus 1000 --iterations 10000 $(PWD)/test_script.js
-
 # --------------------------------------------------------------------------------------------------
 # BUILD_VERSION=0.0.0-local make docker-build
 # --------------------------------------------------------------------------------------------------
@@ -59,11 +56,11 @@ docker-push:
 	docker push $(IMAGE_NAME):latest
 
 docker-run:
-	@docker run --rm -it --name $(CONTAINER_NAME) -e BIND_PORT=$(BIND_PORT) \
+	@docker run --rm -it --name $(CONTAINER_NAME) --env-file $(PWD)/.env.docker \
 		-p $(BIND_PORT):$(BIND_PORT) $(IMAGE_NAME):latest
 
 docker-shell:
 	docker run --rm -it --entrypoint sh $(IMAGE_NAME):latest
 
 docker-migrate:
-	docker exec --env-file=env.docker $(CONTAINER_NAME) /usr/bin/fastrue migrate
+	docker exec --env-file $(PWD)/.env.docker $(CONTAINER_NAME) /sbin/fastrue migrate

@@ -1,8 +1,10 @@
-.vscode
-.gitignore
-target
+.swc/
+.vscode/
+node_modules/
 docs/
+target/
 .env*
+.gitignore
 pnpm-lock.yaml
 compose-*.yml
 CODE_OF_CONDUCT.md

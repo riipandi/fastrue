@@ -11,9 +11,7 @@ export default defineConfig({
   envPrefix: ['FASTRUE_'],
   test: {
     globals: true,
-    cache: {
-      dir: './node_modules/.vitest',
-    },
+    cache: { dir: './node_modules/.vitest' },
     environment: 'jsdom',
     include: ['websrc/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   },
