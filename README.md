@@ -1,16 +1,12 @@
 # Fastrue Authentication Server
 
-[![Creator Badge](https://badgen.net/badge/icon/Made%20by%20Aris%20Ripandi?icon=bitcoin-lightning&label&color=blue&labelColor=black&style=flat-square)](https://ripandis.com)
-[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
+[![License](https://img.shields.io/github/license/riipandi/fastrue?style=flat-square&color=blue)](./LICENSE)
+[![Contributions](https://img.shields.io/badge/Contributions-welcome-blue.svg?style=flat-square)](./CODE_OF_CONDUCT.md)
 [![GitHub contributors](https://img.shields.io/github/contributors/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue/graphs/contributors)
-[![Github Sponsor](https://badgen.net/badge/icon/sponsors?icon=github&label&color=green&labelColor=black&style=flat-square)](https://github.com/sponsors/riipandi)
-[![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
-
 [![(Rust)](https://img.shields.io/badge/rust-v1.66-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
-[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/riipandi/fastrue?logo=rust&style=flat-square)](https://github.com/riipandi/fastrue)
-[![Language](https://img.shields.io/github/languages/top/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue)
+[![GitHub release](https://img.shields.io/github/v/release/riipandi/fastrue?logo=rust&style=flat-square)](https://github.com/riipandi/fastrue)
+[![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue/deploys)
-[![License](https://img.shields.io/github/license/riipandi/fastrue?style=flat-square)][choosealicense]
 
 <hr/>
 
@@ -91,4 +87,4 @@ See the [license file](./LICENSE) for more information.
 
 ---
 
-<sub>🤫 Psst! You can [support my work here](https://github.com/sponsors/riipandi).</sub>
+<sub>🤫 Psst! If you like my work you can support me via [GitHub sponsors](https://github.com/sponsors/riipandi).</sub>
