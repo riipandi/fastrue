@@ -61,7 +61,7 @@ async fn main() {
         None => {
             let auto_migrate = config::get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
             if auto_migrate.trim().parse().unwrap() {
-                println!("🍀 Running automatic database migration");
+                tracing::info!("🍀 Running automatic database migration");
                 run_migration(true).await
             }
             tokio::join!(fastrue::serve());
