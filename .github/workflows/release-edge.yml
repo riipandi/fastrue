@@ -64,7 +64,7 @@ jobs:
       - name: Compile binary ${{ matrix.target }}
         id: compile
         run: |
-          cargo make build
+          cargo build --release
           strip target/release/fastrue
           mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
 
