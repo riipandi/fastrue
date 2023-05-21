@@ -1,6 +1,12 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
+// The file `built.rs` was placed there by cargo and `build.rs`
+// Ref: https://github.com/lukaslueg/built/blob/master/example_project/src/main.rs
+mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
@@ -39,6 +45,14 @@ enum Commands {
 #[tokio::main]
 async fn main() {
     dotenv().ok(); // Load environment variables
+
+    println!(
+        "\nFastrue v{}, built for {} by {} ({}).\n",
+        built_info::PKG_VERSION,
+        built_info::TARGET,
+        built_info::RUSTC_VERSION,
+        built::util::strptime(built_info::BUILT_TIME_UTC)
+    );
 
     let tracing_filter = "fastrue=debug,salvo=info,sqlx=info";
     tracing_subscriber::registry()

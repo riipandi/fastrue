@@ -1,13 +1,14 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-use salvo::catcher::Catcher;
-use salvo::logging::Logger;
+use salvo::oapi::{swagger_ui, Info, OpenApi};
 use salvo::prelude::*;
-use salvo::proxy::Proxy;
 use salvo::serve_static::static_embed;
+use salvo::{catcher::Catcher, logging::Logger, proxy::Proxy};
 
 use crate::handler::{error, root, user};
+
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[derive(rust_embed::RustEmbed)]
 #[folder = "web/"]
@@ -22,6 +23,27 @@ pub fn create_service() -> Service {
         .push(health_check())
         .push(web_ui_route())
         .push(Router::with_path("500").get(error::error500));
+
+    // Register Swagger OpenAPI endpoint
+    let open_api_url = "/api-doc/openapi.json";
+    let swagger_config = swagger_ui::Config::from(open_api_url)
+        .doc_expansion("list")
+        .display_request_duration(true)
+        .deep_linking(false)
+        .filter(false)
+        .try_it_out_enabled(false)
+        .request_snippets_enabled(false)
+        .show_mutated_request(false)
+        .with_credentials(true)
+        .persist_authorization(false)
+        .use_base_layout();
+
+    let doc = OpenApi::new(Info::new("Fastrue API", VERSION)).merge_router(&router);
+    let swagger_route = swagger_ui::SwaggerUi::new(swagger_config).into_router("swagger");
+
+    let router = router
+        .push(doc.into_router(open_api_url))
+        .push(swagger_route);
 
     Service::new(router).catcher(Catcher::default().hoop(error::error404))
 }
