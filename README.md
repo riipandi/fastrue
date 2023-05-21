@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/riipandi/fastrue?style=flat-square&color=blue)](./LICENSE)
 [![Contributions](https://img.shields.io/badge/Contributions-welcome-blue.svg?style=flat-square)](./CODE_OF_CONDUCT.md)
 [![GitHub contributors](https://img.shields.io/github/contributors/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue/graphs/contributors)
-[![(Rust)](https://img.shields.io/badge/rust-v1.68-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
+[![(Rust)](https://img.shields.io/badge/rust-v1.69-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 [![GitHub release](https://img.shields.io/github/v/release/riipandi/fastrue?logo=rust&style=flat-square)](https://github.com/riipandi/fastrue)
 [![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue/deploys)
@@ -21,11 +21,12 @@ Fastrue (formerly Trusty) is a headless authentication server inspired from Netl
 
 The following are required to run the application in development or in production environment:
 
-- [Rust](https://www.rust-lang.org/tools/install) v1.68 or greater.
+- [Rust](https://www.rust-lang.org/tools/install) v1.69 or greater.
 - [PostgreSQL](https://www.postgresql.org/download/) PostgreSQL server v14 or greater.
 - [sqlx](https://crates.io/crates/sqlx) for interacting with the database.
 - [sqlx-cli](https://crates.io/crates/sqlx-cli) a command line tool for sqlx.
 - [cargo watch](https://crates.io/crates/cargo-watch), a tool for watching the project files and recompiling when they change.
+- [cargo-make](https://sagiegurari.github.io/cargo-make/#installation), task runner and build tool for Rust project.
 - [Docker](https://docs.docker.com/engine/install), v2.10 or greater. This is optional, only required when building container image.
 
 ### Generate Secret Key
@@ -45,10 +46,10 @@ docker-compose -f compose-development.yaml up -d
 ```
 
 ```sh
-make dev             # run in development
-make build           # build binary file
-make docker-build    # build docker container
-make docker-run      # run the docker container
+cargo make dev             # run in development
+cargo make build           # build binary file
+cargo make docker-build    # build docker container
+cargo make docker-run      # run the docker container
 ```
 
 Application will run at `http://localhost:9999`

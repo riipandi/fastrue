@@ -1,0 +1,122 @@
+[env]
+APP_VERSION = "${CARGO_MAKE_CRATE_VERSION}"
+GIT_HASH_SHORT = { script = ["git rev-parse --short HEAD"] }
+RUSTFLAGS = "-C target-cpu=native"
+IMAGE_NAME = "ghcr.io/riipandi/fastrue"
+CONTAINER_NAME = "${CARGO_MAKE_CRATE_NAME}"
+BUILD_VERSION = "v${APP_VERSION}-${GIT_HASH_SHORT}"
+BIND_PORT = 9999
+
+[tasks.output-release]
+command = "ls"
+args = ["-lh", "target/release"]
+
+[tasks.deps-npm]
+command = "pnpm"
+args = ["install"]
+
+[tasks.deps-rust]
+command = "cargo"
+args = ["update"]
+
+[tasks.deps]
+run_task = { name = ["deps-npm", "deps-rust"] }
+
+[tasks.format]
+install_crate = "rustfmt"
+command = "cargo"
+args = ["fmt", "--", "--emit=files"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+dependencies = ["clean"]
+
+# --------------------------------------------------------------------------------------------------
+# Task for build and compile
+# --------------------------------------------------------------------------------------------------
+
+[tasks.build-api]
+command = "cargo"
+args = ["build", "--release"]
+dependencies = ["clean"]
+
+[tasks.build-web]
+command = "pnpm"
+args = ["build"]
+dependencies = ["deps-npm"]
+
+[tasks.build]
+clear = true
+dependencies = ["format", "build-web", "build-api", "output-release"]
+
+[tasks.run]
+command = "cargo"
+args = ["--release"]
+dependencies = ["format", "build-web"]
+
+# --------------------------------------------------------------------------------------------------
+# Task for development
+# --------------------------------------------------------------------------------------------------
+
+[tasks.dev-api]
+command = "cargo"
+args = ["watch", "-qcx", "run"]
+
+[tasks.dev-web]
+command = "pnpm"
+args = ["dev"]
+
+[tasks.dev]
+command = "pnpm"
+args = ["concurrently", "--kill-others", "'cargo watch -qcx run'", "'pnpm dev'"]
+
+[tasks.migrate]
+command = "cargo"
+args = ["run", "--", "migrate"]
+
+[tasks.create-admin]
+command = "cargo"
+args = ["run", "--", "create-admin"]
+
+[tasks.run-docs]
+command = "zola"
+args = ["serve"]
+cwd = "./docs/"
+clear = true
+
+# --------------------------------------------------------------------------------------------------
+# Task for build and push Docker image
+# --------------------------------------------------------------------------------------------------
+
+[tasks.docker-build]
+clear = true
+command = "docker"
+args = [
+  "build",
+  "-f", "Dockerfile",
+  "--build-arg", "BIND_PORT=${BIND_PORT}",
+  "-t", "${IMAGE_NAME}:${BUILD_VERSION}",
+  "-t", "${IMAGE_NAME}:edge",
+  "."
+]
+
+[tasks.docker-push]
+clear = true
+command = "docker"
+args = ["push", "-t", "${IMAGE_NAME}:${BUILD_VERSION}", "-t", "${IMAGE_NAME}:edge"]
+
+[tasks.docker-run]
+clear = true
+command = "docker"
+args = [
+  "run", "--rm", "-it",
+  "--name", "${CONTAINER_NAME}",
+  "--env-file", ".env.docker",
+  "-p", "${BIND_PORT}:${BIND_PORT}",
+  "${IMAGE_NAME}:${BUILD_VERSION}"
+]

@@ -1,8 +1,6 @@
 name: Run Test CI
 
-on:
-  push:
-    branches: ['main']
+on: ['push']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -12,7 +10,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  release:
+  test-build:
     strategy:
       fail-fast: false
       matrix:
@@ -25,6 +23,7 @@ jobs:
             target: aarch64-apple-darwin
           # - os: windows-latest
           #   target: x86_64-pc-windows-gnu
+
     name: Test build ${{ matrix.target }}
     runs-on: ubuntu-latest
     steps:
@@ -33,25 +32,22 @@ jobs:
           fetch-depth: 0
       - name: Get variables
         id: vars
-        run: |
-          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Run PNPM action
         uses: ./.github/pnpm-action
-
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Compiling Web UI
-        run: |
-          pnpm install
-          pnpm build
+        name: Install NPM dependencies
+        run: pnpm install
 
       - name: Setup Rust toolchain
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+          cargo install cargo-make
 
       - name: Compile binary
         run: |
           echo Build v${{ steps.vars.outputs.sha_short }}
-          cargo build --release
+          cargo make build
           ls -lh target/release
