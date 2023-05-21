@@ -29,7 +29,7 @@ jobs:
           # - os: windows-latest
           #   target: x86_64-pc-windows-gnu
           #   archive: zip
-    name: Build release ${{ matrix.target }}
+    name: Build for ${{ matrix.target }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -61,7 +61,7 @@ jobs:
           cache-directories: ""
           cache-all-crates: true
 
-      - name: Compile binary ${{ matrix.target }}
+      - name: Compile application binary
         id: compile
         run: |
           cargo build --release
@@ -70,7 +70,7 @@ jobs:
 
       - name: Create release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        # if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             target/release/fastrue-${{ matrix.target }}
