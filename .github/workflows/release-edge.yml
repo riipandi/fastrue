@@ -1,4 +1,4 @@
-name: Build Edge Binaries
+name: Release Edge
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  release:
+  build-binaries:
     if: github.ref == 'refs/heads/main'
     strategy:
       fail-fast: false
@@ -47,33 +47,24 @@ jobs:
         name: Install NPM dependencies
         run: pnpm install
 
-      - id: compile
-        name: Compile binaries
-        uses: rust-build/rust-build.action@v1.4.3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
-          EXTRA_FILES: "README.md LICENSE"
-          UPLOAD_MODE: none
-          MINIFY: false
-      - name: Checkout output
-        run: ls -laR
+      - name: Setup Rust toolchain
+        run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+          cargo install cargo-make
+
+      - name: Compile binary
+        id: compile
+        run: |
+          echo Build v${{ steps.vars.outputs.sha_short }}
+          cargo make build
+          ls -lh target/release
 
       - uses: ncipollo/release-action@v1
         name: Create release
         with:
           # tag: "v0.0.1"
-          artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
+          # artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
           skipIfReleaseExists: true
           makeLatest: false
           prerelease: true
-
-      # - name: Upload artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Binary
-      #     path: |
-      #       ${{ steps.compile.outputs.BUILT_ARCHIVE }}
-      #       ${{ steps.compile.outputs.BUILT_CHECKSUM }}
