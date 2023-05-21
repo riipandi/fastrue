@@ -73,10 +73,42 @@ jobs:
           name: fastrue-${{ matrix.target }}
           path: target/release/fastrue-${{ matrix.target }}
 
-      # - name: Create release
-      #   uses: softprops/action-gh-release@v1
-      #   # if: startsWith(github.ref, 'refs/tags/')
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     files: |
-      #       target/release/fastrue-${{ matrix.target }}
+  create-release:
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            archive: tar.gz tar.xz
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            archive: zip
+          # - os: windows-latest
+          #   target: x86_64-pc-windows-gnu
+          #   archive: zip
+    name: Build for ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/download-artifact@v3
+        with:
+          name: fastrue-${{ matrix.target }}
+          path: target/release/fastrue-${{ matrix.target }}
+      - name: Generate Changelog
+        run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
+      - name: Publish release
+        uses: softprops/action-gh-release@v1
+        # if: startsWith(github.ref, 'refs/tags/')
+        with:
+          tag_name: ${{ github.ref }}
+          files: |
+            target/release/fastrue-${{ matrix.target }}
+            LICENSE
