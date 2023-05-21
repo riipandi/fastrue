@@ -1,20 +1,8 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-extern crate cookie;
-
-use salvo::logging::Logger;
-use salvo::prelude::*;
-use salvo::proxy::Proxy;
-use salvo::serve_static::static_embed;
-
-use std::{net::SocketAddr, time::Duration};
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
-
-// use crate::state::AppState;
-use crate::handler::{error::throw_response, root::health_check};
-
 pub mod config;
+pub mod entities;
 pub mod handler;
 pub mod middleware;
 pub mod routes;
@@ -23,24 +11,21 @@ pub mod state;
 pub mod swagger;
 pub mod utils;
 
+extern crate cookie;
+
+use salvo::logging::Logger;
+use salvo::prelude::*;
+use salvo::proxy::Proxy;
+use salvo::serve_static::static_embed;
+use std::{net::SocketAddr, time::Duration};
+
+use crate::handler::{error::throw_response, root::health_check, user};
+
 #[derive(rust_embed::RustEmbed)]
 #[folder = "web/"]
 struct Assets;
 
 pub async fn run() {
-    let tracing_filter = "fastrue=debug,salvo=info";
-    tracing_subscriber::registry()
-        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
-        .with(tracing_subscriber::fmt::layer())
-        .init();
-
-    // let state = AppState {
-    //     db: config::connection_pool().await,
-    // };
-
-    // Setup connection pool and register application router
-    // Add a fallback service for handling routes to unknown paths
-
     let web_ui: Router = if cfg!(debug_assertions) {
         Router::with_path("<**rest>").handle(Proxy::new(vec!["http://localhost:3000"]))
     } else {
@@ -52,6 +37,7 @@ pub async fn run() {
         .hoop(Logger::new())
         .get(health_check)
         .push(Router::with_path("api").get(health_check))
+        .push(Router::with_path("users").get(user::get_all))
         .push(Router::with_path("health").get(health_check))
         .push(Router::with_path("error").get(throw_response))
         .push(web_ui);
@@ -61,7 +47,7 @@ pub async fn run() {
 
 // Start the server
 async fn serve(router: Router) {
-    let addr: SocketAddr = config::app::bind_addr()
+    let addr: SocketAddr = config::bind_addr()
         .parse()
         .expect("Unable to parse socket address");
 

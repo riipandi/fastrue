@@ -6,7 +6,7 @@ use indicatif::{ProgressBar, ProgressIterator};
 use sqlx::migrate::Migrator;
 use std::path::PathBuf;
 
-use crate::config::progressbar_style;
+use crate::{config::progressbar_style, state};
 
 pub async fn run_migration(force: bool) {
     let success_message = "🍀 Database migration succes";
@@ -36,13 +36,12 @@ pub async fn run_migration(force: bool) {
 
 async fn migrate_up() -> Result<(), sqlx::Error> {
     let migration_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("migrations");
-    let pool = crate::config::connection_pool().await;
     let migrator = Migrator::new(migration_dir).await.unwrap();
 
     let pb = ProgressBar::new(1000);
     pb.set_style(progressbar_style().unwrap());
     for _ in migrator.iter().progress_with(pb) {
-        migrator.run(&pool).await.unwrap();
+        migrator.run(state::dbconn()).await.unwrap();
     }
 
     Ok(())

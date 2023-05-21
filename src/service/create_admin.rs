@@ -6,7 +6,7 @@ use sqlx::query;
 use uuid::Uuid;
 
 use crate::{
-    config,
+    state,
     utils::{create_hash, is_valid_email},
 };
 
@@ -56,7 +56,6 @@ pub async fn prompt() {
 async fn create_admin(email: String, password: String) -> Result<Account, sqlx::Error> {
     let id = Uuid::new_v4();
     let password_hash: String = create_hash(password.clone());
-    let pool = config::connection_pool().await;
 
     query(
         r#"INSERT INTO users (id, email, encrypted_password, is_super_admin)
@@ -66,7 +65,7 @@ async fn create_admin(email: String, password: String) -> Result<Account, sqlx::
     .bind(email.to_string())
     .bind(password_hash.to_string())
     .bind(true)
-    .execute(&pool)
+    .execute(state::dbconn())
     .await?;
 
     // Result to pass

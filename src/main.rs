@@ -3,13 +3,11 @@
 
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
-use futures::executor::block_on;
-use sea_orm::{Database, DbErr};
-
-use fastrue::config::get_envar;
 use fastrue::service::create_admin;
 use fastrue::utils::{migration::run_migration, string::generate_secret};
+use fastrue::{config, state};
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
@@ -19,9 +17,11 @@ struct Cli {
     command: Option<Commands>,
 }
 
-/*
- * More example here: https://github.com/dirien/rust-cli/blob/main/src/main.rs
- */
+/**
+ * Clap references:
+ * - https://github.com/dirien/rust-cli
+ * - https://github.com/dirien/rust-cli/blob/main/src/main.rs
+ **/
 #[derive(Subcommand)]
 enum Commands {
     /// Create administrator user
@@ -40,8 +40,15 @@ enum Commands {
 async fn main() {
     dotenv().ok(); // Load environment variables
 
-    if let Err(err) = block_on(check_dbconn()) {
-        panic!("Cann't connect to database {}", err);
+    let tracing_filter = "fastrue=debug,salvo=info";
+    tracing_subscriber::registry()
+        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    // Check database connection
+    if let Err(err) = futures::executor::block_on(open_db()) {
+        panic!("Cannot connect to database: {}", err);
     }
 
     // You can check for the existence of subcommands, and if found
@@ -52,7 +59,7 @@ async fn main() {
         Some(Commands::Migrate { force }) => run_migration(force).await,
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
         None => {
-            let auto_migrate = get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
+            let auto_migrate = config::get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
             if auto_migrate.trim().parse().unwrap() {
                 println!("🍀 Running automatic database migration");
                 // TODO enable in the future
@@ -63,8 +70,22 @@ async fn main() {
     }
 }
 
-async fn check_dbconn() -> Result<(), DbErr> {
-    let connection_str = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let _db = Database::connect(connection_str).await?;
+async fn open_db() -> Result<(), sqlx::Error> {
+    let default_conn_str = "postgres://postgres:postgres@127.0.0.1:5432/fastrue";
+    let connection_str = config::get_envar("DATABASE_URL", Some(default_conn_str));
+
+    tracing::info!("👀 Using database connection {}", connection_str);
+
+    let pool = sqlx::postgres::PgPoolOptions::new()
+        .max_connections(10) // Set the maximum number of connections in the pool
+        .min_connections(2) // Set the minimum number of connections to keep in the pool
+        .acquire_timeout(std::time::Duration::from_secs(5)) // Set the connection timeout duration
+        .connect(&connection_str)
+        .await
+        .unwrap();
+
+    state::POSTGRES.set(pool).unwrap();
+    sqlx::query("SELECT 1").fetch_one(state::dbconn()).await?;
+
     Ok(())
 }

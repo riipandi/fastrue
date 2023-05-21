@@ -1,8 +1,6 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-pub mod health;
-pub mod settings;
+pub mod user_entity;
 
-pub use self::health::*;
-pub use self::settings::*;
+pub use self::user_entity::*;
