@@ -8,7 +8,7 @@ use salvo::prelude::*;
 use salvo::proxy::Proxy;
 use salvo::serve_static::static_embed;
 
-use std::net::SocketAddr;
+use std::{net::SocketAddr, time::Duration};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 // use crate::state::AppState;
@@ -72,32 +72,34 @@ async fn serve(router: Router) {
     }
 
     let acceptor = TcpListener::new(addr).bind().await;
-    Server::new(acceptor).serve(router).await;
+    Server::new(acceptor)
+        .serve_with_graceful_shutdown(router, shutdown_signal(), Some(Duration::from_secs(10)))
+        .await;
 }
 
 // Graceful shutdown
-// async fn shutdown_signal() {
-//     let ctrl_c = async {
-//         tokio::signal::ctrl_c()
-//             .await
-//             .expect("failed to install Ctrl+C handler");
-//     };
+async fn shutdown_signal() {
+    let ctrl_c = async {
+        tokio::signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
 
-//     #[cfg(unix)]
-//     let terminate = async {
-//         tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
-//             .expect("failed to install signal handler")
-//             .recv()
-//             .await;
-//     };
+    #[cfg(unix)]
+    let terminate = async {
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
 
-//     #[cfg(not(unix))]
-//     let terminate = std::future::pending::<()>();
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
 
-//     tokio::select! {
-//         _ = ctrl_c => {},
-//         _ = terminate => {},
-//     }
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+    }
 
-//     println!("signal received, starting graceful shutdown");
-// }
+    println!("signal received, starting graceful shutdown");
+}

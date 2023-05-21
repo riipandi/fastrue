@@ -3,6 +3,10 @@
 
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
+
+use futures::executor::block_on;
+use sea_orm::{Database, DbErr};
+
 use fastrue::config::get_envar;
 use fastrue::service::create_admin;
 use fastrue::utils::{migration::run_migration, string::generate_secret};
@@ -36,6 +40,10 @@ enum Commands {
 async fn main() {
     dotenv().ok(); // Load environment variables
 
+    if let Err(err) = block_on(check_dbconn()) {
+        panic!("Cann't connect to database {}", err);
+    }
+
     // You can check for the existence of subcommands, and if found
     // use their matches just as you would the top level command.
     let cli = Cli::parse();
@@ -53,4 +61,10 @@ async fn main() {
             fastrue::run().await;
         }
     }
+}
+
+async fn check_dbconn() -> Result<(), DbErr> {
+    let connection_str = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let _db = Database::connect(connection_str).await?;
+    Ok(())
 }
