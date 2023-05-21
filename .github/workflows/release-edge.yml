@@ -1,8 +1,8 @@
-name: Build Release Edge
+name: Build Edge Binaries
 
 on:
   push:
-    branches: ['develop']
+    branches: ['main']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
