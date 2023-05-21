@@ -53,18 +53,24 @@ jobs:
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
           cargo install cargo-make
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "cached-rust"
+          env-vars: "RUSTFLAGS"
+          cache-directories: ""
+          cache-all-crates: true
+
       - name: Compile binary
         id: compile
         run: |
-          echo Build v${{ steps.vars.outputs.sha_short }}
           cargo make build
           ls -lh target/release
 
-      - uses: ncipollo/release-action@v1
-        name: Create release
-        with:
-          # tag: "v0.0.1"
-          # artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
-          skipIfReleaseExists: true
-          makeLatest: false
-          prerelease: true
+      # - uses: ncipollo/release-action@v1
+      #   name: Create release
+      #   with:
+      #     # tag: "v0.0.1"
+      #     # artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
+      #     skipIfReleaseExists: true
+      #     makeLatest: false
+      #     prerelease: true
