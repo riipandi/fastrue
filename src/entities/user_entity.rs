@@ -8,7 +8,9 @@ use uuid::Uuid;
 
 // TODO: Remove Debug flag in production release!
 #[derive(Serialize, Deserialize, PartialEq, FromRow, Debug)]
+#[allow(non_snake_case)]
 pub struct User {
+    #[serde(rename = "instanceId")]
     instance_id: Option<Uuid>,
     id: Option<Uuid>,
     aud: Option<String>,
@@ -28,6 +30,8 @@ pub struct User {
     raw_app_meta_data: Option<String>,
     raw_user_meta_data: Option<String>,
     is_super_admin: Option<bool>,
+    #[serde(rename = "createdAt")]
     created_at: Option<DateTime<Utc>>,
+    #[serde(rename = "updatedAt")]
     updated_at: Option<DateTime<Utc>>,
 }
