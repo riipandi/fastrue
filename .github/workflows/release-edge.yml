@@ -10,26 +10,74 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  CONTAINER_REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-binaries:
+  # build-binaries:
+  #   if: github.ref == 'refs/heads/main'
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - os: ubuntu-latest
+  #           target: x86_64-unknown-linux-gnu
+  #           archive: tar.gz tar.xz
+  #         - os: macos-latest
+  #           target: x86_64-apple-darwin
+  #         - os: macos-latest
+  #           target: aarch64-apple-darwin
+  #           archive: zip
+  #         # - os: windows-latest
+  #         #   target: x86_64-pc-windows-gnu
+  #         #   archive: zip
+  #   name: Build ${{ matrix.target }}
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Get variables
+  #       id: vars
+  #       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+  #     - name: Run PNPM action
+  #       uses: ./.github/pnpm-action
+  #     - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
+  #       name: Install NPM dependencies
+  #       run: |
+  #         pnpm install
+  #         pnpm build
+
+  #     - name: Setup Rust toolchain
+  #       run: |
+  #         rustup set auto-self-update disable
+  #         rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+
+  #     - uses: Swatinem/rust-cache@v2
+  #       with:
+  #         prefix-key: "rust-${{ matrix.target }}"
+  #         env-vars: "RUSTFLAGS"
+  #         cache-directories: ""
+  #         cache-all-crates: true
+
+  #     - name: Compile application binary
+  #       id: compile
+  #       run: |
+  #         cargo build --release
+  #         strip target/release/fastrue
+  #         mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
+
+  #     - uses: actions/upload-artifact@v3
+  #       with:
+  #         name: fastrue-${{ matrix.target }}
+  #         path: target/release/fastrue-${{ matrix.target }}
+
+  docker-images:
     if: github.ref == 'refs/heads/main'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            archive: tar.gz tar.xz
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          - os: macos-latest
-            target: aarch64-apple-darwin
-            archive: zip
-          # - os: windows-latest
-          #   target: x86_64-pc-windows-gnu
-          #   archive: zip
-    name: Build ${{ matrix.target }}
+    name: Build and push docker images
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -37,79 +85,78 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Get variables
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
-      - name: Run PNPM action
-        uses: ./.github/pnpm-action
-      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Install NPM dependencies
-        run: |
-          pnpm install
-          pnpm build
-
-      - name: Setup Rust toolchain
-        run: |
-          rustup set auto-self-update disable
-          rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-
-      - uses: Swatinem/rust-cache@v2
+      - name: Log into registry ${{ env.CONTAINER_REGISTRY }}
+        uses: docker/login-action@v2
         with:
-          prefix-key: "rust-${{ matrix.target }}"
-          env-vars: "RUSTFLAGS"
-          cache-directories: ""
-          cache-all-crates: true
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Compile application binary
-        id: compile
-        run: |
-          cargo build --release
-          strip target/release/fastrue
-          mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v2
 
-      - uses: actions/upload-artifact@v3
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v4
         with:
-          name: fastrue-${{ matrix.target }}
-          path: target/release/fastrue-${{ matrix.target }}
+          images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
 
-  create-release:
-    needs: [build-binaries]
-    if: github.ref == 'refs/heads/main'
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            archive: tar.gz tar.xz
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          - os: macos-latest
-            target: aarch64-apple-darwin
-            archive: zip
-          # - os: windows-latest
-          #   target: x86_64-pc-windows-gnu
-          #   archive: zip
-    name: Create Release
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v3
+      - name: Build and Push Versioned Docker Image
+        id: build-and-push
+        uses: docker/build-push-action@v4
+        if: ${{ github.ref != 'refs/heads/main' }}
         with:
-          fetch-depth: 0
-      - uses: actions/download-artifact@v3
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and Push Latest Docker Image
+        id: build-and-push-latest
+        uses: docker/build-push-action@v4
+        if: ${{ github.ref == 'refs/heads/main' }}
         with:
-          name: fastrue-${{ matrix.target }}
-          path: target/release/fastrue-${{ matrix.target }}
-      - name: Generate Changelog
-        run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
-      - name: Publish release
-        uses: softprops/action-gh-release@v1
-        # if: startsWith(github.ref, 'refs/tags/')
-        with:
-          tag_name: ${{ github.ref }}
-          files: |
-            target/release/fastrue-${{ matrix.target }}
-            LICENSE
+          push: true
+          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          labels: ${{ steps.meta.outputs.labels }}
+
+  # create-release:
+  #   needs: [build-binaries, build-images]
+  #   if: github.ref == 'refs/heads/main'
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       include:
+  #         - os: ubuntu-latest
+  #           target: x86_64-unknown-linux-gnu
+  #           archive: tar.gz tar.xz
+  #         - os: macos-latest
+  #           target: x86_64-apple-darwin
+  #         - os: macos-latest
+  #           target: aarch64-apple-darwin
+  #           archive: zip
+  #         # - os: windows-latest
+  #         #   target: x86_64-pc-windows-gnu
+  #         #   archive: zip
+  #   name: Create Release
+  #   runs-on: ubuntu-latest
+  #   permissions:
+  #     contents: write
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
+  #     - uses: actions/download-artifact@v3
+  #       with:
+  #         name: fastrue-${{ matrix.target }}
+  #         path: target/release/fastrue-${{ matrix.target }}
+  #     - name: Generate Changelog
+  #       run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
+  #     - name: Publish release
+  #       uses: softprops/action-gh-release@v1
+  #       # if: startsWith(github.ref, 'refs/tags/')
+  #       with:
+  #         tag_name: ${{ github.ref }}
+  #         files: |
+  #           target/release/fastrue-${{ matrix.target }}
+  #           LICENSE
