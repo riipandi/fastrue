@@ -20,7 +20,7 @@ jobs:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
           - os: macos-latest
-            target: x86_64-apple-darwin
+            target: [x86_64-apple-darwin, aarch64-apple-darwin]
           # - os: windows-latest
           #   target: x86_64-pc-windows-gnu
     name: Test build ${{ matrix.target }}
@@ -44,10 +44,12 @@ jobs:
           pnpm build
 
       - name: Setup Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          components: rustfmt, clippy
-          target: ${{ matrix.target }}
-      - run: cargo build --release
+        run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+
+      - name: Compile binary
+        run: |
+          echo Build v${{ steps.vars.outputs.sha_short }}
+          cargo build --release
+          ls -lh target/release
