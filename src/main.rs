@@ -1,11 +1,19 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
+// The file `built.rs` was placed there by cargo and `build.rs`
+// Ref: https://github.com/lukaslueg/built/blob/master/example_project/src/main.rs
+mod built_info {
+    include!(concat!(env!("OUT_DIR"), "/built.rs"));
+}
+
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
-use fastrue::config::get_envar;
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
+
 use fastrue::service::create_admin;
 use fastrue::utils::{migration::run_migration, string::generate_secret};
+use fastrue::{config, state};
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
@@ -15,9 +23,11 @@ struct Cli {
     command: Option<Commands>,
 }
 
-/*
- * More example here: https://github.com/dirien/rust-cli/blob/main/src/main.rs
- */
+/**
+ * Clap references:
+ * - https://github.com/dirien/rust-cli
+ * - https://github.com/dirien/rust-cli/blob/main/src/main.rs
+ **/
 #[derive(Subcommand)]
 enum Commands {
     /// Create administrator user
@@ -36,6 +46,25 @@ enum Commands {
 async fn main() {
     dotenv().ok(); // Load environment variables
 
+    println!(
+        "\nFastrue v{}, built for {} by {} ({}).\n",
+        built_info::PKG_VERSION,
+        built_info::TARGET,
+        built_info::RUSTC_VERSION,
+        built::util::strptime(built_info::BUILT_TIME_UTC)
+    );
+
+    let tracing_filter = "fastrue=debug,salvo=info,sqlx=error";
+    tracing_subscriber::registry()
+        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
+        .with(tracing_subscriber::fmt::layer())
+        .init();
+
+    // Check database connection
+    if let Err(err) = futures::executor::block_on(open_db()) {
+        panic!("Cannot connect to database: {}", err);
+    }
+
     // You can check for the existence of subcommands, and if found
     // use their matches just as you would the top level command.
     let cli = Cli::parse();
@@ -44,12 +73,32 @@ async fn main() {
         Some(Commands::Migrate { force }) => run_migration(force).await,
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
         None => {
-            let auto_migrate = get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
+            let auto_migrate = config::get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
             if auto_migrate.trim().parse().unwrap() {
-                println!("🍀 Running automatic database migration");
+                tracing::info!("🍀 Running automatic database migration");
                 run_migration(true).await
             }
-            fastrue::run().await;
+            tokio::join!(fastrue::serve());
         }
     }
+}
+
+async fn open_db() -> Result<(), sqlx::Error> {
+    let default_conn_str = "postgres://postgres:postgres@127.0.0.1:5432/fastrue";
+    let connection_str = config::get_envar("DATABASE_URL", Some(default_conn_str));
+
+    tracing::info!("👀 Using database connection {}", connection_str);
+
+    let pool = sqlx::postgres::PgPoolOptions::new()
+        .max_connections(10) // Set the maximum number of connections in the pool
+        .min_connections(2) // Set the minimum number of connections to keep in the pool
+        .acquire_timeout(std::time::Duration::from_secs(5)) // Set the connection timeout duration
+        .connect(&connection_str)
+        .await
+        .unwrap();
+
+    state::POSTGRES.set(pool).unwrap();
+    sqlx::query("SELECT 1").fetch_one(state::dbconn()).await?;
+
+    Ok(())
 }

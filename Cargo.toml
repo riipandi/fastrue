@@ -12,35 +12,40 @@ edition = "2021"
 publish = false
 
 [dependencies]
-anyhow = { version = "1.0", default-features = true }
-axum = {version = "0.6"}
-axum-extra = { version = "0.5", features = ["spa"] }
-bcrypt = "0.14"
-chrono = { version = "0.4.23", features = ["serde"] }
-clap = { version = "4.0", features = ["derive"] }
-cookie = "0.17"
-dialoguer = { version ="0.10", features = ["password", "zeroize"] }
-dotenvy = "0.15"
-fastrand = "1.8"
-indicatif = { version = "0.17.2", features = ["tokio"] }
-jsonwebtoken = {version = "8", default-features = false }
-lettre = { version = "0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
-reqwest = { version = "0.11", optional = true, default-features = false, features = ["blocking"] }
-sea-query = { version = "^0", default-features = false, features = ["derive", "backend-postgres", "with-uuid", "with-json"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-sqlx = { version = "0.6", default-features = true, features = [ "runtime-tokio-rustls", "migrate", "postgres", "uuid", "chrono", "json" ] }
-tokio = { version = "1.23", features = ["full"] }
-tower = { version = "0.4", features = ["util"] }
-tower-http = { version = "0.3", features = ["cors", "trace"] }
-tracing = "0.1"
-tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-utoipa = { version = "3.0", features = ["axum_extras"] }
-utoipa-swagger-ui = { version = "3.0.1", features = ["axum"] }
-uuid = { version = "1.2", features = ["v4", "fast-rng", "serde"] }
+anyhow = { version = "^1.0", default-features = true }
+bcrypt = { version = "^0.14" }
+built = { version = "0.6", features = ["chrono", "semver"] }
+chrono = { version = "^0.4.23", default-features = false, features = ["clock", "serde"] }
+clap = { version = "^4.0", features = ["derive"] }
+cookie = { version = "^0.17" }
+dialoguer = { version ="^0.10", features = ["password", "zeroize"] }
+dotenvy = { version = "^0.15" }
+fastrand = { version = "^1.8" }
+futures = { version = "0.3" }
+indicatif = { version = "^0.17.2", features = ["tokio"] }
+jsonwebtoken = {version = "^8", default-features = false }
+lettre = { version = "^0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
+once_cell = { version = "^1.17" }
+reqwest = { version = "^0.11", optional = true, default-features = false, features = ["blocking"] }
+rust-embed = { version = "^6.6.1", features = ["include-exclude", "salvo-ex"] }
+rust_decimal = { version = "1.29.1", features = ["serde_json"] }
+salvo = { version = "0.41", features = ["affix", "anyhow", "catch-panic", "cors", "proxy", "logging", "serve-static", "size-limiter", "oapi"] }
+sea-query = { version = "0.28.5", features = ["backend-postgres", "chrono", "with-uuid", "with-json", "with-chrono"] }
+sea-query-binder = { version = "0.3.1", features = ["with-chrono", "sqlx-postgres", "with-json", "with-uuid", "runtime-tokio-rustls", "with-rust_decimal"] }
+serde = { version = "^1.0", features = ["derive"] }
+serde_json = { version = "^1.0" }
+sqlx = { version = "^0.6", features = [ "runtime-tokio-rustls", "migrate", "postgres", "uuid", "chrono", "json", "uuid", "offline" ] }
+tokio = { version = "^1.28", features = ["macros", "rt-multi-thread", "signal"] }
+tower = { version = "^0.4", features = ["limit", "util"] }
+tracing = { version = "^0.1" }
+tracing-subscriber = { version = "^0.3", features = ["env-filter"] }
+uuid = { version = "^1.3.3", features = ["v4", "fast-rng", "serde"] }
 
 [dev-dependencies]
 
+[build-dependencies]
+built = { version = "0.6", features = ["git2", "chrono", "semver"] }
+rust-embed = { version = "^6.6.1", features = ["include-exclude", "salvo-ex"] }
 
 # Reduce the Rust binary size and reduces the size of the images further.
 # https://kerkour.com/optimize-rust-binary-size

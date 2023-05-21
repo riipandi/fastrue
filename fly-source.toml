@@ -16,7 +16,7 @@ kill_timeout = "5s"
   dockerfile = "Dockerfile"
   [build.args]
     BIND_ADDR = "0.0.0.0"
-    BIND_PORT = 9999
+    BIND_PORT = "9999"
 
 [deploy]
   strategy = "rolling"

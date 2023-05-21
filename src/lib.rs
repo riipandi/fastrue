@@ -1,20 +1,8 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-extern crate cookie;
-
-use axum::http::Request;
-use axum::response::Response;
-use axum::Router;
-use std::{net::SocketAddr, time::Duration};
-use tokio::signal;
-use tower_http::{classify::ServerErrorsFailureClass, trace::TraceLayer};
-use tracing::Span;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
-
-use crate::state::AppState;
-
 pub mod config;
+pub mod entities;
 pub mod handler;
 pub mod middleware;
 pub mod routes;
@@ -23,66 +11,46 @@ pub mod state;
 pub mod swagger;
 pub mod utils;
 
-pub async fn run() {
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "fastrue=debug,tower_http=info".into()),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+extern crate cookie;
 
-    let state = AppState {
-        db: config::connection_pool().await,
-    };
-
-    // Setup connection pool and register application router
-    // Add a fallback service for handling routes to unknown paths
-
-    let app = routes::register_routes(state);
-
-    tokio::join!(serve(app));
-}
+use salvo::prelude::*;
+use std::{net::SocketAddr, time::Duration};
 
 // Start the server
-async fn serve(app: Router) {
-    // Configure logging middleware
-    let trace_layer = TraceLayer::new_for_http()
-        .on_request(|request: &Request<_>, _span: &Span| {
-            tracing::info!("Request {} {}", request.method(), request.uri());
-        })
-        .on_response(|response: &Response, latency: Duration, _span: &Span| {
-            tracing::info!("Response {} {:?}", response.status(), latency);
-        })
-        .on_failure(
-            |error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
-                tracing::error!("Failure {} {:?}", error, latency);
-            },
-        );
-
-    let addr: SocketAddr = config::app::bind_addr()
+pub async fn serve() {
+    let addr: SocketAddr = config::bind_addr()
         .parse()
         .expect("Unable to parse socket address");
 
-    tracing::debug!("👀 Server listening on {}", addr);
-    axum::Server::bind(&addr)
-        .serve(app.layer(trace_layer).into_make_service())
-        .with_graceful_shutdown(shutdown_signal())
-        .await
-        .unwrap();
+    if cfg!(debug_assertions) {
+        tracing::info!("👀 [DEV] Server listening on http://{}", addr);
+    } else {
+        tracing::info!("👀 Server listening on http://{}", addr);
+    }
+
+    let acceptor = TcpListener::new(addr).bind().await;
+    let graceful_timeout = if cfg!(debug_assertions) { 0 } else { 10 };
+
+    Server::new(acceptor)
+        .serve_with_graceful_shutdown(
+            routes::create_service(),
+            shutdown_signal(),
+            Some(Duration::from_secs(graceful_timeout)),
+        )
+        .await;
 }
 
 // Graceful shutdown
 async fn shutdown_signal() {
     let ctrl_c = async {
-        signal::ctrl_c()
+        tokio::signal::ctrl_c()
             .await
             .expect("failed to install Ctrl+C handler");
     };
 
     #[cfg(unix)]
     let terminate = async {
-        signal::unix::signal(signal::unix::SignalKind::terminate())
+        tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
             .expect("failed to install signal handler")
             .recv()
             .await;
@@ -96,5 +64,5 @@ async fn shutdown_signal() {
         _ = terminate => {},
     }
 
-    println!("signal received, starting graceful shutdown");
+    tracing::info!("signal received, starting graceful shutdown");
 }

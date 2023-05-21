@@ -1,73 +1,72 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-use axum::response::{IntoResponse, Redirect};
-use axum::routing::{get, get_service, MethodRouter};
-use axum::{http::StatusCode, Router};
-use std::{io, path::PathBuf};
-use tower_http::services::{ServeDir, ServeFile};
+use salvo::oapi::{swagger_ui, Info, OpenApi};
+use salvo::prelude::*;
+use salvo::serve_static::static_embed;
+use salvo::{catcher::Catcher, logging::Logger, proxy::Proxy};
 
-use crate::config::get_envar;
-use crate::handler::{admin, appinfo, auth, user};
-use crate::state::AppState;
-use crate::{swagger, utils::error::ThrowError};
+use crate::handler::{error, root, user};
 
-pub fn register_routes(state: AppState) -> Router {
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
+#[derive(rust_embed::RustEmbed)]
+#[folder = "$CARGO_MANIFEST_DIR/web"]
+struct Assets;
+
+pub fn create_service() -> Service {
+    let router = Router::new()
+        .hoop(CatchPanic::new())
+        .hoop(Logger::new())
+        .get(root::hello)
+        .push(api_routes())
+        .push(health_check())
+        .push(web_ui_route())
+        .push(Router::with_path("500").get(error::error500));
+
+    // Register Swagger OpenAPI endpoint
+    let open_api_url = "/api-doc/openapi.json";
+    let swagger_config = swagger_ui::Config::from(open_api_url)
+        .doc_expansion("list")
+        .display_request_duration(true)
+        .deep_linking(false)
+        .filter(false)
+        .try_it_out_enabled(false)
+        .request_snippets_enabled(false)
+        .show_mutated_request(false)
+        .with_credentials(true)
+        .persist_authorization(false)
+        .use_base_layout();
+
+    let doc = OpenApi::new(Info::new("Fastrue API", VERSION)).merge_router(&router);
+    let swagger_route = swagger_ui::SwaggerUi::new(swagger_config).into_router("swagger");
+
+    let router = router
+        .push(doc.into_router(open_api_url))
+        .push(swagger_route);
+
+    Service::new(router).catcher(Catcher::default().hoop(error::error404))
+}
+
+fn api_routes() -> Router {
     Router::new()
-        .with_state(state.clone())
-        .route("/", get(|| async { Redirect::temporary("/ui") }))
-        .nest_service("/api", register_api_routes())
-        .merge(swagger::register_swagger())
-        .merge(register_spa("/ui", "web"))
-        .fallback(handler_404_api)
+        .path("api")
+        .push(Router::with_path("users").get(user::get_all))
 }
 
-fn register_api_routes() -> Router {
-    Router::new()
-        .merge(admin::get_all_users())
-        .merge(admin::invite_by_admin())
-        .merge(appinfo::health_check())
-        .merge(appinfo::settings())
-        .merge(auth::logout())
-        .merge(auth::recover())
-        .merge(auth::signup())
-        .merge(auth::token())
-        .merge(auth::verify())
-        .merge(user::get_user())
-        .merge(user::put_user())
-}
-
-pub fn route(path: &str, method_router: MethodRouter<()>) -> Router {
-    Router::new().route(path, method_router)
-}
-
-// Static SPA assets (embedded)`ServeDir` allows setting a fallback if an asset is not found.
-// So with this `GET /assets/doesnt-exist.ext` will return `index.html` rather than a 404.
-// Reference: https://github.com/tokio-rs/axum/blob/main/examples/static-file-server/src/main.rs#L67
-fn register_spa(path: &str, dir: &str) -> Router {
-    // Disable SPA user interface when HEADLESS_MODE = true
-    let headless_mode = get_envar("FASTRUE_HEADLESS_MODE", Some("false"));
-    if headless_mode.trim().parse().unwrap() {
-        Router::new().fallback(handler_404_api)
+/**
+ * Use proxied Vite React in development mode, and
+ * use compiled Vite React SPA app in production mode.
+ **/
+fn web_ui_route() -> Router {
+    let web_ui: Router = if cfg!(debug_assertions) {
+        Router::with_path("ui/<**path>").handle(Proxy::new(vec!["http://localhost:3000/ui"]))
     } else {
-        let spa_index_file = [dir, "index.html"].join("/");
-        let spa_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(dir);
-        let spa_index = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join(spa_index_file);
-        let serve_dir = ServeDir::new(spa_dir).not_found_service(ServeFile::new(spa_index));
-        let serve_dir = get_service(serve_dir).handle_error(handler_404_spa);
-
-        Router::new()
-            .nest_service(path, serve_dir.clone())
-            .fallback_service(serve_dir)
-    }
+        Router::with_path("ui/<**path>").get(static_embed::<Assets>().fallback("index.html"))
+    };
+    web_ui
 }
 
-// Global 404 handler for SPA
-async fn handler_404_spa(_err: io::Error) -> impl IntoResponse {
-    (StatusCode::INTERNAL_SERVER_ERROR, "Something went wrong...")
-}
-
-// Global 404 handler for API
-async fn handler_404_api() -> impl IntoResponse {
-    ThrowError::new(StatusCode::NOT_FOUND, "Not found")
+fn health_check() -> Router {
+    Router::new().path("health").get(root::health_check)
 }

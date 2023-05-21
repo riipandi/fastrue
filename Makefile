@@ -38,8 +38,14 @@ build-m1: build-web
 migrate:
 	@cargo run -- migrate
 
+generate-secret:
+	@cargo run -- generate-secret
+
+create-admin:
+	@cargo run -- create-admin
+
 # --------------------------------------------------------------------------------------------------
-# BUILD_VERSION=0.0.0-local make docker-build
+# Command for build and push Docker image
 # --------------------------------------------------------------------------------------------------
 
 docker-build:
@@ -50,8 +56,8 @@ docker-build:
 		-t $(IMAGE_NAME):latest .
 
 docker-push:
-	docker push $(IMAGE_NAME):$(BUILD_VERSION)
-	docker push $(IMAGE_NAME):latest
+	@echo Publishing container version $(BUILD_VERSION)
+	@docker push $(IMAGE_NAME):$(BUILD_VERSION)
 
 docker-run:
 	@docker run --rm -it --name $(CONTAINER_NAME) --env-file $(PWD)/.env.docker \

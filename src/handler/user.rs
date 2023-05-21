@@ -1,48 +1,41 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-use axum::{
-    response::{IntoResponse, Json},
-    routing::{get, put},
-    Router,
-};
-use serde_json::json;
+use salvo::{http::StatusCode, prelude::*};
 
-use crate::routes::route;
+use crate::{entities, service, utils};
 
-#[utoipa::path(
-    get,
-    path = "/api/user",
-    tag = "User Account",
-    responses(
-        (status = 200, description = "Get all users")
-    ),
-)]
-pub fn get_user() -> Router {
-    async fn handler() -> impl IntoResponse {
-        Json(json!({
-          "message": "Not yet implemented"
-        }))
-    }
-    route("/user", get(handler))
+#[derive(serde::Serialize, Debug)]
+struct JsonResponse<T> {
+    status_code: i16,
+    data: Vec<T>,
 }
 
-#[utoipa::path(
-    put,
-    path = "/api/user",
-    tag = "User Account",
+/// This is a summary of the operation
+///
+/// All lines of the doc comment will be included to operation description.
+#[endpoint(
     responses(
-        (status = 200, description = "Update a user")
+        (status = 200, description = "Get all users"),
+        (status = 401, description = "Unauthorized to access resource"),
+        (status = 404, description = "Resource not found")
     ),
 )]
-pub fn put_user() -> Router {
-    async fn handler() -> impl IntoResponse {
-        // let pool = config::connection_pool().await;
-        // query(r#"select * from users"#).execute(&pool).await?;
+pub async fn get_all(_req: &mut Request, res: &mut Response) {
+    let data: Vec<entities::User> = service::user::get_all()
+        .await
+        .map_err(|err| {
+            tracing::error!("Failed to fetch users: {}", err);
+            res.status_code(StatusCode::BAD_REQUEST);
+        })
+        .unwrap();
 
-        Json(json!({
-          "message": "Not yet implemented"
-        }))
-    }
-    route("/user", put(handler))
+    let status = StatusCode::OK;
+    let result = JsonResponse {
+        status_code: utils::get_status_code(status),
+        data,
+    };
+
+    res.status_code(status);
+    res.render(Json(result));
 }
