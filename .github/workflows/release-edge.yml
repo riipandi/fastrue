@@ -29,7 +29,7 @@ jobs:
           # - os: windows-latest
           #   target: x86_64-pc-windows-gnu
           #   archive: zip
-    name: Build for ${{ matrix.target }}
+    name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -91,7 +91,7 @@ jobs:
           # - os: windows-latest
           #   target: x86_64-pc-windows-gnu
           #   archive: zip
-    name: Build for ${{ matrix.target }}
+    name: Create Release
     runs-on: ubuntu-latest
     permissions:
       contents: write
