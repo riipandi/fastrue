@@ -29,12 +29,13 @@ pub async fn serve() {
     }
 
     let acceptor = TcpListener::new(addr).bind().await;
+    let graceful_timeout = if cfg!(debug_assertions) { 0 } else { 10 };
 
     Server::new(acceptor)
         .serve_with_graceful_shutdown(
             routes::create_service(),
             shutdown_signal(),
-            Some(Duration::from_secs(10)),
+            Some(Duration::from_secs(graceful_timeout)),
         )
         .await;
 }

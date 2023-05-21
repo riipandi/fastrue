@@ -38,8 +38,14 @@ build-m1: build-web
 migrate:
 	@cargo run -- migrate
 
+generate-secret:
+	@cargo run -- generate-secret
+
+create-admin:
+	@cargo run -- create-admin
+
 # --------------------------------------------------------------------------------------------------
-# BUILD_VERSION=0.0.0-local make docker-build
+# Command for build and push Docker image
 # --------------------------------------------------------------------------------------------------
 
 docker-build:

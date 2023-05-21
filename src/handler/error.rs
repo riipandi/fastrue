@@ -4,6 +4,8 @@
 use salvo::prelude::*;
 use serde::Serialize;
 
+use crate::utils;
+
 struct ErrorResponse;
 
 #[derive(Serialize, Debug)]
@@ -18,7 +20,7 @@ impl Writer for ErrorResponse {
         let status = StatusCode::INTERNAL_SERVER_ERROR;
         res.status_code(status);
         res.render(Json(ResponseError {
-            status_code: get_status_code(status),
+            status_code: utils::get_status_code(status),
             message: "Unhandled execption".to_string(),
         }));
     }
@@ -41,13 +43,9 @@ pub async fn error404(
         let status = StatusCode::NOT_FOUND;
         res.status_code(status);
         res.render(Json(ResponseError {
-            status_code: get_status_code(status),
+            status_code: utils::get_status_code(status),
             message: "Resource not found".to_string(),
         }));
         ctrl.skip_rest();
     }
-}
-
-fn get_status_code(status_code: StatusCode) -> i16 {
-    status_code.as_u16() as i16
 }

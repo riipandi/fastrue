@@ -3,6 +3,7 @@
 
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
+use serde_json::Value as Json;
 use sqlx::FromRow;
 use uuid::Uuid;
 
@@ -27,8 +28,8 @@ pub struct User {
     email_change: Option<String>,
     email_change_sent_at: Option<DateTime<Utc>>,
     last_sign_in_at: Option<DateTime<Utc>>,
-    raw_app_meta_data: Option<String>,
-    raw_user_meta_data: Option<String>,
+    raw_app_meta_data: Option<Json>,
+    raw_user_meta_data: Option<Json>,
     is_super_admin: Option<bool>,
     #[serde(rename = "createdAt")]
     created_at: Option<DateTime<Utc>>,

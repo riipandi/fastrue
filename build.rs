@@ -1,6 +1,12 @@
+#[derive(rust_embed::RustEmbed)]
+#[folder = "migrations/"]
+struct Migrations;
+
 fn main() {
-    // trigger recompilation when a new migration is added
-    println!("cargo:rerun-if-changed=migrations");
+    Migrations::iter().for_each(|file| {
+        let path = file.as_ref();
+        println!("cargo:rerun-if-changed={}", path);
+    });
 
     let mut opts = built::Options::default();
     opts.set_dependencies(true);

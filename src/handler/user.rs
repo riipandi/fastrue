@@ -1,17 +1,15 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-use salvo::http::StatusCode;
-
+use salvo::http::{errors::*, StatusCode};
 use salvo::prelude::*;
-use serde::Serialize;
 
-use crate::{entities, state};
+use crate::{entities, service, utils};
 
-#[derive(Serialize, Debug)]
-struct UserResponse {
-    status: String,
-    data: Vec<entities::User>,
+#[derive(serde::Serialize, Debug)]
+struct JsonResponse<T> {
+    status_code: i16,
+    data: Vec<T>,
 }
 
 /// This is a summary of the operation
@@ -20,21 +18,25 @@ struct UserResponse {
 #[endpoint(
     responses(
         (status = 200, description = "Get all users"),
-        (status = 401, description = "Unauthorized to delete resource"),
+        (status = 401, description = "Unauthorized to access resource"),
         (status = 404, description = "Resource not found")
     ),
 )]
 pub async fn get_all(_req: &mut Request, res: &mut Response) {
-    let data = sqlx::query_as::<_, entities::User>("select * from users")
-        .fetch_all(state::dbconn())
+    let data: Vec<entities::User> = service::user::get_all()
         .await
+        .map_err(|err| {
+            let err_msg = format!("Failed to fetch data: {}", err);
+            res.render(StatusError::internal_server_error().summary(err_msg))
+        })
         .unwrap();
 
-    let result = UserResponse {
-        status: "success".to_string(),
+    let status = StatusCode::OK;
+    let result = JsonResponse {
+        status_code: utils::get_status_code(status),
         data,
     };
 
-    res.status_code(StatusCode::OK);
+    res.status_code(status);
     res.render(Json(result));
 }

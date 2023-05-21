@@ -54,7 +54,7 @@ async fn main() {
         built::util::strptime(built_info::BUILT_TIME_UTC)
     );
 
-    let tracing_filter = "fastrue=debug,salvo=info,sqlx=info";
+    let tracing_filter = "fastrue=debug,salvo=info,sqlx=error";
     tracing_subscriber::registry()
         .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
         .with(tracing_subscriber::fmt::layer())

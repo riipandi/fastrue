@@ -11,7 +11,7 @@ use crate::handler::{error, root, user};
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[derive(rust_embed::RustEmbed)]
-#[folder = "web/"]
+#[folder = "$CARGO_MANIFEST_DIR/web"]
 struct Assets;
 
 pub fn create_service() -> Service {
