@@ -13,40 +13,11 @@ pub mod utils;
 
 extern crate cookie;
 
-use salvo::logging::Logger;
 use salvo::prelude::*;
-use salvo::proxy::Proxy;
-use salvo::serve_static::static_embed;
 use std::{net::SocketAddr, time::Duration};
 
-use crate::handler::{error::throw_response, root::health_check, user};
-
-#[derive(rust_embed::RustEmbed)]
-#[folder = "web/"]
-struct Assets;
-
-pub async fn run() {
-    let web_ui: Router = if cfg!(debug_assertions) {
-        Router::with_path("<**rest>").handle(Proxy::new(vec!["http://localhost:3000"]))
-    } else {
-        Router::with_path("ui/<**path>").get(static_embed::<Assets>().fallback("index.html"))
-    };
-
-    let router = Router::new()
-        .hoop(CatchPanic::new())
-        .hoop(Logger::new())
-        .get(health_check)
-        .push(Router::with_path("api").get(health_check))
-        .push(Router::with_path("users").get(user::get_all))
-        .push(Router::with_path("health").get(health_check))
-        .push(Router::with_path("error").get(throw_response))
-        .push(web_ui);
-
-    tokio::join!(serve(router));
-}
-
 // Start the server
-async fn serve(router: Router) {
+pub async fn serve() {
     let addr: SocketAddr = config::bind_addr()
         .parse()
         .expect("Unable to parse socket address");
@@ -58,8 +29,13 @@ async fn serve(router: Router) {
     }
 
     let acceptor = TcpListener::new(addr).bind().await;
+
     Server::new(acceptor)
-        .serve_with_graceful_shutdown(router, shutdown_signal(), Some(Duration::from_secs(10)))
+        .serve_with_graceful_shutdown(
+            routes::create_service(),
+            shutdown_signal(),
+            Some(Duration::from_secs(10)),
+        )
         .await;
 }
 

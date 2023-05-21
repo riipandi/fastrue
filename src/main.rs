@@ -40,7 +40,7 @@ enum Commands {
 async fn main() {
     dotenv().ok(); // Load environment variables
 
-    let tracing_filter = "fastrue=debug,salvo=info";
+    let tracing_filter = "fastrue=debug,salvo=info,sqlx=info";
     tracing_subscriber::registry()
         .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
         .with(tracing_subscriber::fmt::layer())
@@ -65,7 +65,7 @@ async fn main() {
                 // TODO enable in the future
                 // run_migration(true).await
             }
-            fastrue::run().await;
+            tokio::join!(fastrue::serve());
         }
     }
 }

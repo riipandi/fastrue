@@ -3,8 +3,15 @@
 
 use salvo::http::StatusCode;
 use salvo::prelude::*;
+use serde::Serialize;
 
 use crate::{entities, state};
+
+#[derive(Serialize, Debug)]
+struct UserResponse {
+    status: String,
+    data: Vec<entities::User>,
+}
 
 #[handler]
 pub async fn get_all(_req: &mut Request, res: &mut Response) {
@@ -13,6 +20,11 @@ pub async fn get_all(_req: &mut Request, res: &mut Response) {
         .await
         .unwrap();
 
+    let result = UserResponse {
+        status: "success".to_string(),
+        data,
+    };
+
     res.status_code(StatusCode::OK);
-    res.render(serde_json::to_string(&data).unwrap());
+    res.render(Json(result));
 }

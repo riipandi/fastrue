@@ -3,6 +3,13 @@
 
 use salvo::prelude::*;
 
+// const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+
+#[handler]
+pub async fn hello(_res: &mut Response) -> Result<&'static str, ()> {
+    Ok("Fastrue v0.0.1")
+}
+
 #[handler]
 pub async fn health_check(_res: &mut Response) -> Result<&'static str, ()> {
     Ok("All is well")

@@ -13,7 +13,6 @@ publish = false
 
 [dependencies]
 anyhow = { version = "^1.0", default-features = true }
-async-std = { version = "1.12", features = ["attributes", "tokio1"] }
 bcrypt = { version = "^0.14" }
 chrono = { version = "^0.4.23", features = ["serde"] }
 clap = { version = "^4.0", features = ["derive"] }
