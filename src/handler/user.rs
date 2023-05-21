@@ -1,6 +1,7 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
+use salvo::http::StatusCode;
 use salvo::prelude::*;
 
 use crate::{entities, state};
@@ -12,5 +13,6 @@ pub async fn get_all(_req: &mut Request, res: &mut Response) {
         .await
         .unwrap();
 
+    res.status_code(StatusCode::OK);
     res.render(serde_json::to_string(&data).unwrap());
 }
