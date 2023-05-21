@@ -8,16 +8,17 @@ struct ErrorResponse;
 
 #[derive(Serialize, Debug)]
 struct ResponseError {
-    status: String,
+    status_code: i16,
     message: String,
 }
 
 #[async_trait]
 impl Writer for ErrorResponse {
     async fn write(mut self, _req: &mut Request, _depot: &mut Depot, res: &mut Response) {
-        res.status_code(StatusCode::INTERNAL_SERVER_ERROR);
+        let status = StatusCode::INTERNAL_SERVER_ERROR;
+        res.status_code(status);
         res.render(Json(ResponseError {
-            status: "error".to_string(),
+            status_code: get_status_code(status),
             message: "Unhandled execption".to_string(),
         }));
     }
@@ -37,11 +38,16 @@ pub async fn error404(
     ctrl: &mut FlowCtrl,
 ) {
     if let Some(StatusCode::NOT_FOUND) = res.status_code {
-        res.status_code(StatusCode::NOT_FOUND);
+        let status = StatusCode::NOT_FOUND;
+        res.status_code(status);
         res.render(Json(ResponseError {
-            status: "error".to_string(),
+            status_code: get_status_code(status),
             message: "Resource not found".to_string(),
         }));
         ctrl.skip_rest();
     }
+}
+
+fn get_status_code(status_code: StatusCode) -> i16 {
+    status_code.as_u16() as i16
 }
