@@ -13,27 +13,27 @@ publish = false
 
 [dependencies]
 anyhow = { version = "^1.0", default-features = true }
-bcrypt = "^0.14"
+bcrypt = { version = "^0.14" }
 chrono = { version = "^0.4.23", features = ["serde"] }
 clap = { version = "^4.0", features = ["derive"] }
-cookie = "^0.17"
+cookie = { version = "^0.17" }
 dialoguer = { version ="^0.10", features = ["password", "zeroize"] }
-dotenvy = "^0.15"
-fastrand = "^1.8"
+dotenvy = { version = "^0.15" }
+fastrand = { version = "^1.8" }
 indicatif = { version = "^0.17.2", features = ["tokio"] }
-once_cell = "^1.17"
 jsonwebtoken = {version = "^8", default-features = false }
 lettre = { version = "^0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
+once_cell = { version = "^1.17" }
 reqwest = { version = "^0.11", optional = true, default-features = false, features = ["blocking"] }
 rust-embed = { version = "^6.6.1", features = ["salvo-ex"] }
-salvo = { version = "^0.41", features = ["anyhow", "catch-panic", "cors", "proxy", "serve-static", "affix", "size-limiter", "oapi"] }
+salvo = { version = "0.41", features = ["anyhow", "catch-panic", "cors", "proxy", "logging", "serve-static", "affix", "size-limiter", "oapi"] }
 sea-query = { version = "^0.28", default-features = false, features = ["derive", "backend-postgres", "with-uuid", "with-json"] }
 serde = { version = "^1.0", features = ["derive"] }
-serde_json = "^1.0"
+serde_json = { version = "^1.0" }
 sqlx = { version = "^0.6", default-features = true, features = [ "runtime-tokio-rustls", "migrate", "postgres", "uuid", "chrono", "json" ] }
-tokio = { version = "^1.23", features = ["macros", "signal"] }
+tokio = { version = "^1.28", features = ["macros", "signal"] }
 tower = { version = "^0.4", features = ["limit", "util"] }
-tracing = "^0.1"
+tracing = { version = "^0.1" }
 tracing-subscriber = { version = "^0.3", features = ["env-filter"] }
 uuid = { version = "^1.3.3", features = ["v4", "fast-rng", "serde"] }
 

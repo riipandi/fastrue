@@ -3,15 +3,16 @@
 
 extern crate cookie;
 
+use salvo::logging::Logger;
 use salvo::prelude::*;
 use salvo::proxy::Proxy;
 use salvo::serve_static::static_embed;
 
-use crate::handler::{error::throw_response, root::health_check};
 use std::net::SocketAddr;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
 
 // use crate::state::AppState;
+use crate::handler::{error::throw_response, root::health_check};
 
 pub mod config;
 pub mod handler;
@@ -27,11 +28,9 @@ pub mod utils;
 struct Assets;
 
 pub async fn run() {
+    let tracing_filter = "fastrue=debug,salvo=info";
     tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| "fastrue=debug,tower_http=info".into()),
-        )
+        .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
         .with(tracing_subscriber::fmt::layer())
         .init();
 
@@ -49,6 +48,8 @@ pub async fn run() {
     };
 
     let router = Router::new()
+        .hoop(CatchPanic::new())
+        .hoop(Logger::new())
         .get(health_check)
         .push(Router::with_path("api").get(health_check))
         .push(Router::with_path("health").get(health_check))
@@ -65,9 +66,9 @@ async fn serve(router: Router) {
         .expect("Unable to parse socket address");
 
     if cfg!(debug_assertions) {
-        tracing::debug!("👀 [DEV] Server listening on http://{}", addr);
+        tracing::info!("👀 [DEV] Server listening on http://{}", addr);
     } else {
-        tracing::debug!("👀 Server listening on http://{}", addr);
+        tracing::info!("👀 Server listening on http://{}", addr);
     }
 
     let acceptor = TcpListener::new(addr).bind().await;
@@ -77,14 +78,14 @@ async fn serve(router: Router) {
 // Graceful shutdown
 // async fn shutdown_signal() {
 //     let ctrl_c = async {
-//         signal::ctrl_c()
+//         tokio::signal::ctrl_c()
 //             .await
 //             .expect("failed to install Ctrl+C handler");
 //     };
 
 //     #[cfg(unix)]
 //     let terminate = async {
-//         signal::unix::signal(signal::unix::SignalKind::terminate())
+//         tokio::signal::unix::signal(tokio::signal::unix::SignalKind::terminate())
 //             .expect("failed to install signal handler")
 //             .recv()
 //             .await;
