@@ -1,0 +1,75 @@
+name: Build Edge Binaries
+
+on:
+  push:
+    branches: ['main']
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: release ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-musl
+            archive: tar.gz tar.xz
+          # - target: x86_64-apple-darwin
+          #   archive: zip
+          # - target: x86_64-pc-windows-gnu
+          #   archive: zip
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get variables
+        id: vars
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+
+      - name: Run PNPM action
+        uses: ./.github/pnpm-action
+
+      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
+        name: Compiling Web UI
+        run: |
+          pnpm install
+          pnpm build
+
+      - id: compile
+        name: Compile binaries
+        uses: rust-build/rust-build.action@v1.4.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          RUSTTARGET: ${{ matrix.target }}
+          ARCHIVE_TYPES: ${{ matrix.archive }}
+          EXTRA_FILES: "README.md LICENSE"
+          UPLOAD_MODE: none
+          MINIFY: true
+      - name: Checkout output
+        run: ls -laR
+
+      - uses: ncipollo/release-action@v1
+        name: Create release
+        with:
+          # tag: "v0.0.1-${{ steps.vars.outputs.sha_short }}"
+          name: "v0.0.1-${{ steps.vars.outputs.sha_short }}"
+          artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
+          skipIfReleaseExists: true
+          makeLatest: false
+          prerelease: true
+
+      # - name: Upload artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Binary
+      #     path: |
+      #       ${{ steps.compile.outputs.BUILT_ARCHIVE }}
+      #       ${{ steps.compile.outputs.BUILT_CHECKSUM }}

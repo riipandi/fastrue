@@ -1,4 +1,4 @@
-name: Build Edge Binaries
+name: Build Edge Containers
 
 on:
   push:
@@ -30,7 +30,8 @@ jobs:
           fetch-depth: 0
       - name: Get variables
         id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Run PNPM action
         uses: ./.github/pnpm-action
@@ -41,29 +42,29 @@ jobs:
           pnpm install
           pnpm build
 
-      - id: compile
-        name: Compile binaries
-        uses: rust-build/rust-build.action@v1.4.3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          RUSTTARGET: ${{ matrix.target }}
-          ARCHIVE_TYPES: ${{ matrix.archive }}
-          EXTRA_FILES: "README.md LICENSE"
-          UPLOAD_MODE: none
-          MINIFY: true
-      - name: Checkout output
-        run: ls -laR
+      # - id: compile
+      #   name: Compile binaries
+      #   uses: rust-build/rust-build.action@v1.4.3
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     RUSTTARGET: ${{ matrix.target }}
+      #     ARCHIVE_TYPES: ${{ matrix.archive }}
+      #     EXTRA_FILES: "README.md LICENSE"
+      #     UPLOAD_MODE: none
+      #     MINIFY: true
+      # - name: Checkout output
+      #   run: ls -laR
 
-      - uses: ncipollo/release-action@v1
-        name: Create release
-        with:
-          tag: "v0.0.1-${GITHUB_SHA::7}"
-          name: "v0.0.1-${GITHUB_SHA::7}"
-          artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
-          skipIfReleaseExists: true
-          makeLatest: false
-          prerelease: true
+      # - uses: ncipollo/release-action@v1
+      #   name: Create release
+      #   with:
+      #     tag: "v0.0.1-${{ steps.vars.outputs.sha_short }}"
+      #     name: "v0.0.1-${{ steps.vars.outputs.sha_short }}"
+      #     artifacts: ${{ steps.compile.outputs.BUILT_ARCHIVE }}
+      #     skipIfReleaseExists: true
+      #     makeLatest: false
+      #     prerelease: true
 
       # - name: Upload artifact
       #   uses: actions/upload-artifact@v3
