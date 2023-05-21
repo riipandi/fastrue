@@ -10,7 +10,7 @@ RUN npm config set fund false && npm install --no-audit && npm run build
 # -----------------------------------------------------------------------------
 # Builder main application
 # -----------------------------------------------------------------------------
-FROM cgr.dev/chainguard/rust:1.69 AS builder
+FROM cgr.dev/chainguard/rust:1.68 AS builder
 WORKDIR /app
 COPY --from=buildweb /app /app
 RUN cargo build --release

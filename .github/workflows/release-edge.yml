@@ -32,7 +32,8 @@ jobs:
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
         name: Install and build project
         run: |
-          pnpm install
+          - pnpm install
+          - pnpm build
 
       - name: Compile and release
         uses: rust-build/rust-build.action@v1.4.3

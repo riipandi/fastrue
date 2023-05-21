@@ -7,7 +7,7 @@ authors = ["Aris Ripandi <aris@duck.com>"]
 categories = ["web-programming::http-server", "authentication"]
 keywords = ["oauth", "server", "oauth2", "jwt"]
 license = "Apache-2.0"
-rust-version = "1.69"
+rust-version = "1.68"
 edition = "2021"
 publish = false
 
