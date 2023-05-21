@@ -8,6 +8,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  CARGO_TERM_COLOR: always
+
 jobs:
   release:
     name: release ${{ matrix.target }}
@@ -52,7 +55,7 @@ jobs:
           ARCHIVE_TYPES: ${{ matrix.archive }}
           EXTRA_FILES: "README.md LICENSE"
           UPLOAD_MODE: none
-          MINIFY: true
+          MINIFY: false
       - name: Checkout output
         run: ls -laR
 
