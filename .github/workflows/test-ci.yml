@@ -47,8 +47,12 @@ jobs:
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
           cargo install cargo-make
 
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "rust-${{ matrix.target }}"
+          env-vars: "RUSTFLAGS"
+          cache-directories: ""
+          cache-all-crates: true
+
       - name: Compile binary
-        run: |
-          echo Build v${{ steps.vars.outputs.sha_short }}
-          cargo make build
-          ls -lh target/release
+        run: cargo make build
