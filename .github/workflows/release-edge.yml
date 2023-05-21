@@ -55,7 +55,7 @@ jobs:
 
       - uses: Swatinem/rust-cache@v2
         with:
-          prefix-key: "cached-rust"
+          prefix-key: "rust-${{ matrix.target }}"
           env-vars: "RUSTFLAGS"
           cache-directories: ""
           cache-all-crates: true

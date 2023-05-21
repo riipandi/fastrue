@@ -1,4 +1,4 @@
-name: Run Test CI
+name: Test Build CI
 
 on: ['push']
 
