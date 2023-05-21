@@ -68,11 +68,15 @@ jobs:
           strip target/release/fastrue
           mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        # if: startsWith(github.ref, 'refs/tags/')
+      - uses: actions/upload-artifact@v3
         with:
-          files: |
-            target/release/fastrue-${{ matrix.target }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: fastrue-${{ matrix.target }}
+          path: target/release/fastrue-${{ matrix.target }}
+
+      # - name: Create release
+      #   uses: softprops/action-gh-release@v1
+      #   # if: startsWith(github.ref, 'refs/tags/')
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     files: |
+      #       target/release/fastrue-${{ matrix.target }}
