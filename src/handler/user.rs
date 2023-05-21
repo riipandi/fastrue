@@ -1,8 +1,7 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-use salvo::http::{errors::*, StatusCode};
-use salvo::prelude::*;
+use salvo::{http::StatusCode, prelude::*};
 
 use crate::{entities, service, utils};
 
@@ -26,8 +25,8 @@ pub async fn get_all(_req: &mut Request, res: &mut Response) {
     let data: Vec<entities::User> = service::user::get_all()
         .await
         .map_err(|err| {
-            let err_msg = format!("Failed to fetch data: {}", err);
-            res.render(StatusError::internal_server_error().summary(err_msg))
+            tracing::error!("Failed to fetch users: {}", err);
+            res.status_code(StatusCode::BAD_REQUEST);
         })
         .unwrap();
 
