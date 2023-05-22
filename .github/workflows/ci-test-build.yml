@@ -13,7 +13,6 @@ env:
 
 jobs:
   test-build:
-    if: github.ref != 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
@@ -26,7 +25,7 @@ jobs:
             target: aarch64-apple-darwin
           - os: windows-latest
             target: x86_64-pc-windows-gnu
-    name: Build ${{ matrix.target }}
+    name: CI build ${{ matrix.target }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
