@@ -93,6 +93,7 @@ jobs:
         platform:
           - linux/amd64
           # - linux/arm64
+    name: Docker images
     steps:
       - uses: actions/checkout@v3
       - uses: docker/setup-qemu-action@v2
@@ -105,7 +106,7 @@ jobs:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=sha,enable=true,priority=100,prefix=git-,format=short
-            type=raw,enable=true,priority=200,suffix=-{{sha}},value=${{ steps.vars.outputs.app_version }}
+            type=raw,enable=true,priority=200,suffix=-{{sha}},value=0.0.0
             type=raw,enable=true,priority=300,value=edge
       -
         name: Login to registry ${{ env.CONTAINER_REGISTRY }}
