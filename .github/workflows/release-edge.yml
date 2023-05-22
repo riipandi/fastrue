@@ -84,7 +84,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  docker-build:
+  docker-images:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     strategy:
@@ -105,9 +105,8 @@ jobs:
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=sha,enable=true,priority=100,prefix=git-,format=short
-            type=raw,enable=true,priority=200,suffix=-{{sha}},value=0.0.0
-            type=raw,enable=true,priority=300,value=edge
+            type=raw,enable=true,priority=100,prefix=git,suffix=-{{sha}},value=v0.0.0
+            type=raw,enable=true,priority=200,value=edge
       -
         name: Login to registry ${{ env.CONTAINER_REGISTRY }}
         uses: docker/login-action@v2
