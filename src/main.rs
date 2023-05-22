@@ -42,33 +42,41 @@ enum Commands {
 async fn main() {
     dotenv().ok(); // Load environment variables
 
-    let build_timestamp = build_time::build_time_utc!();
-    println!("\nFastrue v{} ({}).\n", VERSION, build_timestamp);
-
     let tracing_filter = "fastrue=debug,salvo=info,sqlx=error";
     tracing_subscriber::registry()
         .with(EnvFilter::try_from_default_env().unwrap_or_else(|_| tracing_filter.into()))
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    // Check database connection
-    if let Err(err) = futures::executor::block_on(open_db()) {
-        panic!("Cannot connect to database: {}", err);
-    }
-
     // You can check for the existence of subcommands, and if found
     // use their matches just as you would the top level command.
     let cli = Cli::parse();
+
     match cli.command {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),
-        Some(Commands::Migrate { force }) => run_migration(force).await,
+        Some(Commands::Migrate { force }) => {
+            // Open database connection
+            if let Err(err) = futures::executor::block_on(open_db()) {
+                panic!("Cannot connect to database: {}", err);
+            }
+            run_migration(force).await
+        }
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
         None => {
+            let build_timestamp = build_time::build_time_utc!();
+            println!("\nFastrue v{} ({}).\n", VERSION, build_timestamp);
+
+            // Open database connection
+            if let Err(err) = futures::executor::block_on(open_db()) {
+                panic!("Cannot connect to database: {}", err);
+            }
+
             let auto_migrate = config::get_envar("FASTRUE_AUTO_MIGRATE", Some("true"));
             if auto_migrate.trim().parse().unwrap() {
                 tracing::info!("🍀 Running automatic database migration");
                 run_migration(true).await
             }
+
             tokio::join!(fastrue::serve());
         }
     }

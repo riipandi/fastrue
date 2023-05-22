@@ -13,7 +13,7 @@ env:
 
 jobs:
   test-build:
-    if: github.event_name != 'pull_request' || github.ref != 'refs/heads/main'
+    if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false
       matrix:
@@ -26,36 +26,40 @@ jobs:
             target: aarch64-apple-darwin
           - os: windows-latest
             target: x86_64-pc-windows-gnu
-    name: Test build ${{ matrix.target }}
+    name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Get variables
+      - name: Get Variables
         id: vars
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Run PNPM action
         uses: ./.github/pnpm-action
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Install NPM dependencies
+        name: Build React SPA
         run: |
           pnpm install
           pnpm build
 
-      - name: Setup Rust toolchain
+      - name: Setup Rust Toolchain
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
           cargo install cargo-make
 
-      - uses: Swatinem/rust-cache@v2
+      - name: Caching Rust Toolchain
+        uses: Swatinem/rust-cache@v2
         with:
           prefix-key: "rust-${{ matrix.target }}"
           env-vars: "RUSTFLAGS"
           cache-directories: ""
           cache-all-crates: true
 
-      - name: Compile binary
+      - name: Compile Binaries
         run: cargo build --release
+
+      - name: Check Build Version
+        run: ./target/release/fastrue -V
