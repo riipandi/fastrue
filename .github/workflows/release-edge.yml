@@ -59,6 +59,7 @@ jobs:
   #       run: |
   #         rustup set auto-self-update disable
   #         rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+  #         cargo install cargo-make
 
   #     - uses: Swatinem/rust-cache@v2
   #       with:

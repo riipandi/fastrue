@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/node:18 AS buildweb
 COPY --chown=node:node . .
-RUN npm config set fund false && npm install --no-audit && npm run build
+RUN npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
 # Builder main application

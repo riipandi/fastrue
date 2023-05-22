@@ -1,11 +1,17 @@
 [env]
 APP_VERSION = "${CARGO_MAKE_CRATE_VERSION}"
 GIT_HASH_SHORT = { script = ["git rev-parse --short HEAD"] }
-RUSTFLAGS = "-C target-cpu=native"
+PKG_WEB_VERSION = { script = ["cat package.json | jq -r .version"] }
 IMAGE_NAME = "ghcr.io/riipandi/fastrue"
 CONTAINER_NAME = "${CARGO_MAKE_CRATE_NAME}"
 BUILD_VERSION = "v${APP_VERSION}-${GIT_HASH_SHORT}"
 BIND_PORT = 9999
+
+[tasks.sync-version]
+script = [
+  "sed -i '' \"s/${PKG_WEB_VERSION}/${APP_VERSION}/\" package.json",
+  "pnpm prettier --write package.json"
+]
 
 [tasks.output-release]
 command = "ls"
@@ -48,7 +54,7 @@ dependencies = ["clean"]
 [tasks.build-web]
 command = "pnpm"
 args = ["build"]
-dependencies = ["deps-npm"]
+dependencies = ["sync-version", "deps-npm",]
 
 [tasks.build]
 clear = true
