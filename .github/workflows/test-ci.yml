@@ -43,7 +43,9 @@ jobs:
         uses: ./.github/pnpm-action
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
         name: Install NPM dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm build
 
       - name: Setup Rust toolchain
         run: |
