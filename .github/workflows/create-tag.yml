@@ -22,7 +22,7 @@ jobs:
 
       - name: Get app version
         id: getvar
-        run: echo "::set-output name=app_version::$(cat package.json | jq -r .version)"
+        run: echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
 
       - uses: EndBug/latest-tag@latest
         with:
