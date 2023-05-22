@@ -1,7 +1,6 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-use build_time::build_time_utc;
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
@@ -42,7 +41,9 @@ enum Commands {
 #[tokio::main]
 async fn main() {
     dotenv().ok(); // Load environment variables
-    println!("\nFastrue v{} ({}).\n", VERSION, build_time_utc!());
+
+    let build_timestamp = build_time::build_time_utc!();
+    println!("\nFastrue v{} ({}).\n", VERSION, build_timestamp);
 
     let tracing_filter = "fastrue=debug,salvo=info,sqlx=error";
     tracing_subscriber::registry()
