@@ -13,7 +13,7 @@ RUN npm config set fund false && npm install --no-audit && npm run build
 FROM cgr.dev/chainguard/rust:1.69 AS builder
 WORKDIR /app
 COPY --from=buildweb /app /app
-RUN cargo clean && cargo build --release
+RUN cargo build --release
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
