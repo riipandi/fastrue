@@ -9,7 +9,7 @@ use std::path::PathBuf;
 use crate::{config::progressbar_style, state};
 
 #[derive(rust_embed::RustEmbed)]
-#[folder = "$CARGO_MANIFEST_DIR/migrations"]
+#[folder = "migrations/"]
 #[include = "*.sql"]
 struct Migrations;
 
@@ -42,10 +42,6 @@ pub async fn run_migration(force: bool) {
 async fn migrate_up() -> Result<(), sqlx::Error> {
     let pb = ProgressBar::new(1000);
     pb.set_style(progressbar_style().unwrap());
-
-    for file in Migrations::iter() {
-        println!("{}", file.as_ref());
-    }
 
     let migration_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("migrations");
     let migrator = Migrator::new(migration_dir).await.unwrap();

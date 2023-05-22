@@ -5,7 +5,7 @@
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/node:18 AS buildweb
 COPY --chown=node:node . .
-RUN npm config set fund false && npm install --no-audit && npm run build
+# RUN npm config set fund false && npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
 # Builder main application
@@ -21,7 +21,8 @@ RUN cargo build --release
 LABEL org.opencontainers.image.source="https://github.com/riipandi/fastrue"
 FROM cgr.dev/chainguard/glibc-dynamic:latest as runner
 
-ARG BIND_PORT
+ARG BIND_PORT 9999
+ARG BIND_ADDR 0.0.0.0
 ARG DATABASE_URL
 ARG FASTRUE_SECRET_KEY
 ARG FASTRUE_DB_NAMESPACE
@@ -33,8 +34,8 @@ ARG FASTRUE_SMTP_USERNAME
 ARG FASTRUE_SMTP_PASSWORD
 ARG FASTRUE_SMTP_SECURE
 
-ENV BIND_ADDR 0.0.0.0
 ENV BIND_PORT $BIND_PORT
+ENV BIND_ADDR $BIND_ADDR
 ENV DATABASE_URL $DATABASE_URL
 ENV FASTRUE_SECRET_KEY $FASTRUE_SECRET_KEY
 ENV FASTRUE_DB_NAMESPACE $FASTRUE_DB_NAMESPACE
@@ -48,7 +49,6 @@ ENV FASTRUE_SMTP_SECURE $FASTRUE_SMTP_SECURE
 
 # Import compiled binaries from builder
 COPY --from=builder /app/target/release/fastrue /sbin/fastrue
-COPY --from=builder /app/migrations /sbin/migrations
 
 EXPOSE $BIND_PORT
 

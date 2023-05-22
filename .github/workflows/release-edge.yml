@@ -97,7 +97,7 @@ jobs:
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
       -
-        name: Log into registry ${{ env.CONTAINER_REGISTRY }}
+        name: Login to registry ${{ env.CONTAINER_REGISTRY }}
         uses: docker/login-action@v2
         with:
           registry: ${{ env.CONTAINER_REGISTRY }}
@@ -109,6 +109,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
+          push: ${{ github.ref == 'refs/heads/main' }}
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
           outputs: type=image,name=${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
@@ -145,7 +146,7 @@ jobs:
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
       -
-        name: Log into registry ${{ env.CONTAINER_REGISTRY }}
+        name: Login to registry ${{ env.CONTAINER_REGISTRY }}
         uses: docker/login-action@v2
         with:
           registry: ${{ env.CONTAINER_REGISTRY }}
