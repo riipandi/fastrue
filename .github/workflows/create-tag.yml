@@ -1,0 +1,31 @@
+name: Push a new tag
+
+on:
+  pull_request:
+    types: [closed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  PR_NUMBER: ${{ github.event.number }}
+
+jobs:
+  create-tag:
+    name: Create new tag
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get app version
+        id: getvar
+        run: echo "::set-output name=app_version::$(cat package.json | jq -r .version)"
+
+      - uses: EndBug/latest-tag@latest
+        with:
+          ref: v${{ steps.getvar.outputs.app_version }}-b${{env.PR_NUMBER}}
+          description: Generated from GitHub Actions for PR#${{env.PR_NUMBER}}
+          force-branch: false

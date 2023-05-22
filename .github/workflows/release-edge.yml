@@ -2,7 +2,7 @@ name: Release Edge
 
 on:
   push:
-    branches: ['main']
+    tags: ["v*.*.*"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -105,7 +105,7 @@ jobs:
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=raw,enable=true,priority=100,suffix=-{{sha}},value=git
+            type=edge,enable=true,priority=100,suffix=-{{sha}},branch=$repo.default_branch
             type=raw,enable=true,priority=200,value=edge
       -
         name: Login to registry ${{ env.CONTAINER_REGISTRY }}
