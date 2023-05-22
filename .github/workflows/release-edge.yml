@@ -20,65 +20,69 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # build-binaries:
-  #   if: github.ref == 'refs/heads/main'
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #         - os: ubuntu-latest
-  #           target: x86_64-unknown-linux-gnu
-  #           archive: tar.gz tar.xz
-  #         - os: macos-latest
-  #           target: x86_64-apple-darwin
-  #         - os: macos-latest
-  #           target: aarch64-apple-darwin
-  #           archive: zip
-  #         # - os: windows-latest
-  #         #   target: x86_64-pc-windows-gnu
-  #         #   archive: zip
-  #   name: Build ${{ matrix.target }}
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Get variables
-  #       id: vars
-  #       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+  build-binaries:
+    if: github.ref == 'refs/heads/main'
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            archive: tar.gz tar.xz
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            archive: zip
+          # - os: windows-latest
+          #   target: x86_64-pc-windows-gnu
+          #   archive: zip
+    name: Build ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get variables
+        id: vars
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
 
-  #     - name: Run PNPM action
-  #       uses: ./.github/pnpm-action
-  #     - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-  #       name: Install NPM dependencies
-  #       run: |
-  #         pnpm install
-  #         pnpm build
+      - name: Run PNPM action
+        uses: ./.github/pnpm-action
+      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
+        name: Install NPM dependencies
+        run: |
+          pnpm install
+          pnpm build
 
-  #     - name: Setup Rust toolchain
-  #       run: |
-  #         rustup set auto-self-update disable
-  #         rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-  #         cargo install cargo-make
+      - name: Setup Rust toolchain
+        run: |
+          rustup set auto-self-update disable
+          rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+          cargo install cargo-make
 
-  #     - uses: Swatinem/rust-cache@v2
-  #       with:
-  #         prefix-key: "rust-${{ matrix.target }}"
-  #         env-vars: "RUSTFLAGS"
-  #         cache-directories: ""
-  #         cache-all-crates: true
+      - uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "rust-${{ matrix.target }}"
+          env-vars: "RUSTFLAGS"
+          cache-directories: ""
+          cache-all-crates: true
 
-  #     - name: Compile application binary
-  #       id: compile
-  #       run: |
-  #         cargo build --release
-  #         strip target/release/fastrue
-  #         mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
+      - name: Compile application binary
+        id: compile
+        run: |
+          cargo build --release
+          strip target/release/fastrue
+          mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
 
-  #     - uses: actions/upload-artifact@v3
-  #       with:
-  #         name: fastrue-${{ matrix.target }}
-  #         path: target/release/fastrue-${{ matrix.target }}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: fastrue-binaries
+          path: target/release/*
+          if-no-files-found: error
+          retention-days: 1
 
   docker-build:
     if: github.ref == 'refs/heads/main'
@@ -99,6 +103,10 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,enable=true,priority=100,prefix=git-,format=short
+            type=raw,enable=true,priority=200,suffix=-{{sha}},value=${{ steps.vars.outputs.app_version }}
+            type=raw,enable=true,priority=300,value=edge
       -
         name: Login to registry ${{ env.CONTAINER_REGISTRY }}
         uses: docker/login-action@v2
@@ -107,72 +115,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build and push with defined tag
+        name: Build and push with tags
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.event_name != 'pull_request' }}
           platforms: ${{ matrix.platform }}
-          tags: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:edge
-      -
-        name: Build and push by digest
-        id: build
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: ${{ github.ref == 'refs/heads/main' }}
-          platforms: ${{ matrix.platform }}
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          outputs: type=image,name=${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }},push-by-digest=true,name-canonical=true,push=true
-      -
-        name: Export digest
-        run: |
-          mkdir -p /tmp/digests
-          digest="${{ steps.build.outputs.digest }}"
-          touch "/tmp/digests/${digest#sha256:}"
-      -
-        name: Upload digest
-        uses: actions/upload-artifact@v3
-        with:
-          name: digests
-          path: /tmp/digests/*
-          if-no-files-found: error
-          retention-days: 1
-
-  docker-merge:
-    needs: [docker-build]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: docker/setup-buildx-action@v2
-      -
-        name: Download digests
-        uses: actions/download-artifact@v3
-        with:
-          name: digests
-          path: /tmp/digests
-      -
-        id: meta
-        name: Extract Docker metadata
-        uses: docker/metadata-action@v4
-        with:
-          images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-      -
-        name: Login to registry ${{ env.CONTAINER_REGISTRY }}
-        uses: docker/login-action@v2
-        with:
-          registry: ${{ env.CONTAINER_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Create manifest list and push
-        working-directory: /tmp/digests
-        run: |
-          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
-            $(printf '${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
-      -
-        name: Inspect image
-        run: |
-          docker buildx imagetools inspect ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
 
   # create-release:
   #   needs: [build-binaries, build-images]
