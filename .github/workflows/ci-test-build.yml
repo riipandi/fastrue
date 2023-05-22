@@ -2,7 +2,7 @@ name: CI Test Build
 
 on:
   push:
-    branches: ['**']
+    branches-ignore: ['main']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -13,7 +13,7 @@ env:
 
 jobs:
   test-build:
-    if: github.event_name != 'pull_request'
+    if: github.ref != 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
