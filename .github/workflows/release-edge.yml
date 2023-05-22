@@ -1,8 +1,9 @@
 name: Release Edge
 
 on:
-  push:
-    tags: ['v*.*.*-b.*']
+  pull_request:
+    types: [closed]
+    branches: ["main"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -18,6 +19,7 @@ env:
   CARGO_TERM_COLOR: always
   CONTAINER_REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
+  PR_NUMBER: ${{ github.event.number }}
 
 jobs:
   build-binaries:
@@ -96,6 +98,9 @@ jobs:
     name: Docker images
     steps:
       - uses: actions/checkout@v3
+      - name: Get app version
+        id: getvar
+        run: echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
       - uses: docker/setup-qemu-action@v2
       - uses: docker/setup-buildx-action@v2
       -
@@ -105,8 +110,8 @@ jobs:
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=edge,enable=true,priority=100,suffix=-{{sha}},branch=$repo.default_branch
-            type=match,enable=true,priority=200,suffix=-{{sha}},pattern=v(\d.\d),group=1
+            type=edge,enable=true,priority=100,suffix=-b${{env.PR_NUMBER}},branch=$steps.getvar.outputs.app_version
+            type=edge,enable=true,priority=200,suffix=-{{sha}},branch=$repo.default_branch
             type=raw,enable=true,priority=300,value=edge
       -
         name: Login to registry ${{ env.CONTAINER_REGISTRY }}
@@ -125,41 +130,18 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  # create-release:
-  #   needs: [build-binaries, build-images]
-  #   if: github.ref == 'refs/heads/main'
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       include:
-  #         - os: ubuntu-latest
-  #           target: x86_64-unknown-linux-gnu
-  #           archive: tar.gz tar.xz
-  #         - os: macos-latest
-  #           target: x86_64-apple-darwin
-  #         - os: macos-latest
-  #           target: aarch64-apple-darwin
-  #           archive: zip
-  #         # - os: windows-latest
-  #         #   target: x86_64-pc-windows-gnu
-  #         #   archive: zip
-  #   name: Create Release
+  # create-tag:
+  #   if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
+  #   needs: [test-build]
+  #   name: Create new tag
   #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v3
+  #     - name: Get app version
+  #       id: getvar
+  #       run: echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
+  #     - uses: EndBug/latest-tag@latest
   #       with:
-  #         fetch-depth: 0
-  #     - uses: actions/download-artifact@v3
-  #       with:
-  #         name: fastrue-${{ matrix.target }}
-  #         path: target/release/fastrue-${{ matrix.target }}
-  #     - name: Generate Changelog
-  #       run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
-  #     - name: Publish release
-  #       uses: softprops/action-gh-release@v1
-  #       # if: startsWith(github.ref, 'refs/tags/')
-  #       with:
-  #         tag_name: ${{ github.ref }}
-  #         files: |
-  #           target/release/fastrue-${{ matrix.target }}
-  #           LICENSE
+  #         ref: v${{ steps.getvar.outputs.app_version }}-b${{env.PR_NUMBER}}
+  #         description: Generated from GitHub Actions for PR#${{env.PR_NUMBER}}
+  #         force-branch: false

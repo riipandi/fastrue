@@ -1,10 +1,8 @@
-name: Test Build CI
+name: CI Test Build
 
 on:
   push:
     branches: ['**']
-  pull_request:
-    types: [closed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -12,11 +10,10 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  PR_NUMBER: ${{ github.event.number }}
 
 jobs:
   test-build:
-    if: github.event_name != 'pull_request'
+    if: github.event_name != 'pull_request' || github.ref != 'refs/heads/main'
     strategy:
       fail-fast: false
       matrix:
@@ -43,7 +40,9 @@ jobs:
         uses: ./.github/pnpm-action
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
         name: Install NPM dependencies
-        run: pnpm install
+        run: |
+          pnpm install
+          pnpm build
 
       - name: Setup Rust toolchain
         run: |
@@ -60,19 +59,3 @@ jobs:
 
       - name: Compile binary
         run: cargo build --release
-
-  create-tag:
-    if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
-    needs: [test-build]
-    name: Create new tag
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Get app version
-        id: getvar
-        run: echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
-      - uses: EndBug/latest-tag@latest
-        with:
-          ref: v${{ steps.getvar.outputs.app_version }}-b${{env.PR_NUMBER}}
-          description: Generated from GitHub Actions for PR#${{env.PR_NUMBER}}
-          force-branch: false
