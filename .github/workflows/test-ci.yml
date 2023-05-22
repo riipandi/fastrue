@@ -59,7 +59,7 @@ jobs:
           cache-all-crates: true
 
       - name: Compile binary
-        run: cargo make build
+        run: cargo build --release
 
   create-tag:
     if: github.event_name == 'pull_request' && github.ref != 'refs/heads/main'
