@@ -1,7 +1,7 @@
 [package]
 name = "fastrue"
 version = "0.0.1"
-description = "Headless authentication server"
+description = "Fastrue is a headless authentication server, inspired from Netlify GoTrue."
 repository = "https://github.com/riipandi/fastrue"
 authors = ["Aris Ripandi <aris@duck.com>"]
 categories = ["web-programming::http-server", "authentication"]

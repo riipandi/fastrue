@@ -18,7 +18,8 @@ RUN cargo build --release
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
 # -----------------------------------------------------------------------------
-LABEL org.opencontainers.image.source="https://github.com/riipandi/fastrue"
+LABEL org.opencontainers.image.source "https://github.com/riipandi/fastrue"
+LABEL org.opencontainers.image.description "Fastrue is a headless authentication server, inspired from Netlify GoTrue."
 FROM cgr.dev/chainguard/glibc-dynamic:latest as runner
 
 ARG BIND_PORT 9999

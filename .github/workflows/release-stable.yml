@@ -1,8 +1,7 @@
-name: Release Edge
+name: Release Stable
 
 on:
   push:
-    branches: ["**"]
     tags: ["v*.*.*"]
   pull_request:
     branches: ["main"]
