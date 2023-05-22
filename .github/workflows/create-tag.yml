@@ -27,5 +27,5 @@ jobs:
       - uses: EndBug/latest-tag@latest
         with:
           ref: v${{ steps.getvar.outputs.app_version }}-b${{env.PR_NUMBER}}
-          description: Generated from GitHub Actions for [PR#${{env.PR_NUMBER}}](https://github.com/${{ github.repository }}/pull/${{env.PR_NUMBER}})
+          description: Generated from GitHub Actions for PR#${{env.PR_NUMBER}}
           force-branch: false
