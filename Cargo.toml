@@ -10,11 +10,12 @@ license = "Apache-2.0"
 rust-version = "1.69"
 edition = "2021"
 publish = false
+build = "build.rs"
 
 [dependencies]
 anyhow = { version = "^1.0", default-features = true }
 bcrypt = { version = "^0.14" }
-built = { version = "0.6", features = ["chrono", "semver"] }
+build-time = "0.1.3"
 chrono = { version = "^0.4.23", default-features = false, features = ["clock", "serde"] }
 clap = { version = "^4.0", features = ["derive"] }
 cookie = { version = "^0.17" }
@@ -44,7 +45,6 @@ uuid = { version = "^1.3.3", features = ["v4", "fast-rng", "serde"] }
 [dev-dependencies]
 
 [build-dependencies]
-built = { version = "0.6", features = ["git2", "chrono", "semver"] }
 rust-embed = { version = "^6.6.1", features = ["include-exclude", "salvo-ex"] }
 
 # Reduce the Rust binary size and reduces the size of the images further.

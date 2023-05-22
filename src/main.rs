@@ -1,12 +1,7 @@
 // Copyright 2022-current Aris Ripandi <aris@duck.com>
 // SPDX-License-Identifier: Apache-2.0
 
-// The file `built.rs` was placed there by cargo and `build.rs`
-// Ref: https://github.com/lukaslueg/built/blob/master/example_project/src/main.rs
-mod built_info {
-    include!(concat!(env!("OUT_DIR"), "/built.rs"));
-}
-
+use build_time::build_time_utc;
 use clap::{Parser, Subcommand};
 use dotenvy::dotenv;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};
@@ -14,6 +9,8 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilte
 use fastrue::service::create_admin;
 use fastrue::utils::{migration::run_migration, string::generate_secret};
 use fastrue::{config, state};
+
+const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
@@ -45,14 +42,7 @@ enum Commands {
 #[tokio::main]
 async fn main() {
     dotenv().ok(); // Load environment variables
-
-    println!(
-        "\nFastrue v{}, built for {} by {} ({}).\n",
-        built_info::PKG_VERSION,
-        built_info::TARGET,
-        built_info::RUSTC_VERSION,
-        built::util::strptime(built_info::BUILT_TIME_UTC)
-    );
+    println!("\nFastrue v{} ({}).\n", VERSION, build_time_utc!());
 
     let tracing_filter = "fastrue=debug,salvo=info,sqlx=error";
     tracing_subscriber::registry()

@@ -56,7 +56,7 @@ dependencies = ["format", "build-web", "build-api", "output-release"]
 
 [tasks.run]
 command = "cargo"
-args = ["--release"]
+args = ["run", "--release"]
 dependencies = ["format", "build-web"]
 
 # --------------------------------------------------------------------------------------------------
@@ -118,5 +118,5 @@ args = [
   "--name", "${CONTAINER_NAME}",
   "--env-file", ".env.docker",
   "-p", "${BIND_PORT}:${BIND_PORT}",
-  "${IMAGE_NAME}:${BUILD_VERSION}"
+  "${IMAGE_NAME}:edge"
 ]
