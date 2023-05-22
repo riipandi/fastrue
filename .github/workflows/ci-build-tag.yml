@@ -1,4 +1,4 @@
-name: Test Build CI
+name: CI Build Tag
 
 on:
   push:
