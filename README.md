@@ -1,8 +1,8 @@
 # Fastrue Authentication Server
 
-[![License](https://img.shields.io/github/license/riipandi/fastrue?style=flat-square&color=blue)](./LICENSE)
+[![License](https://badgers.space/github/license/riipandi/fastrue?color=green&corner_radius=0)](./LICENSE)
+[![GitHub contributors](https://badgers.space/github/contributors/riipandi/fastrue?color=green&corner_radius=0)](https://github.com/riipandi/fastrue/graphs/contributors)
 [![Contributions](https://img.shields.io/badge/Contributions-welcome-blue.svg?style=flat-square)](./CODE_OF_CONDUCT.md)
-[![GitHub contributors](https://img.shields.io/github/contributors/riipandi/fastrue?style=flat-square)](https://github.com/riipandi/fastrue/graphs/contributors)
 [![(Rust)](https://img.shields.io/badge/rust-v1.69-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 [![GitHub release](https://img.shields.io/github/v/release/riipandi/fastrue?logo=rust&style=flat-square)](https://github.com/riipandi/fastrue)
 [![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
@@ -37,6 +37,12 @@ the following command:
 
 ```sh
 cargo run -- generate-secret
+```
+
+### Run Database Migration
+
+```sh
+cargo run -- migrate
 ```
 
 ### Up and Running

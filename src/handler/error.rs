@@ -49,3 +49,13 @@ pub async fn error404(
         ctrl.skip_rest();
     }
 }
+
+#[handler]
+pub async fn error_headless(res: &mut Response) {
+    let status = StatusCode::NOT_FOUND;
+    res.status_code(status);
+    res.render(Json(ResponseError {
+        status_code: utils::get_status_code(status),
+        message: "Resource not found".to_string(),
+    }));
+}

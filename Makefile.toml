@@ -81,6 +81,10 @@ args = ["dev"]
 command = "pnpm"
 args = ["concurrently", "--kill-others", "'cargo watch -qcx run'", "'pnpm dev'"]
 
+[tasks.generate-secret]
+command = "cargo"
+args = ["run", "--", "generate-secret"]
+
 [tasks.migrate]
 command = "cargo"
 args = ["run", "--", "migrate"]
