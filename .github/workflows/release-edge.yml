@@ -77,11 +77,12 @@ jobs:
           cargo build --release
           strip target/release/fastrue
           mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
+          ls -lh target/release/
 
       - uses: actions/upload-artifact@v3
         with:
           name: fastrue-binaries
-          path: target/release/*
+          path: target/release/fastrue-*
           if-no-files-found: error
           retention-days: 1
 
