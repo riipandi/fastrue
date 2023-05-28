@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useFetch } from 'usehooks-ts'
 
 import { Alert } from '@/components/Alerts/Alert'
 import { Button } from '@/components/Buttons'
 import { Card } from '@/components/Containers'
 import { HorizontalDivider } from '@/components/Dividers'
 import { PasswordInput, TextInput } from '@/components/Inputs'
+import PageLoader from '@/components/PageLoader'
 import { GitHubButton, GoogleButton } from '@/components/SocialButton'
 import { auth, useAuthentication } from '@/hooks/AuthProvider'
 
@@ -17,6 +19,7 @@ interface LoginTypes {
 export default function Login() {
   const { login, loggedOut } = useAuthentication()
   const [failed, setFailed] = useState<string | null>()
+  const { data, error } = useFetch<any>(`/api/users`)
 
   const {
     register,
@@ -32,6 +35,9 @@ export default function Login() {
       .then((_response) => login())
       .catch((error) => setFailed(error.message))
   }
+
+  if (error) return <p>Error</p>
+  if (!data) return <PageLoader />
 
   return (
     <main className='mx-auto w-full max-w-md p-6'>
