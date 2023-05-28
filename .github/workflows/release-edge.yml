@@ -7,7 +7,7 @@ name: Release Edge
 
 on:
   push:
-    branches: ['main']
+    branches: ['main', 'develop']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -121,8 +121,8 @@ jobs:
         id: getvar
         shell: bash
         run: |
-          curl https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz
-          tar -xzvf toml-0.2.3-x86_64-linux.tar.gz && mv toml-0.2.3-x86_64-linux/toml /bin/toml
+          curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
+          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /bin/toml
           echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - uses: docker/metadata-action@v4
