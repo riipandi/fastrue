@@ -32,10 +32,10 @@ jobs:
             target: x86_64-unknown-linux-gnu
           - os: macos-latest
             target: x86_64-apple-darwin
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: windows-latest
-            target: x86_64-pc-windows-gnu
+          # - os: macos-latest
+          #   target: aarch64-apple-darwin
+          # - os: windows-latest
+          #   target: x86_64-pc-windows-gnu
     name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
     steps:
@@ -69,14 +69,17 @@ jobs:
         id: compile
         run: |
           cargo build --release
+          mkdir -p ${{ github.workspace }}/uploads
           strip target/release/fastrue && cd target/release
           zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
-          ls -lh .
+          mv fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }}.zip ${{ github.workspace }}/uploads/
+          echo "${{ steps.getvar.outputs.app_version }}" > ${{ github.workspace }}/uploads/VERSION.txt
+          ls -lh ${{ github.workspace }}/uploads
 
       - uses: actions/upload-artifact@v3
         with:
-          name: fastrue-binaries-${{ steps.getvar.outputs.app_version }}
-          path: target/release/fastrue-*.zip
+          name: fastrue-binaries
+          path: ${{ github.workspace }}/uploads/
           if-no-files-found: error
           retention-days: 1
 
@@ -86,19 +89,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Get variables
-        id: getvar
-        run: |
-          rustup set auto-self-update disable
-          rustup toolchain install stable --profile minimal
-          cargo install toml-cli
-          echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
-
       - uses: actions/download-artifact@v3
         id: download
         with:
-          name: fastrue-binaries-${{ steps.getvar.outputs.app_version }}
-          path: ~/release-files
+          name: fastrue-binaries
+          path: ${{ github.workspace }}
+
+      - name: Get variables
+        id: getvar
+        run: echo "app_version=$(cat ${{ github.workspace }}/VERSION.txt)" >> $GITHUB_OUTPUT
 
       - name: Create Release
         run: |
