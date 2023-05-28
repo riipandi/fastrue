@@ -1,9 +1,13 @@
 name: Release Edge
 
+# on:
+#   pull_request:
+#     types: [closed]
+#     branches: ["main"]
+
 on:
-  pull_request:
-    types: [closed]
-    branches: ["main"]
+  push:
+    branches: ['main']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -95,6 +99,7 @@ jobs:
 
   docker-images:
     # needs: [build-binaries]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -115,9 +120,10 @@ jobs:
 
       - name: Get application variables
         id: getvar
+        shell: bash
         run: |
-          curl -o toml.tar.gz https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz
-          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /bin/toml
+          curl -o ~/toml.tar.gz https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz
+          tar -xzvf ~/toml.tar.gz && mv ~/toml-0.2.3-x86_64-linux/toml /bin/toml
           echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - uses: docker/metadata-action@v4
@@ -132,7 +138,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: ${{ github.event_name == 'pull_request' }}
+          push: true
           platforms: ${{ matrix.platform }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
