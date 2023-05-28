@@ -45,7 +45,7 @@ jobs:
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-          cargo install cargo-make tombl
+          cargo install cargo-make toml-cli
 
       - name: Caching Rust Toolchain
         uses: Swatinem/rust-cache@v2

@@ -51,14 +51,13 @@ jobs:
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-          cargo install cargo-make tombl
+          cargo install cargo-make toml-cli
 
       - name: Get variables
         id: vars
         run: |
           echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          eval '$(tombl -e app_version=package.version Cargo.toml)'
-          echo $app_version >> $GITHUB_OUTPUT
+          echo $(toml get Cargo.toml package.version --raw) >> $GITHUB_OUTPUT
 
       - uses: Swatinem/rust-cache@v2
         with:
