@@ -6,6 +6,7 @@ use salvo::prelude::*;
 use salvo::serve_static::static_embed;
 use salvo::{catcher::Catcher, logging::Logger, proxy::Proxy};
 
+use crate::config;
 use crate::handler::{error, root, user};
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -59,12 +60,18 @@ fn api_routes() -> Router {
  * use compiled Vite React SPA app in production mode.
  **/
 fn web_ui_route() -> Router {
-    let web_ui: Router = if cfg!(debug_assertions) {
-        Router::with_path("ui/<**path>").handle(Proxy::new(vec!["http://localhost:3000/ui"]))
+    let headless_mode = config::get_envar("TRUSTY_HEADLESS_MODE", Some("false"));
+
+    if headless_mode.trim().parse().unwrap() {
+        Router::with_path("ui/<**>").get(error::error_headless)
     } else {
-        Router::with_path("ui/<**path>").get(static_embed::<Assets>().fallback("index.html"))
-    };
-    web_ui
+        let web_ui: Router = if cfg!(debug_assertions) {
+            Router::with_path("ui/<**path>").handle(Proxy::new(vec!["http://localhost:3000/ui"]))
+        } else {
+            Router::with_path("ui/<**path>").get(static_embed::<Assets>().fallback("index.html"))
+        };
+        web_ui
+    }
 }
 
 fn health_check() -> Router {
