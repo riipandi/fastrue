@@ -114,10 +114,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get application variables
-        uses: ./.github/rust-action
-      - name: Get application variables
         id: getvar
-        run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
+        run: |
+          curl -o toml.tar.gz https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz
+          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /bin/toml
+          echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - uses: docker/metadata-action@v4
         id: meta

@@ -20,12 +20,8 @@ RUN \
 # Builder for Web UI
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/node:20 AS buildweb
-ARG TARGETPLATFORM
 COPY --from=prebuild --chown=node:node /app /app
-RUN \
- --mount=type=cache,target=/app/package-lock.json,id=${TARGETPLATFORM}\
- --mount=type=cache,target=/app/node_modules,id=${TARGETPLATFORM}\
- npm config set fund false && npm install --no-audit && npm run build
+RUN npm config set fund false && npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
 # Builder main application
@@ -34,7 +30,7 @@ FROM cgr.dev/chainguard/rust:1.69 AS builder
 ARG TARGETPLATFORM
 WORKDIR /app
 COPY --from=buildweb /app /app
-RUN --mount=type=cache,target=/app/target,id=${TARGETPLATFORM} cargo build --release
+RUN cargo build --release
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
