@@ -1,14 +1,16 @@
 # syntax=docker/dockerfile:1
 
+FROM debian:bullseye-slim AS base
+ARG TOML_CLI_PKG="https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz"
+RUN apt-get update && apt-get -y install jq wget && apt-get -y autoremove
+RUN wget -O /tmp/toml.tar.gz ${TOML_CLI_PKG} && tar -xzvf /tmp/toml.tar.gz &&\
+ rm -f /tmp/toml.tar.gz && chmod +x toml-0.2.3-x86_64-linux/toml &&\
+ mv toml-0.2.3-x86_64-linux/toml /bin/toml
+
 # -----------------------------------------------------------------------------
 # Sync version information between core and web app
 # -----------------------------------------------------------------------------
-FROM rust:1.69-slim-bullseye AS prebuild
-ARG TOML_CLI_PKG="https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz"
-RUN apt-get update && apt-get -y install jq wget && wget -O /tmp/toml.tar.gz ${TOML_CLI_PKG} &&\
- tar -xzvf /tmp/toml.tar.gz && rm -f /tmp/toml.tar.gz &&\
- chmod +x toml-0.2.3-x86_64-linux/toml &&\
- mv toml-0.2.3-x86_64-linux/toml /bin/toml
+FROM base as prebuild
 WORKDIR /app
 COPY . .
 RUN \
