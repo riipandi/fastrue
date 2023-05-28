@@ -23,128 +23,117 @@ env:
   PR_NUMBER: ${{ github.event.number }}
 
 jobs:
-  build-binaries:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          # - os: macos-latest
-          #   target: aarch64-apple-darwin
-          # - os: windows-latest
-          #   target: x86_64-pc-windows-gnu
-    name: Build ${{ matrix.target }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run PNPM action
-        uses: ./.github/pnpm-action
-      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Install NPM dependencies
-        run: |
-          pnpm install
-          pnpm build
-
-      - name: Setup Rust Toolchain
-        run: |
-          rustup set auto-self-update disable
-          rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-          cargo install cargo-make toml-cli
-
-      - name: Get variables
-        id: getvar
-        run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
-
-      - uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "rust-${{ matrix.target }}"
-          env-vars: "RUSTFLAGS"
-          cache-directories: ""
-          cache-all-crates: true
-
-      - name: Compile application binary
-        id: compile
-        run: |
-          cargo build --release
-          mkdir -p ${{ github.workspace }}/uploads
-          strip target/release/fastrue && mv target/release/fastrue .
-          zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
-          mv fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }}.zip ${{ github.workspace }}/uploads/
-          echo "${{ steps.getvar.outputs.app_version }}" > ${{ github.workspace }}/uploads/VERSION.txt
-          ls -lh ${{ github.workspace }}/uploads
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: fastrue-binaries
-          path: ${{ github.workspace }}/uploads/
-          if-no-files-found: error
-          retention-days: 1
-
-  create-release:
-    needs: [build-binaries]
-    name: Create new release
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
-        id: download
-        with:
-          name: fastrue-binaries
-          path: ${{ github.workspace }}
-
-      - name: Get variables
-        id: getvar
-        run: echo "app_version=$(cat ${{ github.workspace }}/VERSION.txt)" >> $GITHUB_OUTPUT
-
-      - name: Create Release
-        run: |
-          echo ${{ steps.download.outputs.download-path }}
-          gh release create v${{ steps.getvar.outputs.app_version }}-b${{ env.PR_NUMBER }} ${{ steps.download.outputs.download-path }}/*.zip --generate-notes --prerelease
-
-  # docker-images:
-  #   needs: [create-release]
-  #   runs-on: ubuntu-latest
+  # build-binaries:
   #   strategy:
   #     fail-fast: false
   #     matrix:
-  #       platform:
-  #         - linux/amd64
-  #         - linux/arm64
-  #   name: Docker images
+  #       include:
+  #         - os: ubuntu-latest
+  #           target: x86_64-unknown-linux-gnu
+  #         - os: macos-latest
+  #           target: x86_64-apple-darwin
+  #         # - os: macos-latest
+  #         #   target: aarch64-apple-darwin
+  #         # - os: windows-latest
+  #         #   target: x86_64-pc-windows-gnu
+  #   name: Build ${{ matrix.target }}
+  #   runs-on: ubuntu-latest
   #   steps:
   #     - uses: actions/checkout@v3
-  #     - name: Get app version
+  #     - name: Run PNPM action
+  #       uses: ./.github/pnpm-action
+  #     - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
+  #       name: Install NPM dependencies
+  #       run: pnpm install && pnpm build
+
+  #     - name: Setup Rust Toolchain
+  #       uses: ./.github/rust-action
+  #       with:
+  #         target-toolchain: ${{ matrix.target }}
+
+  #     - name: Get application variables
   #       id: getvar
-  #       run: echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
-  #     - uses: docker/setup-qemu-action@v2
-  #     - uses: docker/setup-buildx-action@v2
-  #     -
-  #       id: meta
-  #       name: Extract Docker metadata
-  #       uses: docker/metadata-action@v4
+  #       run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
+
+  #     - name: Compile application binary
+  #       id: compile
+  #       run: |
+  #         mkdir -p ${{ github.workspace }}/uploads
+  #         cargo build --release && strip target/release/fastrue && mv target/release/fastrue .
+  #         zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
+  #         mv fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }}.zip ${{ github.workspace }}/uploads/
+  #         echo "${{ steps.getvar.outputs.app_version }}" > ${{ github.workspace }}/uploads/VERSION.txt
+  #         ls -lh ${{ github.workspace }}/uploads
+
+      # - uses: actions/upload-artifact@v3
+      #   with:
+      #     name: fastrue-binaries
+      #     path: ${{ github.workspace }}/uploads/
+      #     if-no-files-found: error
+      #     retention-days: 1
+
+  # create-release:
+  #   needs: [build-binaries]
+  #   name: Create new release
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: actions/download-artifact@v3
+  #       id: download
   #       with:
-  #         images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-  #         tags: |
-  #           type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ steps.getvar.outputs.app_version }}
-  #           type=raw,enable=true,priority=200,value=edge
-  #     -
-  #       name: Login to registry ${{ env.CONTAINER_REGISTRY }}
-  #       uses: docker/login-action@v2
-  #       with:
-  #         registry: ${{ env.CONTAINER_REGISTRY }}
-  #         username: ${{ github.actor }}
-  #         password: ${{ secrets.GITHUB_TOKEN }}
-  #     -
-  #       name: Build and push with tags
-  #       uses: docker/build-push-action@v4
-  #       with:
-  #         context: .
-  #         push: ${{ github.event_name == 'pull_request' }}
-  #         platforms: ${{ matrix.platform }}
-  #         tags: ${{ steps.meta.outputs.tags }}
-  #         labels: ${{ steps.meta.outputs.labels }}
-  #         cache-from: type=gha
-  #         cache-to: type=gha,mode=max
+  #         name: fastrue-binaries
+  #         path: ${{ github.workspace }}
+
+  #     - name: Get application variables
+  #       id: getvar
+  #       run: echo "app_version=$(cat ${{ github.workspace }}/VERSION.txt)" >> $GITHUB_OUTPUT
+
+  #     - name: Create Release
+  #       run: |
+  #         echo ${{ steps.download.outputs.download-path }}
+  #         gh release create v${{ steps.getvar.outputs.app_version }}-b${{ env.PR_NUMBER }} ${{ steps.download.outputs.download-path }}/*.zip --generate-notes --prerelease
+
+  docker-images:
+    # needs: [build-binaries]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+          - linux/arm64
+    name: Docker images
+    steps:
+      - uses: actions/checkout@v3
+      - uses: docker/setup-qemu-action@v2
+      - uses: docker/setup-buildx-action@v2
+      - uses: docker/login-action@v2
+        with:
+          registry: ${{ env.CONTAINER_REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get application variables
+        uses: ./.github/rust-action
+      - name: Get application variables
+        id: getvar
+        run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
+
+      - uses: docker/metadata-action@v4
+        id: meta
+        with:
+          images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ steps.getvar.outputs.app_version }}
+            type=raw,enable=true,priority=200,value=edge
+
+      - name: Build and push with tags
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: ${{ github.event_name == 'pull_request' }}
+          platforms: ${{ matrix.platform }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

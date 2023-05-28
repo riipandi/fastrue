@@ -1,0 +1,29 @@
+name: rust-action
+description: Setup Rust Toolchain
+inputs:
+  target-toolchain:
+    description: Target toolchain
+    default: x86_64-unknown-linux-gnu
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Setup Rust Toolchain
+      shell: bash
+      run: |
+        rustup set auto-self-update disable
+        rustup toolchain install stable --profile minimal --target ${{ inputs.target-toolchain }}
+        cargo install cargo-make toml-cli
+
+    - name: Caching Rust Toolchain
+      uses: actions/cache@v3
+      continue-on-error: false
+      with:
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-

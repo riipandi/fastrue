@@ -11,28 +11,36 @@ RUN apt-get update && apt-get -y install jq wget && wget -O /tmp/toml.tar.gz ${T
  mv toml-0.2.3-x86_64-linux/toml /bin/toml
 WORKDIR /app
 COPY . .
-RUN sed -i "s/$(cat package.json | jq -r .version)/$(toml get Cargo.toml package.version --raw)/" package.json
+RUN \
+ export APP_VERSION="$(toml get Cargo.toml package.version --raw)" &&\
+ export PKG_WEB_VERSION="$(cat package.json | jq -r .version)" &&\
+ sed -i "s/${PKG_WEB_VERSION}/${APP_VERSION}/" package.json
 
 # -----------------------------------------------------------------------------
 # Builder for Web UI
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/node:20 AS buildweb
+ARG TARGETPLATFORM
 COPY --from=prebuild --chown=node:node /app /app
-RUN npm config set fund false && npm install --no-audit && npm run build
+RUN \
+ --mount=type=cache,target=/app/package-lock.json,id=${TARGETPLATFORM}\
+ --mount=type=cache,target=/app/node_modules,id=${TARGETPLATFORM}\
+ npm config set fund false && npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
 # Builder main application
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/rust:1.69 AS builder
+ARG TARGETPLATFORM
 WORKDIR /app
 COPY --from=buildweb /app /app
-RUN cargo build --release
+RUN --mount=type=cache,target=/app/target,id=${TARGETPLATFORM} cargo build --release
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
 # -----------------------------------------------------------------------------
 LABEL org.opencontainers.image.source "https://github.com/riipandi/fastrue"
-LABEL org.opencontainers.image.description "Fastrue is a headless authentication server, inspired from Netlify GoTrue."
+LABEL org.opencontainers.image.description "Fastrue is a headless authentication server."
 FROM cgr.dev/chainguard/glibc-dynamic:latest as runner
 
 ARG BIND_PORT 9999
