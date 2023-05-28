@@ -1,0 +1,25 @@
+name: compile-action
+description: Compile Rust Application
+inputs:
+  target:
+    description: Target architecture
+    required: true
+  package-name:
+    description: Application package name
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Compile Binary
+      shell: bash
+      run: |
+        cargo build --target ${{ inputs.package-name }} --release
+        strip target/release/${{ inputs.package-name }}
+
+    - name: Caching Build
+      uses: actions/cache@v3
+      continue-on-error: false
+      with:
+        path: target/
+        key: ${{ runner.os }}-cargo-build-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-build-
