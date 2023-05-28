@@ -32,9 +32,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Get Variables
-        id: vars
-        run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
       - name: Run PNPM action
         uses: ./.github/pnpm-action
@@ -48,7 +45,7 @@ jobs:
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-          cargo install cargo-make
+          cargo install cargo-make tombl
 
       - name: Caching Rust Toolchain
         uses: Swatinem/rust-cache@v2

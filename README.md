@@ -27,6 +27,7 @@ The following are required to run the application in development or in productio
 - [sqlx-cli](https://crates.io/crates/sqlx-cli) a command line tool for sqlx.
 - [cargo watch](https://crates.io/crates/cargo-watch), a tool for watching the project files and recompiling when they change.
 - [cargo-make](https://sagiegurari.github.io/cargo-make/#installation), task runner and build tool for Rust project.
+- [tombl](https://github.com/snyball/tombl), easily query TOML files from shell.
 - [Docker](https://docs.docker.com/engine/install), v2.10 or greater. This is optional, only required when building container image.
 
 ### Generate Secret Key
