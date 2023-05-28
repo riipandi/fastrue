@@ -122,7 +122,7 @@ jobs:
         shell: bash
         run: |
           curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
-          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /bin/toml
+          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
           echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - uses: docker/metadata-action@v4
