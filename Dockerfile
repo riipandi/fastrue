@@ -18,7 +18,7 @@ RUN sed -i "s/$(cat package.json | jq -r .version)/$(toml get Cargo.toml package
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/node:20 AS buildweb
 COPY --from=prebuild --chown=node:node /app /app
-RUN npm install && npm run prettier --write package.json && npm run build
+RUN npm config set fund false && npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
 # Builder main application
