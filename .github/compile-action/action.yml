@@ -13,7 +13,7 @@ runs:
     - name: Compile Binary
       shell: bash
       run: |
-        cargo build --target ${{ inputs.package-name }} --release
+        cargo build --target ${{ inputs.target }} --release
         strip target/release/${{ inputs.package-name }}
 
     - name: Caching Build

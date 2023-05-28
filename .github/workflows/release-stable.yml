@@ -35,6 +35,7 @@ jobs:
           tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
           toml set Cargo.toml package.version ${{ github.ref }} > Cargo.toml.tmp
           cat Cargo.toml.tmp > Cargo.toml && rm Cargo.toml.tmp
+          echo "Creating release v${{ github.ref }}"
 
       - name: Update repository
         uses: stefanzweifel/git-auto-commit-action@v4
