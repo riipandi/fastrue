@@ -92,11 +92,11 @@ jobs:
         id: download
         with:
           name: fastrue-binaries
-          path: ~/release-files
+          path: ${{ github.workspace }}
 
       - name: Get variables
         id: getvar
-        run: echo "app_version=$(cat ~/release-files/VERSION.txt)" >> $GITHUB_OUTPUT
+        run: echo "app_version=$(cat ${{ github.workspace }}/VERSION.txt)" >> $GITHUB_OUTPUT
 
       - name: Create Release
         run: |
