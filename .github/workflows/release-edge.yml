@@ -56,10 +56,7 @@ jobs:
         run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - name: Compile application binary
-        uses: ./.github/compile-action
-        with:
-          package-name: fastrue
-          target: ${{ matrix.target }}
+        run: cargo build --target ${{ matrix.target }} --release
 
       # - uses: actions/upload-artifact@v3
       #   with:

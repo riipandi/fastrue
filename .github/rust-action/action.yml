@@ -16,7 +16,14 @@ runs:
         cargo install cargo-make toml-cli
 
     - name: Caching Rust Toolchain
-      uses: Swatinem/rust-cache@v2
+      uses: actions/cache@v3
+      continue-on-error: false
       with:
-        prefix-key: "${{ inputs.target-toolchain }}"
-        cache-all-crates: true
+        path: |
+          ~/.cargo/bin/
+          ~/.cargo/registry/index/
+          ~/.cargo/registry/cache/
+          ~/.cargo/git/db/
+          target/
+        key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+        restore-keys: ${{ runner.os }}-cargo-
