@@ -789,7 +789,6 @@ dependencies = [
 name = "fastrue"
 version = "0.0.1"
 dependencies = [
- "anyhow",
  "bcrypt",
  "build-time",
  "chrono",
@@ -805,7 +804,6 @@ dependencies = [
  "once_cell",
  "reqwest",
  "rust-embed",
- "rust_decimal",
  "salvo 0.41.1",
  "sea-query",
  "sea-query-binder",
@@ -813,7 +811,6 @@ dependencies = [
  "serde_json",
  "sqlx",
  "tokio",
- "tower",
  "tracing",
  "tracing-subscriber",
  "uuid",
@@ -3301,7 +3298,6 @@ dependencies = [
  "pin-project",
  "pin-project-lite",
  "tokio",
- "tokio-util",
  "tower-layer",
  "tower-service",
  "tracing",
