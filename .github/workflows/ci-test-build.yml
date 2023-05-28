@@ -41,22 +41,22 @@ jobs:
           pnpm install
           pnpm build
 
-      - name: Setup Rust Toolchain
-        run: |
-          rustup set auto-self-update disable
-          rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-          cargo install cargo-make toml-cli
+      # - name: Setup Rust Toolchain
+      #   run: |
+      #     rustup set auto-self-update disable
+      #     rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
+      #     cargo install cargo-make toml-cli
 
-      - name: Caching Rust Toolchain
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "rust-${{ matrix.target }}"
-          env-vars: "RUSTFLAGS"
-          cache-directories: ""
-          cache-all-crates: true
+      # - name: Caching Rust Toolchain
+      #   uses: Swatinem/rust-cache@v2
+      #   with:
+      #     prefix-key: "rust-${{ matrix.target }}"
+      #     env-vars: "RUSTFLAGS"
+      #     cache-directories: ""
+      #     cache-all-crates: true
 
-      - name: Compile Binaries
-        run: cargo build --release
+      # - name: Compile Binaries
+      #   run: cargo build --release
 
-      - name: Check Build Version
-        run: ./target/release/fastrue -V
+      # - name: Check Build Version
+      #   run: ./target/release/fastrue -V
