@@ -26,6 +26,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref }}
       - name: Update application version
         shell: bash
         run: |
@@ -39,8 +41,7 @@ jobs:
         with:
           branch: main
           commit_message: "version bump to v${{ github.ref }} [skip actions]"
-          commit_options: '--no-verify --signoff'
-          # commit_user_name: My GitHub Actions Bot # defaults to "github-actions[bot]"
+          commit_user_name:  ${{ github.actor }}
           # commit_user_email: my-github-actions-bot@example.org # defaults to "41898282+github-actions[bot]@users.noreply.github.com"
           # commit_author: Author <actions@github.com> # defaults to author of the commit that triggered the run
           create_branch: false
