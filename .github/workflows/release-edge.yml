@@ -54,7 +54,7 @@ jobs:
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
           cargo install cargo-make toml-cli
 
-      - name: Get variables
+      - name: Get application variables
         id: getvar
         run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
@@ -68,9 +68,8 @@ jobs:
       - name: Compile application binary
         id: compile
         run: |
-          cargo build --release
           mkdir -p ${{ github.workspace }}/uploads
-          strip target/release/fastrue && mv target/release/fastrue .
+          cargo build --release && strip target/release/fastrue && mv target/release/fastrue .
           zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
           mv fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }}.zip ${{ github.workspace }}/uploads/
           echo "${{ steps.getvar.outputs.app_version }}" > ${{ github.workspace }}/uploads/VERSION.txt
@@ -95,7 +94,7 @@ jobs:
           name: fastrue-binaries
           path: ${{ github.workspace }}
 
-      - name: Get variables
+      - name: Get application variables
         id: getvar
         run: echo "app_version=$(cat ${{ github.workspace }}/VERSION.txt)" >> $GITHUB_OUTPUT
 
