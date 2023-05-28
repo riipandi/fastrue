@@ -3,7 +3,8 @@ description: Setup Rust Toolchain
 inputs:
   target-toolchain:
     description: Target toolchain
-    required: true
+    default: x86_64-unknown-linux-gnu
+    required: false
 runs:
   using: composite
   steps:
