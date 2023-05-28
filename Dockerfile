@@ -2,8 +2,8 @@
 
 FROM debian:bullseye-slim AS base
 ARG TOML_CLI_PKG="https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz"
-RUN apt-get update && apt-get -y install jq wget && apt-get -y autoremove
-RUN wget -O /tmp/toml.tar.gz ${TOML_CLI_PKG} && tar -xzvf /tmp/toml.tar.gz &&\
+RUN apt-get update && apt-get -y install jq curl && apt-get -y autoremove
+RUN curl -fsSL ${TOML_CLI_PKG} -o toml.tar.gz && tar -xzvf /tmp/toml.tar.gz &&\
  rm -f /tmp/toml.tar.gz && chmod +x toml-0.2.3-x86_64-linux/toml &&\
  mv toml-0.2.3-x86_64-linux/toml /bin/toml
 
