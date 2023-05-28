@@ -70,7 +70,7 @@ jobs:
         run: |
           cargo build --release
           mkdir -p ${{ github.workspace }}/uploads
-          strip target/release/fastrue && cd target/release
+          strip target/release/fastrue && mv target/release/fastrue .
           zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
           mv fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }}.zip ${{ github.workspace }}/uploads/
           echo "${{ steps.getvar.outputs.app_version }}" > ${{ github.workspace }}/uploads/VERSION.txt
