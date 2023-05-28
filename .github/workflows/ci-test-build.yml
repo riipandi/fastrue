@@ -42,7 +42,7 @@ jobs:
       - name: Setup Rust Toolchain
         uses: ./.github/rust-action
         with:
-          toolchain-target: ${{ matrix.target }}
+          target-toolchain: ${{ matrix.target }}
 
       - name: Compile Binaries
         run: cargo build --release
