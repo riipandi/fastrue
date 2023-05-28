@@ -14,7 +14,6 @@ env:
 jobs:
   test-build:
     if: "!contains(github.event.commits[0].message, 'Merge branch')"
-    # if: github.event_name != 'pull_request'
     strategy:
       fail-fast: false
       matrix:
@@ -28,7 +27,7 @@ jobs:
           - os: windows-latest
             target: x86_64-pc-windows-gnu
     name: CI build ${{ matrix.target }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -46,7 +45,7 @@ jobs:
           target-toolchain: ${{ matrix.target }}
 
       - name: Compile Binaries
-        run: cargo build --release
-
-      - name: Check Build Version
-        run: ./target/release/fastrue -V
+        uses: ./.github/compile-action
+        with:
+          package-name: fastrue
+          target: ${{ matrix.target }}
