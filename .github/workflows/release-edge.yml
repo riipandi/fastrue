@@ -29,27 +29,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            archive: tar.gz tar.xz
           # - os: macos-latest
           #   target: x86_64-apple-darwin
           # - os: macos-latest
           #   target: aarch64-apple-darwin
-          #   archive: zip
           # - os: windows-latest
           #   target: x86_64-pc-windows-gnu
-          #   archive: zip
     name: Build ${{ matrix.target }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Get variables
-        id: vars
-        run: |
-          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-          echo "app_version=$(cat package.json | jq -r .version)" >> $GITHUB_OUTPUT
-
       - name: Run PNPM action
         uses: ./.github/pnpm-action
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
@@ -58,11 +47,17 @@ jobs:
           pnpm install
           pnpm build
 
-      - name: Setup Rust toolchain
+      - name: Setup Rust Toolchain
         run: |
           rustup set auto-self-update disable
           rustup toolchain install stable --profile minimal --target ${{ matrix.target }}
-          cargo install cargo-make
+          cargo install cargo-make toml-cli
+
+      - name: Get variables
+        id: vars
+        run: |
+          echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          echo $(toml get Cargo.toml package.version --raw) >> $GITHUB_OUTPUT
 
       - uses: Swatinem/rust-cache@v2
         with:
@@ -75,14 +70,14 @@ jobs:
         id: compile
         run: |
           cargo build --release
-          strip target/release/fastrue
-          mv target/release/fastrue target/release/fastrue-${{ matrix.target }}
-          ls -lh target/release/
+          strip target/release/fastrue && cd target/release
+          zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
+          ls -lh .
 
       - uses: actions/upload-artifact@v3
         with:
-          name: fastrue-binaries
-          path: target/release/fastrue-*
+          name: fastrue-binaries-${{ steps.getvar.outputs.app_version }}
+          path: target/release/fastrue-*.zip
           if-no-files-found: error
           retention-days: 1
 
@@ -93,7 +88,7 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-          # - linux/arm64
+          - linux/arm64
     name: Docker images
     steps:
       - uses: actions/checkout@v3
@@ -109,9 +104,8 @@ jobs:
         with:
           images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=edge,enable=true,priority=100,suffix=-b${{env.PR_NUMBER}},branch=$steps.getvar.outputs.app_version
-            type=edge,enable=true,priority=200,suffix=-{{sha}},branch=$repo.default_branch
-            type=raw,enable=true,priority=300,value=edge
+            type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ steps.getvar.outputs.app_version }}
+            type=raw,enable=true,priority=200,value=edge
       -
         name: Login to registry ${{ env.CONTAINER_REGISTRY }}
         uses: docker/login-action@v2

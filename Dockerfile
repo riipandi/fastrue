@@ -1,11 +1,24 @@
 # syntax=docker/dockerfile:1
 
 # -----------------------------------------------------------------------------
+# Sync version information between core and web app
+# -----------------------------------------------------------------------------
+FROM rust:1.69-slim-bullseye AS prebuild
+ARG TOML_CLI_PKG="https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz"
+RUN apt-get update && apt-get -y install jq wget && wget -O /tmp/toml.tar.gz ${TOML_CLI_PKG} &&\
+ tar -xzvf /tmp/toml.tar.gz && rm -f /tmp/toml.tar.gz &&\
+ chmod +x toml-0.2.3-x86_64-linux/toml &&\
+ mv toml-0.2.3-x86_64-linux/toml /bin/toml
+WORKDIR /app
+COPY . .
+RUN sed -i "s/$(cat package.json | jq -r .version)/$(toml get Cargo.toml package.version --raw)/" package.json
+
+# -----------------------------------------------------------------------------
 # Builder for Web UI
 # -----------------------------------------------------------------------------
-FROM cgr.dev/chainguard/node:18 AS buildweb
-COPY --chown=node:node . .
-RUN npm install --no-audit && npm run build
+FROM cgr.dev/chainguard/node:20 AS buildweb
+COPY --from=prebuild --chown=node:node /app /app
+RUN npm config set fund false && npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
 # Builder main application
