@@ -74,7 +74,7 @@ jobs:
           zip fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }} fastrue
           mv fastrue-${{ steps.getvar.outputs.app_version }}-${{ matrix.target }}.zip ${{ github.workspace }}/uploads/
           echo "${{ steps.getvar.outputs.app_version }}" > ${{ github.workspace }}/uploads/VERSION.txt
-          cd ${{ github.workspace }}/uploads && ls -lh .
+          ls -lh ${{ github.workspace }}/uploads
 
       - uses: actions/upload-artifact@v3
         with:
