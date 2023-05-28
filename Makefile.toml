@@ -81,6 +81,10 @@ args = ["dev"]
 command = "pnpm"
 args = ["concurrently", "--kill-others", "'cargo watch -qcx run'", "'pnpm dev'"]
 
+[tasks.generate-secret]
+command = "cargo"
+args = ["run", "--", "generate-secret"]
+
 [tasks.migrate]
 command = "cargo"
 args = ["run", "--", "migrate"]
@@ -93,20 +97,6 @@ args = ["run", "--", "create-admin"]
 command = "zola"
 args = ["serve"]
 cwd = "./docs/"
-clear = true
-
-# --------------------------------------------------------------------------------------------------
-# Task for database migration
-# --------------------------------------------------------------------------------------------------
-
-[tasks.db-migrate]
-command = "sqlx"
-args = ["migrate", "run"]
-clear = true
-
-[tasks.db-revert]
-command = "sqlx"
-args = ["migrate", "revert"]
 clear = true
 
 # --------------------------------------------------------------------------------------------------

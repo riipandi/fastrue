@@ -39,6 +39,12 @@ the following command:
 cargo run -- generate-secret
 ```
 
+### Run Database Migration
+
+```sh
+cargo run -- migrate
+```
+
 ### Up and Running
 
 ```sh
