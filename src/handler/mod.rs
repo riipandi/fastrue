@@ -3,7 +3,6 @@
 
 pub mod admin;
 pub mod error;
-pub mod health;
 pub mod logout;
 pub mod recover;
 pub mod root;

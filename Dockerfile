@@ -33,7 +33,7 @@ FROM cgr.dev/chainguard/rust:1.69 AS builder
 ARG TARGETPLATFORM
 WORKDIR /app
 COPY --from=buildweb /app /app
-RUN cargo build --release
+RUN cargo build --release --locked
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
