@@ -1,5 +1,9 @@
 name: Release Stable
 
+# References:
+# - https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
+# - https://ectobit.com/blog/speed-up-github-actions-rust-pipelines/
+
 on:
   push:
     branches: ['release']
