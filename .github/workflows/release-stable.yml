@@ -1,8 +1,13 @@
 name: Release Stable
 
+# References:
+# - https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
+# - https://ectobit.com/blog/speed-up-github-actions-rust-pipelines/
+
 on:
   push:
-    tags: ["v*.*.*"]
+    branches: ['release']
+    paths: ['**/Cargo.toml', '.github/workflows/release-stable.yml']
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -20,29 +25,20 @@ env:
   CONTAINER_REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   PR_NUMBER: ${{ github.event.number }}
+  GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
 jobs:
   prepare-relase:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-        with:
-          ref: ${{ github.head_ref }}
-      - name: Update application version
+      - name: Setup release version
+        working-directory: .
         shell: bash
         run: |
           curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
           tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
           toml set Cargo.toml package.version ${{ github.ref }} > Cargo.toml.tmp
           cat Cargo.toml.tmp > Cargo.toml && rm Cargo.toml.tmp
-          echo "Creating release v${{ github.ref }}"
-
-      - name: Update repository
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          branch: main
-          commit_message: "version bump to v${{ github.ref }} [skip actions]"
-          commit_user_name:  ${{ github.actor }}
-          # commit_user_email: my-github-actions-bot@example.org # defaults to "41898282+github-actions[bot]@users.noreply.github.com"
-          # commit_author: Author <actions@github.com> # defaults to author of the commit that triggered the run
-          create_branch: false
+          echo NEXT_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo "Creating release v${{ env.NEXT_VERSION }}"

@@ -36,4 +36,4 @@ top = false
 | **GET**  | `/authorize`             | Get`access_token` from external oauth provider.                                                                                                                                                                                              |
 | **GET**  | `/callback`              | External provider should redirect to here.                                                                                                                                                                                                   |
 
-For more detailed API documentation, go to: [`http://localhost:9999/swagger`](http://localhost:9999/swagger)
+For more detailed API documentation, go to: [`http://localhost:9090/swagger`](http://localhost:9090/swagger)

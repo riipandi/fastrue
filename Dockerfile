@@ -33,7 +33,7 @@ FROM cgr.dev/chainguard/rust:1.69 AS builder
 ARG TARGETPLATFORM
 WORKDIR /app
 COPY --from=buildweb /app /app
-RUN cargo build --release
+RUN cargo build --release --locked
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
@@ -42,7 +42,7 @@ LABEL org.opencontainers.image.source "https://github.com/riipandi/fastrue"
 LABEL org.opencontainers.image.description "Fastrue is a headless authentication server."
 FROM cgr.dev/chainguard/glibc-dynamic:latest as runner
 
-ARG BIND_PORT 9999
+ARG BIND_PORT 9090
 ARG BIND_ADDR 0.0.0.0
 ARG DATABASE_URL
 ARG FASTRUE_SECRET_KEY

@@ -60,7 +60,7 @@ fn api_routes() -> Router {
  * use compiled Vite React SPA app in production mode.
  **/
 fn web_ui_route() -> Router {
-    let headless_mode = config::get_envar("TRUSTY_HEADLESS_MODE", Some("false"));
+    let headless_mode = config::get_envar("FASTRUE_HEADLESS_MODE", Some("false"));
 
     if headless_mode.trim().parse().unwrap() {
         Router::with_path("ui/<**>").get(error::error_headless)

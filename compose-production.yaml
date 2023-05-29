@@ -24,7 +24,7 @@ services:
     container_name: fastrue
     hostname: fastrue
     ports:
-      - 9999:9999
+      - 9090:9090
     env_file: .env.docker
     networks:
       - fastnet

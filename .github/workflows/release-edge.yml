@@ -35,7 +35,7 @@ jobs:
           - os: macos-latest
             target: aarch64-apple-darwin
           - os: windows-latest
-            target: x86_64-pc-windows-gnu
+            target: x86_64-pc-windows-msvc
     name: Build ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -56,10 +56,7 @@ jobs:
         run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - name: Compile application binary
-        uses: ./.github/compile-action
-        with:
-          package-name: fastrue
-          target: ${{ matrix.target }}
+        run: cargo build --target ${{ matrix.target }} --release
 
       # - uses: actions/upload-artifact@v3
       #   with:
@@ -134,3 +131,15 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy-demo:
+    needs: [build-binaries]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: superfly/flyctl-actions@1.4
+      - name: Deploy to Fly.io
+        working-directory: .
+        run: fly -c fly-source.toml deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
