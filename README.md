@@ -60,7 +60,7 @@ cargo make docker-build    # build docker container
 cargo make docker-run      # run the docker container
 ```
 
-Application will run at `http://localhost:9999`
+Application will run at `http://localhost:9090`
 
 ## 🧑🏻‍💻 Development
 
@@ -86,7 +86,7 @@ echo $GH_TOKEN | docker login ghcr.io --username CHANGEME --password-stdin
 Using [`hey`](https://github.com/rakyll/hey) to perform a simple load testing.
 
 ```sh
-hey -m GET -n 200 -z 10s http://127.0.0.1:9999/api
+hey -m GET -n 200 -z 10s http://127.0.0.1:9090/api
 ```
 
 ## 🚀 Deployment

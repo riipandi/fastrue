@@ -5,7 +5,7 @@ PKG_WEB_VERSION = { script = ["cat package.json | jq -r .version"] }
 IMAGE_NAME = "ghcr.io/riipandi/fastrue"
 CONTAINER_NAME = "${CARGO_MAKE_CRATE_NAME}"
 BUILD_VERSION = "v${APP_VERSION}-${GIT_HASH_SHORT}"
-BIND_PORT = 9999
+BIND_PORT = 9090
 
 [tasks.sync-version]
 script = [

@@ -16,19 +16,19 @@ kill_timeout = "5s"
   dockerfile = "Dockerfile"
   [build.args]
     BIND_ADDR = "0.0.0.0"
-    BIND_PORT = "9999"
+    BIND_PORT = "9090"
 
 [deploy]
   strategy = "rolling"
   # release_command = "/sbin/fastrue migrate --force"
 
 [env]
-  PORT = "9999"
+  PORT = "9090"
   PRIMARY_REGION = "sjc"
 
 [[services]]
   protocol = "tcp"
-  internal_port = 9999
+  internal_port = 9090
   processes = ["app"]
 
   [[services.ports]]
