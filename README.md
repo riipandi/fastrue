@@ -64,8 +64,8 @@ Essential development commands:
 ```sh
 cargo make dev             # run in development
 cargo make build           # build binary file
-cargo make docker-build    # build docker container
-cargo make docker-run      # run the docker container
+cargo make docker-build    # build docker image
+cargo make docker-run      # run the docker image
 ```
 
 Application will run at `http://localhost:9090`
@@ -91,10 +91,11 @@ To run the application in development mode, follow the steps below:
 git clone https://github.com/rui314/mold.git
 mkdir -p mold/build && cd mold/build
 git checkout v1.11.0
-../install-build-deps.sh
+sudo ../install-build-deps.sh
 cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ ..
 cmake --build . -j $(nproc)
 sudo cmake --install .
+cd ../.. && rm -fr mold/
 ```
 
 ### Publish Docker Image

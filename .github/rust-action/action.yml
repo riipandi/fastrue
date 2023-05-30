@@ -29,6 +29,13 @@ runs:
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
         vcpkg install openssl:x64-windows-static-md 7zip
 
+    - name: Install mold linker
+      if: runner.os == 'Linux'
+      uses: warchant/setup-mold@v1
+      with:
+        version: 1.1.0
+        make_default: true
+
     - name: Install Cargo libraries
       shell: bash
       run: cargo install tsync --locked

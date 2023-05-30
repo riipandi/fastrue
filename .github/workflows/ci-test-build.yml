@@ -53,5 +53,5 @@ jobs:
         with:
           target-toolchain: ${{ matrix.target }}
 
-      - name: Compile binaries
+      - name: Compile ${{ matrix.target }}
         run: cargo build --target ${{ matrix.target }} --release --locked
