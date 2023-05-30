@@ -1,5 +1,9 @@
 name: Release Edge
 
+# References:
+# - https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
+# - https://ectobit.com/blog/speed-up-github-actions-rust-pipelines/
+
 on:
   pull_request:
     types: [closed]

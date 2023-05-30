@@ -1,0 +1,58 @@
+name: docker-action
+description: Build and publish docker image
+
+inputs:
+  registry-host:
+    description: Container registry
+    default: docker.io
+    required: false
+  registry-username:
+    description: Registry username
+    required: true
+  registry-password:
+    description: Registry password
+    required: true
+  image-name:
+    description: Container image name
+    required: true
+  image-vesion:
+    description: Container image version
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: docker/setup-qemu-action@v2
+    - uses: docker/setup-buildx-action@v2
+    - uses: docker/login-action@v2
+      with:
+        registry: ${{ inputs.registry-host }}
+        username: ${{ inputs.registry-username }}
+        password: ${{ inputs.registry-password }}
+
+    - name: Get application variables
+      id: getvar
+      shell: bash
+      run: |
+        curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
+        tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
+        echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
+
+    - uses: docker/metadata-action@v4
+      id: meta
+      with:
+        images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ steps.getvar.outputs.app_version }}
+          type=raw,enable=true,priority=200,value=edge
+
+    - name: Build and push with tags
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        push: true
+        platforms: ${{ matrix.platform }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
