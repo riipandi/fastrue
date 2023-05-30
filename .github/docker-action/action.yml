@@ -15,14 +15,11 @@ inputs:
   image-name:
     description: Container image name
     required: true
-  image-version:
-    description: Container image version
-    required: true
   image-tags:
-    description: Image tags
+    description: Container image tags
     required: true
   image-platforms:
-    description: Image platform
+    description: Container image platform
     default: linux/amd64
     required: false
 

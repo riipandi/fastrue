@@ -44,15 +44,14 @@ jobs:
         shell: bash
         run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
 
-      # - name: Create and publish docker images
-      #   uses: ./.github/docker-action
-      #   with:
-      #     registry-host: ${{ env.CONTAINER_REGISTRY }}
-      #     registry-username: ${{ github.actor }}
-      #     registry-password: ${{ secrets.GITHUB_TOKEN }}
-      #     image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-      #     image-version: ${{ env.RELEASE_VERSION }}
-      #     image-platform: linux/amd64
-      #     image-tags: |
-      #       type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ env.RELEASE_VERSION }}
-      #       type=raw,enable=true,priority=200,value=edge
+      - name: Create and publish docker images
+        uses: ./.github/docker-action
+        with:
+          registry-host: ${{ env.CONTAINER_REGISTRY }}
+          registry-username: ${{ github.actor }}
+          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+          image-tags: |
+            type=raw,enable=true,priority=100,suffix=-${{ env.SHORT_SHA }},value=${{ env.RELEASE_VERSION }}
+            type=raw,enable=true,priority=200,value=edge
+          image-platform: linux/amd64
