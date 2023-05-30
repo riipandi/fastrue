@@ -20,21 +20,14 @@ runs:
       run: |
         rustup set auto-self-update disable
         rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
-        cargo install cargo-binstall
-        cargo binstall cargo-make toml-cli --locked
+        cargo install cargo-binstall --locked
+        cargo binstall cargo-make
 
-    # - name: Set up cargo cache
-    #   uses: actions/cache@v3
-    #   continue-on-error: false
-    #   with:
-    #     path: |
-    #       ~/.cargo/bin/
-    #       ~/.cargo/registry/index/
-    #       ~/.cargo/registry/cache/
-    #       ~/.cargo/git/db/
-    #       target/
-    #     key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
-    #     restore-keys: ${{ runner.os }}-cargo-
+    - name: Caching Rust Toolchain
+      uses: swatinem/rust-cache@v2
+      with:
+        prefix-key: "rust-${{ inputs.target-toolchain }}"
+        cache-all-crates: true
 
     # - name: Install Rust Toolchain
     #   uses: dtolnay/rust-toolchain@v1
