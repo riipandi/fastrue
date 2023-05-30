@@ -97,10 +97,9 @@ jobs:
           target-toolchain: ${{ matrix.target }}
 
       - name: Compile application binary
-        run: cargo build --target ${{ matrix.target }} --release --locked
-
-      - name: Archiving compiled binary
-        run: tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+        run: |
+          cargo build --target ${{ matrix.target }} --release --locked
+          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
 
       # - name: Archiving compiled binary
       #   run: |

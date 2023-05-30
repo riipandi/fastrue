@@ -63,7 +63,6 @@ theme_color = "#fff"
 title_separator = "|"  # set as |, -, _, etc
 title_addition = "Headless authentication server"
 
-
 # Set date format in blog publish metadata
 timeformat = "%B %e, %Y" # e.g. June 14, 2021
 timezone = "America/New_York"
@@ -80,6 +79,12 @@ math = false
 library = "katex"  # options: "katex", "mathjax". default is "katex".
 
 ## Open Graph + Twitter Cards
+[extra.plausible]
+enable = true
+domain = "fastrue.netlify.app"
+script_url = "https://stats.fltr.dev/js/script.js"
+
+## Open Graph + Twitter Cards
 [extra.open]
 enable = true
 # this image will be used as fallback if a page has no image of its own
@@ -93,7 +98,7 @@ og_locale = "en_US"
 type = "Organization"
 logo = "logo-doks.png"
 twitter = "https://twitter.com/aaranxu"
-linked_in = ""
+linkedin = ""
 github = "https://github.com/aaranxu"
 section = "blog" # see config.extra.main~url
 ## Sitelinks Search Box
