@@ -33,15 +33,17 @@ jobs:
     name: Prepare release
     steps:
       - uses: actions/checkout@v3
-      - name: Setup release version
-        working-directory: .
-        shell: bash
-        run: |
-          curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
-          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
-          toml set Cargo.toml package.version ${{ github.ref }} > Cargo.toml.tmp
-          cat Cargo.toml.tmp > Cargo.toml && rm Cargo.toml.tmp
-          echo NEXT_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+      # - name: Setup release version
+      #   working-directory: .
+      #   shell: bash
+      #   run: |
+      #     curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
+      #     tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
+      #     toml set Cargo.toml package.version ${{ github.ref }} > Cargo.toml.tmp
+      #     cat Cargo.toml.tmp > Cargo.toml && rm Cargo.toml.tmp
+      #     echo NEXT_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
 
+      - shell: bash
+        run: echo NEXT_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
       - shell: bash
         run: echo "Creating release v${{ env.NEXT_VERSION }}"
