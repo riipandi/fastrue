@@ -103,85 +103,83 @@ jobs:
       - name: Compile application binary
         run: |
           cargo build --target ${{ matrix.target }} --release --locked
-          ls && ls target/${{ matrix.target }}/release
+          ls target/${{ matrix.target }}/release
 
-      # - name: Archiving compiled binary (Windows)
-      #   if: runner.os == 'Windows'
-      #   shell: powershell
-      #   run: |
-      #     target\release\fastrue.exe --version
-      #     7z.exe a -r0 fastrue-${{ matrix.target }}.zip target\${{ matrix.target }}\release\fastrue.exe
-      #     tar czf fastrue-${{ matrix.target }}.tar.gz -C target\${{ matrix.target }}\release\ fastrue.exe
-      #     ls -lh | grep fastrue
+      - name: Archiving compiled binary (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: |
+          target/${{ matrix.target }}/release/fastrue.exe version
+          7z.exe a -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue.exe
 
-      # - name: Archiving compiled binary (Linux/macOS)
-      #   if: runner.os != 'Windows'
-      #   shell: bash
-      #   run: |
-      #     target/release/fastrue --version
-      #     tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-      #     ls -lh | grep fastrue
+      - name: Archiving compiled binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          target/release/fastrue --version
+          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+          ls -lh | grep fastrue
 
-      # - name: Upload compiled binaries
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: fastrue-binaries
-      #     path: |
-      #       fastrue-${{ matrix.target }}.tar.gz
-      #       fastrue-${{ matrix.target }}.zip
-      #     if-no-files-found: warn
-      #     retention-days: 1
+      - name: Upload compiled binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: fastrue-binaries
+          path: |
+            fastrue-${{ matrix.target }}.tar.gz
+            fastrue-${{ matrix.target }}.zip
+          if-no-files-found: warn
+          retention-days: 1
 
-  # gh-release:
-  #   needs: [build-binaries]
-  #   runs-on: ubuntu-latest
-  #   name: GitHub release
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  gh-release:
+    needs: [build-binaries]
+    runs-on: ubuntu-latest
+    name: GitHub release
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #     - name: Get previous tag
-  #       uses: WyriHaximus/github-action-get-previous-tag@v1
-  #       id: previoustag
-  #       with:
-  #         fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+      - name: Get previous tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        id: previoustag
+        with:
+          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
 
-  #     - name: Setup release version
-  #       working-directory: .
-  #       shell: bash
-  #       run: |
-  #         echo BRANCH_NAME=$(echo $GITHUB_REF | cut -d'/' -f 3) >> $GITHUB_ENV
-  #         echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
-  #         echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
-  #         echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+      - name: Setup release version
+        working-directory: .
+        shell: bash
+        run: |
+          echo BRANCH_NAME=$(echo $GITHUB_REF | cut -d'/' -f 3) >> $GITHUB_ENV
+          echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-  #     - name: Validate release version
-  #       shell: bash
-  #       run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
+      - name: Validate release version
+        shell: bash
+        run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
 
-  #     - name: Download compiled artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: fastrue-binaries
-  #         path: ${{ github.workspace }}
+      - name: Download compiled artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: fastrue-binaries
+          path: ${{ github.workspace }}
 
-  #     - name: Display structure of downloaded files
-  #       working-directory: ${{ github.workspace }}
-  #       run: ls -lh | grep fastrue
+      - name: Display structure of downloaded files
+        working-directory: ${{ github.workspace }}
+        run: ls -lh | grep fastrue
 
-  #     - name: Create tag and release
-  #       # if: startsWith(github.ref, 'refs/tags/')
-  #       if: env.RELEASE_VERSION != env.PREVIOUS_TAG
-  #       uses: softprops/action-gh-release@v1
-  #       with:
-  #         tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
-  #         target_commitish: ${{ env.BRANCH_NAME }}
-  #         body: "Published from GitHub Actions for commit (${{ env.SHORT_SHA }})"
-  #         token: ${{ secrets.GITHUB_TOKEN }}
-  #         generate_release_notes: true
-  #         prerelease: true
-  #         draft: false
-  #         files: |
-  #           fastrue-*.tar.gz
-  #           fastrue-*.zip
+      - name: Create tag and release
+        # if: startsWith(github.ref, 'refs/tags/')
+        if: env.RELEASE_VERSION != env.PREVIOUS_TAG
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
+          target_commitish: ${{ env.BRANCH_NAME }}
+          body: "Published from GitHub Actions for commit (${{ env.SHORT_SHA }})"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          generate_release_notes: true
+          prerelease: true
+          draft: false
+          files: |
+            fastrue-*.tar.gz
+            fastrue-*.zip

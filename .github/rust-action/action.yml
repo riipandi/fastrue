@@ -20,6 +20,20 @@ runs:
       run: |
         rustup set auto-self-update disable
         rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
+
+    - name: Install additional libraries (Linux/macOS)
+      if: runner.os != 'Windows'
+      shell: bash
+      run: |
+        curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
+        cargo binstall --no-confirm cargo-make
+
+    - name: Install additional libraries (Windows)
+      if: runner.os == 'Windows'
+      shell: powershell
+      run: |
+        echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
+        vcpkg install openssl:x64-windows-static-md 7zip
         cargo install cargo-binstall --locked
         cargo binstall --no-confirm cargo-make
 
@@ -32,10 +46,3 @@ runs:
     - name: Cargo libraries check
       shell: bash
       run: cargo check --all --bins --tests
-
-    - name: Install Windows libraries
-      if: runner.os == 'Windows'
-      shell: powershell
-      run: |
-        echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
-        vcpkg install openssl:x64-windows-static-md 7zip
