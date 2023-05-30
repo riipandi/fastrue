@@ -42,4 +42,4 @@ runs:
 
     - name: Cargo libraries check
       shell: bash
-      run: cargo check --all --bins --tests
+      run: cargo check --all --bins --tests --release
