@@ -98,11 +98,6 @@ args = ["run", "--", "migrate"]
 command = "cargo"
 args = ["run", "--", "create-admin"]
 
-[tasks.run-docs]
-command = "zola"
-args = ["serve"]
-cwd = "./docs/"
-
 # --------------------------------------------------------------------------------------------------
 # Task for build and push Docker image
 # --------------------------------------------------------------------------------------------------
@@ -136,3 +131,16 @@ args = [
 [tasks.deploy-demo]
 command = "fly"
 args = ["-c", "fly-source.toml", "deploy", "--remote-only"]
+
+# --------------------------------------------------------------------------------------------------
+# Task for documentation site
+# --------------------------------------------------------------------------------------------------
+[tasks.docs-run]
+command = "zola"
+args = ["serve"]
+cwd = "./docs/"
+
+[tasks.docs-build]
+command = "zola"
+args = ["build"]
+cwd = "./docs/"

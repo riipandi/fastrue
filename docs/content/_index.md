@@ -4,7 +4,7 @@ title = "Fastrue Authentication Server"
 # The homepage contents
 [extra]
 lead = '<b>Fastrue</b> is lightweight and fast headless authentication server for securing your mobile and web apps, inspired by <a href="https://github.com/netlify/gotrue" target="_blank" rel="noreferrer noopener">Netlify GoTrue</a>.'
-url = "/docs/getting-started/introduction/"
+url = "/docs/getting-started/introduction"
 url_button = "Get started"
 repo_version = "GitHub v0.1.0"
 repo_license = "Apache 2.0 License."
@@ -14,14 +14,20 @@ repo_url = "https://github.com/riipandi/fastrue"
 [[extra.menu.main]]
 name = "Docs"
 section = "docs"
-url = "/docs/getting-started/introduction/"
+url = "/docs/getting-started/introduction"
 weight = 10
 
 [[extra.menu.main]]
 name = "Blog"
 section = "blog"
-url = "/blog/"
+url = "/blog"
 weight = 20
+
+[[extra.menu.main]]
+name = "Development"
+section = "develop"
+url = "/develop/quick-start"
+weight = 30
 
 [[extra.list]]
 title = "Security aware"

@@ -4,13 +4,13 @@ description = "List of API endpoints."
 date = 2021-05-01T08:20:00+00:00
 updated = 2021-05-01T08:20:00+00:00
 draft = false
-weight = 20
+weight = 30
 sort_by = "weight"
 template = "docs/page.html"
 
 [extra]
 lead = "List of all API endpoints."
-toc = true
+toc = false
 top = false
 +++
 
@@ -36,4 +36,4 @@ top = false
 | **GET**  | `/authorize`             | Get`access_token` from external oauth provider.                                                                                                                                                                                              |
 | **GET**  | `/callback`              | External provider should redirect to here.                                                                                                                                                                                                   |
 
-For more detailed API documentation, go to: [`http://localhost:9090/swagger`](http://localhost:9090/swagger)
+For more detailed API documentation, go to: `http://localhost:9090/swagger`
