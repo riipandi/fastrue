@@ -63,8 +63,51 @@ jobs:
   #           type=raw,enable=true,priority=200,value=latest
   #         image-platform: ${{ matrix.platform }}
 
+  build-binaries:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          # - os: macos-latest
+          #   target: x86_64-apple-darwin
+          # - os: macos-latest
+          #   target: aarch64-apple-darwin
+          # - os: windows-latest
+          #   target: x86_64-pc-windows-msvc
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Run PNPM action
+        uses: ./.github/pnpm-action
+      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
+        name: Build frontend
+        run: pnpm install && pnpm build
+
+      - name: Setup Rust Toolchain
+        uses: ./.github/rust-action
+        with:
+          target-toolchain: ${{ matrix.target }}
+      - name: Compile application binary
+        run: cargo build --target ${{ matrix.target }} --release --locked
+
+      - name: Compress compiled binary
+        run: tar -cvf fastrue-${{ matrix.target }}.tar target/${{ matrix.target }}/release/fastrue
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: fastrue-binaries
+          path: fastrue-${{ matrix.target }}.tar
+          if-no-files-found: warn
+          retention-days: 1
+
   gh-release:
-    # needs: [docker-images]
+    needs: [build-binaries]
     runs-on: ubuntu-latest
     name: GitHub release
     steps:
@@ -90,17 +133,26 @@ jobs:
         shell: bash
         run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
 
-      - name: Create tag and release
-        # if: startsWith(github.ref, 'refs/tags/')
-        if: env.RELEASE_VERSION != env.PREVIOUS_TAG
-        uses: softprops/action-gh-release@v1
+      - uses: actions/download-artifact@v3
         with:
-          tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
-          body: "This is release message"
-          token: ${{ secrets.GITHUB_TOKEN }}
-          generate_release_notes: false
-          prerelease: true
-          draft: true
-          files: |
-            README.md
-            LICENSE
+          name: fastrue-binaries
+          path: ${{ github.workspace }}
+
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: ${{ github.workspace }}
+
+      # - name: Create tag and release
+      #   # if: startsWith(github.ref, 'refs/tags/')
+      #   if: env.RELEASE_VERSION != env.PREVIOUS_TAG
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
+      #     body: "This is release message"
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+      #     generate_release_notes: false
+      #     prerelease: true
+      #     draft: true
+      #     files: |
+      #       README.md
+      #       LICENSE

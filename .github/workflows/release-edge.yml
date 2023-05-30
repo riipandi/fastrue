@@ -47,7 +47,7 @@ jobs:
       - name: Run PNPM action
         uses: ./.github/pnpm-action
       - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Install NPM dependencies
+        name: Build frontend
         run: pnpm install && pnpm build
 
       - name: Setup Rust Toolchain
@@ -60,7 +60,7 @@ jobs:
         run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
 
       - name: Compile application binary
-        run: cargo build --target ${{ matrix.target }} --release
+        run: cargo build --target ${{ matrix.target }} --release --locked
 
       # - uses: actions/upload-artifact@v3
       #   with:
