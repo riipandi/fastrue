@@ -114,7 +114,6 @@ jobs:
         shell: bash
         run: |
           tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-          # cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
           ls -lh | grep fastrue
 
       - name: Upload compiled binaries

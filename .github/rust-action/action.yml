@@ -18,17 +18,16 @@ runs:
       with:
         toolchain: ${{ steps.msrv.outputs.version }}
         targets: ${{ inputs.target-toolchain }}
-        # components: rustfmt, clippy
+        components: rustfmt, clippy
 
-    - name: Cargo libraries check
-      shell: bash
-      run: cargo check --all --bins --examples --tests
-      # run: |
-      #   cargo install cargo-make toml-cli --locked
-      #   cargo check --all --bins --examples --tests
+    # - name: Cargo libraries check
+    #   shell: bash
+    #   run: |
+    #     cargo install cargo-make toml-cli --locked
+    #     cargo check --all --bins --examples --tests
 
     - name: Install Windows libraries
-      if: "contains(inputs.target-toolchain, 'windows')"
+      if: runner.os == 'Windows'
       shell: powershell
       run: |
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
