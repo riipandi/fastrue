@@ -99,8 +99,7 @@ jobs:
       - name: Compress compiled binary
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
-            echo "Operating System is ${{ runner.os }}"
-            7za -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
+            7z a -tzip -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
           else
             tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
             cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
