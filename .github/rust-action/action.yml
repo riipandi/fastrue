@@ -38,10 +38,7 @@ runs:
 
     # - name: Cargo libraries check
     #   shell: bash
-    #   run: |
-    #     cargo install cargo-binstall
-    #     cargo binstall cargo-make toml-cli --locked
-    #     cargo check --all --bins --examples --tests
+    #   run: cargo check --all --bins --examples --tests
 
     - name: Install Windows libraries
       if: runner.os == 'Windows'

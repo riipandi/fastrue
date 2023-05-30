@@ -114,7 +114,7 @@ jobs:
       #     tar czf fastrue-${{ matrix.target }}.tar.gz -C target\${{ matrix.target }}\release\ fastrue.exe
       #     ls -lh | grep fastrue
 
-      # - name: Archiving compiled binary (Unix)
+      # - name: Archiving compiled binary (Linux/macOS)
       #   if: runner.os != 'Windows'
       #   shell: bash
       #   run: |
