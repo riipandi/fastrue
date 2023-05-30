@@ -166,5 +166,4 @@ jobs:
       #     prerelease: true
       #     draft: true
       #     files: |
-      #       README.md
       #       LICENSE
