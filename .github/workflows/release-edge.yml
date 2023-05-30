@@ -165,7 +165,7 @@ jobs:
           tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.PR_NUMBER }}
           target_commitish: ${{ github.ref_name }}
           body: "Release created by @${{ github.actor }} (${{ env.SHORT_SHA }})"
-          token: ${{ env.GITHUB_TOKEN }}
+          # token: ${{ env.GITHUB_TOKEN }}
           generate_release_notes: true
           prerelease: true
           draft: false
@@ -185,6 +185,6 @@ jobs:
       - uses: superfly/flyctl-actions@1.4
       - name: Deploy to Fly.io
         working-directory: .
-        run: flyctl -c fly-source.toml deploy --remote-only
+        run: flyctl -c fly-source.toml deploy
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

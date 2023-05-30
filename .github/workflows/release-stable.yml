@@ -175,7 +175,7 @@ jobs:
           tag_name: v${{ env.RELEASE_VERSION }}
           target_commitish: ${{ github.ref_name }}
           body: "Release created by @${{ github.actor }} (${{ env.SHORT_SHA }})"
-          token: ${{ env.GITHUB_TOKEN }}
+          # token: ${{ env.GITHUB_TOKEN }}
           generate_release_notes: true
           prerelease: false
           draft: true
