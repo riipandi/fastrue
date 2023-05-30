@@ -97,12 +97,14 @@ jobs:
         run: cargo build --target ${{ matrix.target }} --release --locked
 
       - name: Compress compiled binary
-        run: tar -cvf fastrue-${{ matrix.target }}.tar target/${{ matrix.target }}/release/fastrue
+        run: |
+          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+          cd target/aarch64-apple-darwin/release/ && zip -r0 ../../../fastrue.zip fastrue
 
       - uses: actions/upload-artifact@v3
         with:
           name: fastrue-binaries
-          path: fastrue-${{ matrix.target }}.tar
+          path: fastrue-${{ matrix.target }}.tar.gz
           if-no-files-found: warn
           retention-days: 1
 
@@ -133,7 +135,8 @@ jobs:
         shell: bash
         run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
 
-      - uses: actions/download-artifact@v3
+      - name: Download compiled artifact
+        uses: actions/download-artifact@v3
         with:
           name: fastrue-binaries
           path: ${{ github.workspace }}
