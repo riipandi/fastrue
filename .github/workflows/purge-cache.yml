@@ -1,7 +1,7 @@
 name: Purge Cache
 
 on:
-  # push:
+  push:
   schedule:
     - cron: '0 0 * * *' # Runs once a day (https://crontab.guru/once-a-day)
   workflow_dispatch:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   cleanup:
-    # if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.commits[0].message, '[flush cache]') }}
+    if: ${{ github.event_name == 'schedule' || contains(github.event.commits[0].message, '[flush cache]') }}
     runs-on: ubuntu-20.04
     name: Purge actions cache
     steps:
