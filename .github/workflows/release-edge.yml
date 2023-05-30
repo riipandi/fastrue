@@ -177,7 +177,7 @@ jobs:
         run: echo "Release v${{ env.RELEASE_VERSION }} ${{ github.ref_name }} -> ${{ steps.create-release-tag.outputs.url }}"
 
   deploy-demo:
-    needs: [build-binaries]
+    needs: [docker-images]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
