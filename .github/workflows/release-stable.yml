@@ -76,8 +76,8 @@ jobs:
             target: x86_64-apple-darwin
           - os: macos-latest
             target: aarch64-apple-darwin
-          # - os: windows-latest
-          #   target: x86_64-pc-windows-msvc
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
     name: Build ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -95,16 +95,14 @@ jobs:
         uses: ./.github/rust-action
         with:
           target-toolchain: ${{ matrix.target }}
+
       - name: Compile application binary
         run: cargo build --target ${{ matrix.target }} --release --locked
 
-      - name: Compress compiled binary
-        run: |
-          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-          cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
-          ls -lh | grep fastrue
+      - name: Archiving compiled binary
+        run: tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
 
-      # - name: Compress compiled binary
+      # - name: Archiving compiled binary
       #   run: |
       #     if [ "${{ runner.os }}" = "Windows" ]; then
       #       7z a -tzip -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
@@ -143,6 +141,7 @@ jobs:
         working-directory: .
         shell: bash
         run: |
+          echo BRANCH_NAME=$(echo $GITHUB_REF | cut -d'/' -f 3) >> $GITHUB_ENV
           echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
           echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
           echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
@@ -167,6 +166,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
+          target_commitish: ${{ env.BRANCH_NAME }}
           body: "This is release message"
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: false
