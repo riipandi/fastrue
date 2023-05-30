@@ -18,7 +18,7 @@ runs:
       with:
         toolchain: ${{ steps.msrv.outputs.version }}
         targets: ${{ inputs.target-toolchain }}
-        components: rustfmt, clippy
+        # components: rustfmt, clippy
 
     # - name: Cargo libraries check
     #   shell: bash
