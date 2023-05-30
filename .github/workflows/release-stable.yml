@@ -98,13 +98,19 @@ jobs:
 
       - name: Compress compiled binary
         run: |
-          if [ "${{ runner.os }}" = "Windows" ]; then
-            7z a -tzip -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
-          else
-            tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-            cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
-          fi
+          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+          cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
           ls -lh | grep fastrue
+
+      # - name: Compress compiled binary
+      #   run: |
+      #     if [ "${{ runner.os }}" = "Windows" ]; then
+      #       7z a -tzip -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
+      #     else
+      #       tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+      #       cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
+      #     fi
+      #     ls -lh | grep fastrue
 
       - name: Upload compiled binaries
         uses: actions/upload-artifact@v3
