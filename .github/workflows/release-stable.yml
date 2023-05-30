@@ -18,7 +18,7 @@ permissions:
   discussions: write
   deployments: write
   packages: write
-  pull-requests: write
+  pull-requests: read
 
 env:
   CARGO_TERM_COLOR: always
@@ -38,6 +38,8 @@ jobs:
   #   name: Docker image ${{ matrix.platform }}
   #   steps:
   #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
   #     - name: Setup release version
   #       working-directory: .
   #       shell: bash
@@ -67,26 +69,21 @@ jobs:
     name: GitHub release
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get previous tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        id: previoustag
+        with:
+          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
       - name: Setup release version
         working-directory: .
         shell: bash
         run: |
           echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
           echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-      - name: Bump version and push tag
-        uses: rymndhng/release-on-push-action@v0.27.0
-        with:
-          bump_version_scheme: patch
-
-      # - name: Bump version and push tag
-      #   id: tag_version
-      #   uses: mathieudutour/github-tag-action@v6.1
-      #   with:
-      #     github_token: ${{ secrets.GITHUB_TOKEN }}
-      # - name: Create a GitHub release
-      #   uses: ncipollo/release-action@v1
-      #   with:
-      #     tag: ${{ steps.tag_version.outputs.new_tag }}
-      #     name: Release ${{ steps.tag_version.outputs.new_tag }}
-      #     body: ${{ steps.tag_version.outputs.changelog }}
+      - name: Validate release version
+        shell: bash
+        run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
