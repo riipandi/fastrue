@@ -42,7 +42,7 @@ tracing = { version = "^0.1" }
 tracing-subscriber = { version = "^0.3", features = ["env-filter"] }
 uuid = { version = "^1.3.3", features = ["v4", "fast-rng", "serde"] }
 url = { version = "2.3", features = ["serde"] }
-tsync = "1.7"
+tsync = { version = "1.7" }
 
 [dev-dependencies]
 
