@@ -97,19 +97,17 @@ jobs:
           target-toolchain: ${{ matrix.target }}
 
       - name: Compile application binary
-        run: |
-          cargo build --target ${{ matrix.target }} --release --locked
-          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+        run: cargo build --target ${{ matrix.target }} --release --locked
 
-      # - name: Archiving compiled binary
-      #   run: |
-      #     if [ "${{ runner.os }}" = "Windows" ]; then
-      #       7z a -tzip -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
-      #     else
-      #       tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-      #       cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
-      #     fi
-      #     ls -lh | grep fastrue
+      - name: Archiving compiled binary
+        run: |
+          if [ "${{ runner.os }}" = "Windows" ]; then
+            tar czf fastrue-${{ matrix.target }}.tar.gz -C target\${{ matrix.target }}\release\ fastrue
+          else
+            tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+            # cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
+          fi
+          ls -lh | grep fastrue
 
       - name: Upload compiled binaries
         uses: actions/upload-artifact@v3
