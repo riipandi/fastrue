@@ -1,13 +1,10 @@
 name: Purge Cache
 
 on:
-  push:
+  # push:
+  schedule:
+    - cron: '0 0 * * *' # Runs once a day (https://crontab.guru/once-a-day)
   workflow_dispatch:
-
-# on:
-#   schedule:
-#     - cron: '0 0 * * *' # Runs once a day (https://crontab.guru/once-a-day)
-#   workflow_dispatch:
 
 permissions:
   actions: write
@@ -15,9 +12,9 @@ permissions:
 jobs:
   cleanup:
     runs-on: ubuntu-latest
+    name: Purge actions cache
     steps:
-      - name: Cleanup actions cache
-        uses: actions/github-script@v6
+      - uses: actions/github-script@v6
         with:
           script: |
             console.log("About to clear")
