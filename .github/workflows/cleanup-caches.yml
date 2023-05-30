@@ -1,10 +1,9 @@
-name: Cleanup caches
+name: Cleanup Cache
 
 on:
   schedule:
-    - cron: '0 */12 * * *' # Runs every 12 hours
+    - cron: '0 */6 * * *' # Runs every 6 hours
   push:
-    branches: [main,release]
   workflow_dispatch:
 
 concurrency:
