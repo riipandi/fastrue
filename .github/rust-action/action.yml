@@ -10,6 +10,13 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Cache Rust Toolchain
+      uses: swatinem/rust-cache@v2
+      with:
+        prefix-key: "rust-${{ inputs.target-toolchain }}"
+        cache-all-crates: true
+        cache-targets: false
+
     - name: Get MSRV from Cargo.toml
       id: msrv
       shell: bash
@@ -36,10 +43,3 @@ runs:
     - name: Cargo libraries check
       shell: bash
       run: cargo check --all --bins --tests
-
-    - name: Caching Rust Toolchain
-      uses: swatinem/rust-cache@v2
-      with:
-        prefix-key: "rust-${{ inputs.target-toolchain }}"
-        cache-all-crates: true
-        cache-targets: false
