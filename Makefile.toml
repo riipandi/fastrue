@@ -131,3 +131,8 @@ args = [
   "-p", "${BIND_PORT}:${BIND_PORT}",
   "${IMAGE_NAME}:edge"
 ]
+
+[tasks.deploy-demo]
+clear = true
+command = "fly"
+args = ["-c", "fly-source.toml", "deploy", "--remote-only"]

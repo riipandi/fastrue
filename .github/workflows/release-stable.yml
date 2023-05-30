@@ -99,20 +99,19 @@ jobs:
       - name: Compile application binary
         run: cargo build --target ${{ matrix.target }} --release --locked
 
-      - name: Validate compiled binary
-        run: target/release/fastrue --version
-
       - name: Archiving compiled binary (Windows)
         if: runner.os == 'Windows'
         shell: bash
         run: |
-          tar czf fastrue-${{ matrix.target }}.tar.gz -C target\${{ matrix.target }}\release\ fastrue
+          target\release\fastrue.exe --version
+          tar czf fastrue-${{ matrix.target }}.tar.gz -C target\${{ matrix.target }}\release\ fastrue.exe
           ls -lh | grep fastrue
 
       - name: Archiving compiled binary (Unix)
         if: runner.os != 'Windows'
         shell: bash
         run: |
+          target/release/fastrue --version
           tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
           ls -lh | grep fastrue
 
@@ -171,7 +170,7 @@ jobs:
         with:
           tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
           target_commitish: ${{ env.BRANCH_NAME }}
-          body: "Published from GitHub Actions for commit #${{ env.SHORT_SHA }}"
+          body: "Published from GitHub Actions for commit (${{ env.SHORT_SHA }})"
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
           prerelease: true
