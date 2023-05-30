@@ -35,9 +35,13 @@ jobs:
 
       - name: Run PNPM action
         uses: ./.github/pnpm-action
-      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Build React SPA
-        run: pnpm install && pnpm build
+
+      - name: Install npm dependencies
+        if: steps.cache-pnpm.outputs.cache-hit != 'true'
+        run: pnpm install
+
+      - name: Build SPA frontend
+        run: pnpm build
 
       - name: Setup Rust Toolchain
         uses: ./.github/rust-action

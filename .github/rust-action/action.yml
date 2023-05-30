@@ -14,16 +14,40 @@ runs:
       id: msrv
       shell: bash
       run: grep rust-version Cargo.toml | cut -d'"' -f2 | sed 's/^/version=/' >> $GITHUB_OUTPUT
-    - uses: dtolnay/rust-toolchain@v1
-      with:
-        toolchain: ${{ steps.msrv.outputs.version }}
-        targets: ${{ inputs.target-toolchain }}
-        # components: rustfmt, clippy
+
+    - name: Install Rust Toolchain
+      shell: bash
+      run: |
+        rustup set auto-self-update disable
+        rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
+        cargo install cargo-binstall
+        cargo binstall cargo-make toml-cli --locked
+
+    # - name: Set up cargo cache
+    #   uses: actions/cache@v3
+    #   continue-on-error: false
+    #   with:
+    #     path: |
+    #       ~/.cargo/bin/
+    #       ~/.cargo/registry/index/
+    #       ~/.cargo/registry/cache/
+    #       ~/.cargo/git/db/
+    #       target/
+    #     key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+    #     restore-keys: ${{ runner.os }}-cargo-
+
+    # - name: Install Rust Toolchain
+    #   uses: dtolnay/rust-toolchain@v1
+    #   with:
+    #     toolchain: ${{ steps.msrv.outputs.version }}
+    #     targets: ${{ inputs.target-toolchain }}
+    #     components: rustfmt, clippy
 
     # - name: Cargo libraries check
     #   shell: bash
     #   run: |
-    #     cargo install cargo-make toml-cli --locked
+    #     cargo install cargo-binstall
+    #     cargo binstall cargo-make toml-cli --locked
     #     cargo check --all --bins --examples --tests
 
     - name: Install Windows libraries
@@ -31,4 +55,4 @@ runs:
       shell: powershell
       run: |
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
-        vcpkg install openssl:x64-windows-static-md
+        vcpkg install openssl:x64-windows-static-md 7zip

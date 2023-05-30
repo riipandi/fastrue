@@ -87,9 +87,13 @@ jobs:
 
       - name: Run PNPM action
         uses: ./.github/pnpm-action
-      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Build frontend
-        run: pnpm install && pnpm build
+
+      - name: Install npm dependencies
+        if: steps.cache-pnpm.outputs.cache-hit != 'true'
+        run: pnpm install
+
+      - name: Build SPA frontend
+        run: pnpm build
 
       - name: Setup Rust Toolchain
         uses: ./.github/rust-action
@@ -99,13 +103,14 @@ jobs:
       - name: Compile application binary
         run: |
           cargo build --target ${{ matrix.target }} --release --locked
-          ls -lh && ls -lh target/${{ matrix.target }}/release
+          ls && ls target/${{ matrix.target }}/release
 
       # - name: Archiving compiled binary (Windows)
       #   if: runner.os == 'Windows'
-      #   shell: bash
+      #   shell: powershell
       #   run: |
       #     target\release\fastrue.exe --version
+      #     7z.exe a -r0 fastrue-${{ matrix.target }}.zip target\${{ matrix.target }}\release\fastrue.exe
       #     tar czf fastrue-${{ matrix.target }}.tar.gz -C target\${{ matrix.target }}\release\ fastrue.exe
       #     ls -lh | grep fastrue
 
