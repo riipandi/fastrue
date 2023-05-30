@@ -1,9 +1,5 @@
 name: Release Edge
 
-# References:
-# - https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
-# - https://ectobit.com/blog/speed-up-github-actions-rust-pipelines/
-
 on:
   pull_request:
     types: [closed]
@@ -22,80 +18,17 @@ permissions:
   discussions: write
   deployments: write
   packages: write
-  pull-requests: write
+  pull-requests: read
 
 env:
   CARGO_TERM_COLOR: always
   CONTAINER_REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
   PR_NUMBER: ${{ github.event.number }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  build-binaries:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-          - os: macos-latest
-            target: x86_64-apple-darwin
-          - os: macos-latest
-            target: aarch64-apple-darwin
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-    name: Build ${{ matrix.target }}
-    runs-on: ${{ matrix.os }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run PNPM action
-        uses: ./.github/pnpm-action
-      - if: ${{ steps.cache-pnpm.outputs.cache-hit != 'true' }}
-        name: Build frontend
-        run: pnpm install && pnpm build
-
-      - name: Setup Rust Toolchain
-        uses: ./.github/rust-action
-        with:
-          target-toolchain: ${{ matrix.target }}
-
-      - name: Get application variables
-        id: getvar
-        run: echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
-
-      - name: Compile application binary
-        run: cargo build --target ${{ matrix.target }} --release --locked
-
-      # - uses: actions/upload-artifact@v3
-      #   with:
-      #     name: fastrue-binaries
-      #     path: ${{ github.workspace }}/uploads/
-      #     if-no-files-found: error
-      #     retention-days: 1
-
-  # create-release:
-  #   needs: [build-binaries]
-  #   name: Create new release
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - uses: actions/download-artifact@v3
-  #       id: download
-  #       with:
-  #         name: fastrue-binaries
-  #         path: ${{ github.workspace }}
-
-  #     - name: Get application variables
-  #       id: getvar
-  #       run: echo "app_version=$(cat ${{ github.workspace }}/VERSION.txt)" >> $GITHUB_OUTPUT
-
-  #     - name: Create Release
-  #       run: |
-  #         echo ${{ steps.download.outputs.download-path }}
-  #         gh release create v${{ steps.getvar.outputs.app_version }}-b${{ env.PR_NUMBER }} ${{ steps.download.outputs.download-path }}/*.zip --generate-notes --prerelease
-
   docker-images:
-    needs: [build-binaries]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -105,6 +38,8 @@ jobs:
     name: Docker image ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Setup release version
         working-directory: .
         shell: bash
@@ -121,12 +56,127 @@ jobs:
         with:
           registry-host: ${{ env.CONTAINER_REGISTRY }}
           registry-username: ${{ github.actor }}
-          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          registry-password: ${{ env.GITHUB_TOKEN }}
           image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           image-tags: |
             type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ env.RELEASE_VERSION }}
             type=raw,enable=true,priority=200,value=edge
           image-platform: ${{ matrix.platform }}
+
+  build-binaries:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          # - os: windows-latest
+          #   target: x86_64-pc-windows-msvc
+    name: Build ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js and pnpm
+        uses: ./.github/pnpm-action
+
+      - name: Install npm dependencies
+        if: steps.cache-pnpm.outputs.cache-hit != 'true'
+        run: pnpm install
+
+      - name: Build SPA frontend
+        run: pnpm build
+
+      - name: Setup Rust Toolchain
+        uses: ./.github/rust-action
+        with:
+          target-toolchain: ${{ matrix.target }}
+
+      - name: Compile application binary
+        run: |
+          cargo build --target ${{ matrix.target }} --release --locked
+          ls target/${{ matrix.target }}/release
+
+      - name: Archiving compiled binary (Windows)
+        if: runner.os == 'Windows'
+        shell: powershell
+        run: 7z.exe a -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue.exe
+
+      - name: Archiving compiled binary (Linux/macOS)
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
+          ls -lh | grep fastrue
+
+      - name: Upload compiled binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: fastrue-binaries
+          path: |
+            fastrue-${{ matrix.target }}.tar.gz
+            fastrue-${{ matrix.target }}.zip
+          if-no-files-found: warn
+          retention-days: 1
+
+  gh-release:
+    needs: [build-binaries,docker-images]
+    runs-on: ubuntu-latest
+    name: GitHub release
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get previous tag
+        uses: WyriHaximus/github-action-get-previous-tag@v1
+        id: previoustag
+        with:
+          fallback: 1.0.0 # Optional fallback tag to use when no tag can be found
+
+      - name: Setup release version
+        working-directory: .
+        shell: bash
+        run: |
+          echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+
+      - name: Verify release version
+        shell: bash
+        run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
+
+      - name: Download compiled artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: fastrue-binaries
+          path: ${{ github.workspace }}
+
+      - name: Create tag and release
+        id: create-release-tag
+        # if: startsWith(github.ref, 'refs/tags/')
+        if: env.RELEASE_VERSION != env.PREVIOUS_TAG
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.PR_NUMBER }}
+          target_commitish: ${{ github.ref_name }}
+          body: "Release created by @${{ github.actor }} (${{ env.SHORT_SHA }})"
+          token: ${{ env.GITHUB_TOKEN }}
+          generate_release_notes: true
+          prerelease: true
+          draft: false
+          files: |
+            fastrue-*.tar.gz
+            fastrue-*.zip
+
+      - name: Verify created release
+        run: echo "Release v${{ env.RELEASE_VERSION }} ${{ github.ref_name }} -> ${{ steps.create-release-tag.outputs.url }}"
 
   deploy-demo:
     needs: [build-binaries]

@@ -1,5 +1,10 @@
 name: CI Test Build
 
+# References:
+# - https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
+# - https://ectobit.com/blog/speed-up-github-actions-rust-pipelines/
+# - https://docs.github.com/en/actions/learn-github-actions/contexts#github-context
+
 on:
   push:
     branches-ignore: ['main','release']

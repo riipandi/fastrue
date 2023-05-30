@@ -1,9 +1,5 @@
 name: Release Stable
 
-# References:
-# - https://docs.docker.com/build/ci/github-actions/manage-tags-labels/
-# - https://ectobit.com/blog/speed-up-github-actions-rust-pipelines/
-
 on:
   push:
     branches: ['release']
@@ -47,7 +43,7 @@ jobs:
         shell: bash
         run: |
           echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
-          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.workflow_sha }}) >> $GITHUB_ENV
 
       - name: Verify release version
         shell: bash
@@ -108,16 +104,14 @@ jobs:
       - name: Archiving compiled binary (Windows)
         if: runner.os == 'Windows'
         shell: powershell
-        run: |
-          target/${{ matrix.target }}/release/fastrue.exe version
-          7z.exe a -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue.exe
+        run: 7z.exe a -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue.exe
 
       - name: Archiving compiled binary (Linux/macOS)
         if: runner.os != 'Windows'
         shell: bash
         run: |
           tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-          target/${{ matrix.target }}/release/fastrue --version && ls -lh | grep fastrue
+          ls -lh | grep fastrue
 
       - name: Upload compiled binaries
         uses: actions/upload-artifact@v3
@@ -148,10 +142,9 @@ jobs:
         working-directory: .
         shell: bash
         run: |
-          echo BRANCH_NAME=$(echo $GITHUB_REF | cut -d'/' -f 3) >> $GITHUB_ENV
           echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
           echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
-          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.workflow_sha }}) >> $GITHUB_ENV
 
       - name: Verify release version
         shell: bash
@@ -170,15 +163,15 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.RELEASE_VERSION }}
-          target_commitish: ${{ env.BRANCH_NAME }}
+          target_commitish: ${{ github.ref_name }}
           body: "Release created by @${{ github.actor }} (${{ env.SHORT_SHA }})"
           token: ${{ env.GITHUB_TOKEN }}
           generate_release_notes: true
-          prerelease: true
-          draft: false
+          prerelease: false
+          draft: true
           files: |
             fastrue-*.tar.gz
             fastrue-*.zip
 
       - name: Verify created release
-        run: echo "Release v${{ env.RELEASE_VERSION }} ${{ env.BRANCH_NAME }} -> ${{ steps.create-release-tag.outputs.url }}"
+        run: echo "Release v${{ env.RELEASE_VERSION }} ${{ github.ref_name }} -> ${{ steps.create-release-tag.outputs.url }}"
