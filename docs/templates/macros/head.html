@@ -254,6 +254,6 @@
 </script>
 
 {% if config.extra.plausible.enable %}
-<script defer data-domain="{{config.extra.plausible.domain}}" src="{{config.extra.plausible.script_url}}"></script>
+<script defer data-domain="{{ config.extra.plausible.domain }}" src="{{ config.extra.plausible.script_url | safe }}"></script>
 {% endif %}
 {% endmacro %}

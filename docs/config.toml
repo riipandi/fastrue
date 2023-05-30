@@ -49,7 +49,6 @@ author = "Aris Ripandi"
 github = "https://github.com/riipandi"
 twitter = "https://twitter.com/riipandi"
 email = "aris@duck.com"
-plausible_enable = ""  # Google Analytics code
 
 # If running on netlify.app site, set to true
 is_netlify = true
@@ -79,7 +78,7 @@ repo_branch = "main"
 math = false
 library = "katex"  # options: "katex", "mathjax". default is "katex".
 
-## Open Graph + Twitter Cards
+## Plausible analytics
 [extra.plausible]
 enable = true
 domain = "fastrue.netlify.app"
