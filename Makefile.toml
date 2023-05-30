@@ -48,7 +48,7 @@ dependencies = ["clean"]
 
 [tasks.build-api]
 command = "cargo"
-args = ["build", "--release"]
+args = ["build", "--release", "--locked"]
 dependencies = ["clean"]
 
 [tasks.build-web]

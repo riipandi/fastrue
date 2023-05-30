@@ -55,3 +55,6 @@ codegen-units = 1
 incremental = false
 opt-level = "s"
 lto = true
+
+[profile.dev]
+split-debuginfo = "unpacked"
