@@ -21,11 +21,13 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
+  actions: write
   contents: write
-  discussions: write
   deployments: write
+  discussions: write
+  id-token: write
   packages: write
-  pull-requests: read
+  pull-requests: write
 
 env:
   CARGO_TERM_COLOR: always
