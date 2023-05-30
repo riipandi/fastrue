@@ -60,7 +60,7 @@ jobs:
           image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           image-tags: |
             type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ env.RELEASE_VERSION }}
-            type=raw,enable=true,priority=200,value=edge
+            type=raw,value=edge,priority=200,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           image-platform: ${{ matrix.platform }}
 
   build-binaries:
