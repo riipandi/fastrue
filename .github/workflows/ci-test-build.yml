@@ -7,7 +7,7 @@ name: CI Test Build
 
 on:
   push:
-    branches-ignore: ['main','release']
+    branches-ignore: [main,release]
     paths-ignore:
       - '**.md'
       - '.github/ISSUE_TEMPLATE/**'

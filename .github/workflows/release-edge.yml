@@ -3,7 +3,7 @@ name: Release Edge
 on:
   pull_request:
     types: [closed]
-    branches: ["main"]
+    branches: [main]
     paths-ignore:
       - '**.md'
       - '.github/ISSUE_TEMPLATE/**'

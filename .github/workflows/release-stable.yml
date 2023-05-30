@@ -2,7 +2,7 @@ name: Release Stable
 
 on:
   push:
-    branches: ['release']
+    branches: [release]
     paths:
       - '**/Cargo.toml'
       - '.github/workflows/release-stable.yml'
