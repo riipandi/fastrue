@@ -99,9 +99,7 @@ jobs:
           target-toolchain: ${{ matrix.target }}
 
       - name: Compile application binary
-        run: |
-          cargo build --target ${{ matrix.target }} --release --locked
-          ls target/${{ matrix.target }}/release
+        run: cargo build --target ${{ matrix.target }} --release --locked
 
       - name: Archiving compiled binary (Windows)
         if: runner.os == 'Windows'
@@ -113,7 +111,7 @@ jobs:
         shell: bash
         run: |
           tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-          ls -lh | grep fastrue
+          ls -lh target/${{ matrix.target }}/release && ls -lh | grep fastrue
 
       - name: Upload compiled binaries
         uses: actions/upload-artifact@v3
