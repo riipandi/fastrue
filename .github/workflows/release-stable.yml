@@ -100,11 +100,7 @@ jobs:
         run: |
           if [ "${{ runner.os }}" = "Windows" ]; then
             echo "Operating System is ${{ runner.os }}"
-            $url = 'https://www.7-zip.org/a/7z1900-x64.msi'
-            $msiPath = "$env:TEMP\7z.msi"
-            (New-Object System.Net.WebClient).DownloadFile($url, $msiPath)
-            Start-Process msiexec.exe -Wait -ArgumentList "/i $msiPath /quiet"
-            & 'C:\Program Files\7-Zip\7z.exe' a -r0 fastrue-${{ matrix.target }}.zip target\aarch64-apple-darwin\release\fastrue
+            7za -r0 fastrue-${{ matrix.target }}.zip target/${{ matrix.target }}/release/fastrue
           else
             tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
             cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue-${{ matrix.target }}.zip fastrue
