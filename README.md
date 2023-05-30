@@ -53,6 +53,14 @@ cargo run -- migrate
 docker-compose -f compose-development.yaml up -d
 ```
 
+Create admin user using cli:
+
+```sh
+cargo run -- create-admin
+```
+
+Essential development commands:
+
 ```sh
 cargo make dev             # run in development
 cargo make build           # build binary file

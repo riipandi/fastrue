@@ -25,8 +25,8 @@ runs:
       if: runner.os != 'Windows'
       shell: bash
       run: |
-        curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
-        cargo binstall --no-confirm cargo-make
+        BINSTALL_SCRIPT="https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh"
+        curl -L --proto '=https' --tlsv1.2 -sSf $BINSTALL_SCRIPT | bash
 
     - name: Install additional libraries (Windows)
       if: runner.os == 'Windows'
@@ -35,7 +35,10 @@ runs:
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
         vcpkg install openssl:x64-windows-static-md 7zip
         cargo install cargo-binstall --locked
-        cargo binstall --no-confirm cargo-make
+
+    - name: Install Cargo libraries
+      shell: bash
+      run: cargo binstall --no-confirm cargo-make tsync
 
     - name: Caching Rust Toolchain
       uses: swatinem/rust-cache@v2

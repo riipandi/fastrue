@@ -169,13 +169,14 @@ jobs:
         run: ls -lh | grep fastrue
 
       - name: Create tag and release
+        id: create-release-tag
         # if: startsWith(github.ref, 'refs/tags/')
         if: env.RELEASE_VERSION != env.PREVIOUS_TAG
         uses: softprops/action-gh-release@v1
         with:
           tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
-          target_commitish: ${{ env.BRANCH_NAME }}
-          body: "Published from GitHub Actions for commit (${{ env.SHORT_SHA }})"
+          target_commitish: ${{ github.sha }}
+          body: "Published by @${{ github.actor }} (${{ env.SHORT_SHA }})"
           token: ${{ secrets.GITHUB_TOKEN }}
           generate_release_notes: true
           prerelease: true
@@ -183,3 +184,6 @@ jobs:
           files: |
             fastrue-*.tar.gz
             fastrue-*.zip
+
+      - name: Create tag and release
+        run: echo "Release URL for branch ${{ env.BRANCH_NAME }} -> ${{ steps.create-release-tag.outputs.url }}"

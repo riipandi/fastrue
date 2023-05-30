@@ -13,6 +13,10 @@ script = [
   "pnpm prettier --write package.json"
 ]
 
+[tasks.sync-types]
+command = "tsync"
+args = ["-i", "src/", "-o", "websrc/types/types.d.ts"]
+
 [tasks.output-release]
 command = "ls"
 args = ["-lh", "target/release"]
@@ -76,6 +80,7 @@ args = ["watch", "-qcx", "run"]
 [tasks.dev-web]
 command = "pnpm"
 args = ["dev"]
+dependencies = ["sync-types"]
 
 [tasks.dev]
 command = "pnpm"
