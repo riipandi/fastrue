@@ -97,9 +97,14 @@ jobs:
         run: cargo build --target ${{ matrix.target }} --release --locked
 
       - name: Compress compiled binary
+        if: "!contains(matrix.target, 'windows')"
         run: |
           tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-          cd target/aarch64-apple-darwin/release/ && zip -r0 ../../../fastrue.zip fastrue
+          cd target/${{ matrix.target }}/release/ && zip -r0 ../../../fastrue.zip fastrue
+
+      # - name: Compress compiled binary
+      #   if: "contains(matrix.target, 'windows')"
+      #   run: 7z a -tzip $INPUT_FILENAME $INPUT_PATH $INPUT_CUSTOM
 
       - uses: actions/upload-artifact@v3
         with:
