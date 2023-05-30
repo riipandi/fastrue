@@ -10,8 +10,11 @@ on:
     branches-ignore: [main,release]
     paths-ignore:
       - '**.md'
+      - '.*ignore'
       - '.github/ISSUE_TEMPLATE/**'
-      - .gitignore
+      - '.github/FUNDING.yml'
+      - 'Makefile.toml'
+      - 'docs/'
 
 env:
   CARGO_TERM_COLOR: always
