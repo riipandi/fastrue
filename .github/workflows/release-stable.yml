@@ -108,7 +108,9 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: fastrue-binaries
-          path: fastrue-${{ matrix.target }}.tar.gz
+          path: |
+            fastrue-${{ matrix.target }}.tar.gz
+            fastrue-${{ matrix.target }}.zip
           if-no-files-found: warn
           retention-days: 1
 
