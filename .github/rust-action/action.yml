@@ -20,6 +20,7 @@ runs:
       run: |
         rustup set auto-self-update disable
         rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
+        rustup target add ${{ inputs.target-toolchain }}
 
     - name: Install Windows libraries
       if: runner.os == 'Windows'

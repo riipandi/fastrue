@@ -57,8 +57,10 @@ jobs:
           registry-password: ${{ env.GITHUB_TOKEN }}
           image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           image-tags: |
-            type=raw,enable=true,priority=100,value=${{ env.RELEASE_VERSION }}
-            type=raw,enable=true,priority=200,value=latest
+            type=semver,enable=true,pattern={{version}},value=v${{ env.RELEASE_VERSION }}
+            type=semver,enable=true,pattern={{major}}.{{minor}},value=v${{ env.RELEASE_VERSION }}
+            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'v0.') }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'release') }}
           image-platform: ${{ matrix.platform }}
 
   build-binaries:
