@@ -167,12 +167,11 @@ jobs:
         with:
           tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
           target_commitish: ${{ env.BRANCH_NAME }}
-          body: "This is release message"
+          body: "Published from GitHub Actions for commit #${{ env.SHORT_SHA }}"
           token: ${{ secrets.GITHUB_TOKEN }}
-          generate_release_notes: false
+          generate_release_notes: true
           prerelease: true
-          draft: true
+          draft: false
           files: |
             fastrue-*.tar.gz
             fastrue-*.zip
-            LICENSE
