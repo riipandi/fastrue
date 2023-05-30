@@ -30,7 +30,12 @@ env:
 jobs:
   docker-images:
     runs-on: ubuntu-latest
-    name: Docker images
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+    name: Docker image ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
       - name: Setup release version
@@ -52,6 +57,23 @@ jobs:
           registry-password: ${{ secrets.GITHUB_TOKEN }}
           image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           image-tags: |
-            type=raw,enable=true,priority=100,suffix=-${{ env.SHORT_SHA }},value=${{ env.RELEASE_VERSION }}
-            type=raw,enable=true,priority=200,value=edge
-          image-platform: linux/amd64
+            type=raw,enable=true,priority=100,value=${{ env.RELEASE_VERSION }}
+            type=raw,enable=true,priority=200,value=latest
+          image-platform: ${{ matrix.platform }}
+
+  gh-release:
+    needs: [docker-images]
+    runs-on: ubuntu-latest
+    name: GitHub Release
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup release version
+        working-directory: .
+        shell: bash
+        run: |
+          echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+
+      - name: Validate release version
+        shell: bash
+        run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"

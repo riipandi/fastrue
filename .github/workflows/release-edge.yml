@@ -98,43 +98,31 @@ jobs:
       matrix:
         platform:
           - linux/amd64
-    name: Docker images
+    name: Docker image ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v3
-      - uses: docker/setup-qemu-action@v2
-      - uses: docker/setup-buildx-action@v2
-      - uses: docker/login-action@v2
-        with:
-          registry: ${{ env.CONTAINER_REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get application variables
-        id: getvar
+      - name: Setup release version
+        working-directory: .
         shell: bash
         run: |
-          curl -fsSL https://github.com/gnprice/toml-cli/releases/download/v0.2.3/toml-0.2.3-x86_64-linux.tar.gz -o toml.tar.gz
-          tar -xzvf toml.tar.gz && mv toml-0.2.3-x86_64-linux/toml /usr/local/bin/toml
-          echo "app_version=$(toml get Cargo.toml package.version --raw)" >> $GITHUB_OUTPUT
+          echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-      - uses: docker/metadata-action@v4
-        id: meta
+      - name: Validate release version
+        shell: bash
+        run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
+
+      - name: Create and publish docker images
+        uses: ./.github/docker-action
         with:
-          images: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ steps.getvar.outputs.app_version }}
+          registry-host: ${{ env.CONTAINER_REGISTRY }}
+          registry-username: ${{ github.actor }}
+          registry-password: ${{ secrets.GITHUB_TOKEN }}
+          image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+          image-tags: |
+            type=raw,enable=true,priority=100,suffix=-b${{ env.PR_NUMBER }},value=${{ env.RELEASE_VERSION }}
             type=raw,enable=true,priority=200,value=edge
-
-      - name: Build and push with tags
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          platforms: ${{ matrix.platform }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          image-platform: ${{ matrix.platform }}
 
   deploy-demo:
     needs: [build-binaries]

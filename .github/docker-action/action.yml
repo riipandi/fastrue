@@ -18,7 +18,7 @@ inputs:
   image-tags:
     description: Container image tags
     required: true
-  image-platforms:
+  image-platform:
     description: Container image platform
     default: linux/amd64
     required: false
