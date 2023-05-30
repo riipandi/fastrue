@@ -85,7 +85,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run PNPM action
+      - name: Setup Node.js and pnpm
         uses: ./.github/pnpm-action
 
       - name: Install npm dependencies

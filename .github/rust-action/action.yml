@@ -21,7 +21,7 @@ runs:
         rustup set auto-self-update disable
         rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
         cargo install cargo-binstall --locked
-        cargo binstall cargo-make
+        cargo binstall --no-confirm cargo-make
 
     - name: Caching Rust Toolchain
       uses: swatinem/rust-cache@v2
@@ -29,16 +29,9 @@ runs:
         prefix-key: "rust-${{ inputs.target-toolchain }}"
         cache-all-crates: true
 
-    # - name: Install Rust Toolchain
-    #   uses: dtolnay/rust-toolchain@v1
-    #   with:
-    #     toolchain: ${{ steps.msrv.outputs.version }}
-    #     targets: ${{ inputs.target-toolchain }}
-    #     components: rustfmt, clippy
-
-    # - name: Cargo libraries check
-    #   shell: bash
-    #   run: cargo check --all --bins --examples --tests
+    - name: Cargo libraries check
+      shell: bash
+      run: cargo check --all --bins --tests
 
     - name: Install Windows libraries
       if: runner.os == 'Windows'
