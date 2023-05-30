@@ -75,6 +75,20 @@ To run the application in development mode, follow the steps below:
 
 **Note**: Use `sqlx database drop` to revert the change
 
+### Faster Build Using mold
+
+[mold](https://github.com/rui314/mold) is a faster drop-in replacement for existing Unix linkers.
+
+```sh
+git clone https://github.com/rui314/mold.git
+mkdir -p mold/build && cd mold/build
+git checkout v1.11.0
+../install-build-deps.sh
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ ..
+cmake --build . -j $(nproc)
+sudo cmake --install .
+```
+
 ### Publish Docker Image
 
 ```sh

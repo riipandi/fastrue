@@ -6,16 +6,15 @@
 FROM cgr.dev/chainguard/wolfi-base:latest as base
 WORKDIR /app
 COPY . .
-RUN apk update && apk add --no-cache --update-cache curl jq &&\
+RUN apk update && apk add --no-cache --update-cache curl jq
+RUN export PKG_WEB_VERSION=$(cat package.json | jq -r .version) &&\
  export APP_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) &&\
- export PKG_WEB_VERSION=$(cat package.json | jq -r .version) &&\
  sed -i "s/\"version\": \"$PKG_WEB_VERSION\"/\"version\": \"$APP_VERSION\"/" package.json
 
 # -----------------------------------------------------------------------------
 # Builder for Web UI
 # -----------------------------------------------------------------------------
-# FROM cgr.dev/chainguard/node:20 AS buildweb
-FROM cgr.dev/chainguard/wolfi-base:latest as buildweb
+FROM cgr.dev/chainguard/node:20 AS buildweb
 COPY --from=base --chown=node:node /app /app
 RUN npm config set fund false && npm install --no-audit && npm run build
 
