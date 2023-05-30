@@ -21,31 +21,24 @@ runs:
         rustup set auto-self-update disable
         rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
 
-    - name: Install additional libraries (Linux/macOS)
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        BINSTALL_SCRIPT="https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh"
-        curl -L --proto '=https' --tlsv1.2 -sSf $BINSTALL_SCRIPT | bash
-
-    - name: Install additional libraries (Windows)
+    - name: Install Windows libraries
       if: runner.os == 'Windows'
       shell: powershell
       run: |
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
         vcpkg install openssl:x64-windows-static-md 7zip
-        cargo install cargo-binstall --locked
 
     - name: Install Cargo libraries
       shell: bash
-      run: cargo binstall --no-confirm cargo-make tsync
+      run: cargo install tsync --locked
+
+    - name: Cargo libraries check
+      shell: bash
+      run: cargo check --all --bins --tests
 
     - name: Caching Rust Toolchain
       uses: swatinem/rust-cache@v2
       with:
         prefix-key: "rust-${{ inputs.target-toolchain }}"
         cache-all-crates: true
-
-    - name: Cargo libraries check
-      shell: bash
-      run: cargo check --all --bins --tests
+        cache-targets: false

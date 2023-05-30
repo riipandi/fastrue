@@ -49,7 +49,7 @@ jobs:
   #         echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
   #         echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-  #     - name: Validate release version
+  #     - name: Verify release version
   #       shell: bash
   #       run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
 
@@ -70,14 +70,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # - os: ubuntu-latest
-          #   target: x86_64-unknown-linux-gnu
-          # - os: macos-latest
-          #   target: x86_64-apple-darwin
-          # - os: macos-latest
-          #   target: aarch64-apple-darwin
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+          - os: macos-latest
+            target: x86_64-apple-darwin
+          - os: macos-latest
+            target: aarch64-apple-darwin
+          # - os: windows-latest
+          #   target: x86_64-pc-windows-msvc
     name: Build ${{ matrix.target }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -154,7 +154,7 @@ jobs:
           echo PREVIOUS_TAG=${{ steps.previoustag.outputs.tag }} >> $GITHUB_ENV
           echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-      - name: Validate release version
+      - name: Verify release version
         shell: bash
         run: echo "Previous version is ${{ env.PREVIOUS_TAG }}"
 
@@ -164,20 +164,16 @@ jobs:
           name: fastrue-binaries
           path: ${{ github.workspace }}
 
-      - name: Display structure of downloaded files
-        working-directory: ${{ github.workspace }}
-        run: ls -lh | grep fastrue
-
       - name: Create tag and release
         id: create-release-tag
         # if: startsWith(github.ref, 'refs/tags/')
         if: env.RELEASE_VERSION != env.PREVIOUS_TAG
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.RELEASE_VERSION }}-b${{ env.SHORT_SHA }}
-          target_commitish: ${{ github.sha }}
-          body: "Published by @${{ github.actor }} (${{ env.SHORT_SHA }})"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: v${{ env.RELEASE_VERSION }}
+          target_commitish: ${{ env.BRANCH_NAME }}
+          body: "Release created by @${{ github.actor }} (${{ env.SHORT_SHA }})"
+          token: ${{ github.token }}
           generate_release_notes: true
           prerelease: true
           draft: false
@@ -185,5 +181,5 @@ jobs:
             fastrue-*.tar.gz
             fastrue-*.zip
 
-      - name: Create tag and release
+      - name: Verify created release
         run: echo "Release URL for branch ${{ env.BRANCH_NAME }} -> ${{ steps.create-release-tag.outputs.url }}"
