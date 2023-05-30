@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   cleanup:
-    if: ${{ github.event_name == 'schedule' || contains(github.event.commits[0].message, '[flush cache]') }}
+    if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.commits[0].message, '[flush cache]') }}
     runs-on: ubuntu-latest
     name: Purge actions cache
     steps:
