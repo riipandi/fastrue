@@ -28,7 +28,7 @@ runs:
       #   cargo check --all --bins --examples --tests
 
     - name: Install Windows libraries
-      if : ${{ runner.os }} == "windows"
+      if : ${{ runner.os }} == "Windows"
       shell: powershell
       run: |
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
