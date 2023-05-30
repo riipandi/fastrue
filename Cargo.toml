@@ -55,9 +55,11 @@ rust-embed = { version = "^6.6.1", features = ["include-exclude", "salvo-ex"] }
 panic = "abort"
 codegen-units = 1
 incremental = false
+debug = false
 strip = "debuginfo"
-opt-level = "s"
+opt-level = 3
 lto = true
 
 [profile.dev]
 split-debuginfo = "unpacked"
+opt-level = 1
