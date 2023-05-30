@@ -10,25 +10,36 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Cache Rust Toolchain
+      uses: swatinem/rust-cache@v2
+      with:
+        prefix-key: "rust-${{ inputs.target-toolchain }}"
+        cache-all-crates: true
+        cache-targets: false
+
     - name: Get MSRV from Cargo.toml
       id: msrv
       shell: bash
       run: grep rust-version Cargo.toml | cut -d'"' -f2 | sed 's/^/version=/' >> $GITHUB_OUTPUT
-    - uses: dtolnay/rust-toolchain@v1
-      with:
-        toolchain: ${{ steps.msrv.outputs.version }}
-        targets: ${{ inputs.target-toolchain }}
-        components: rustfmt, clippy
 
-    - name: Cargo libraries check
+    - name: Install Rust Toolchain
       shell: bash
       run: |
-        cargo install cargo-make toml-cli --locked
-        cargo check --all --bins --examples --tests
+        rustup set auto-self-update disable
+        rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
+        rustup target add ${{ inputs.target-toolchain }}
 
     - name: Install Windows libraries
-      if: "contains(inputs.target-toolchain, 'windows')"
+      if: runner.os == 'Windows'
       shell: powershell
       run: |
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
-        vcpkg install openssl:x64-windows-static-md
+        vcpkg install openssl:x64-windows-static-md 7zip
+
+    - name: Install Cargo libraries
+      shell: bash
+      run: cargo install tsync --locked
+
+    - name: Cargo libraries check
+      shell: bash
+      run: cargo check --all --bins --tests

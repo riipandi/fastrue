@@ -9,11 +9,11 @@ use fastrue::service::create_admin;
 use fastrue::utils::{migration::run_migration, string::generate_secret};
 use fastrue::{config, state};
 
-const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const PKG_NAME: &'static str = env!("CARGO_PKG_NAME");
+const PKG_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[derive(Parser)]
 #[command(author, about, long_about = None)]
-#[command(version, propagate_version = true)]
 struct Cli {
     #[command(subcommand)]
     command: Option<Commands>,
@@ -23,6 +23,7 @@ struct Cli {
  * Clap references:
  * - https://github.com/dirien/rust-cli
  * - https://github.com/dirien/rust-cli/blob/main/src/main.rs
+ * - https://github.com/clap-rs/clap/discussions/4720#discussioncomment-5066184
  **/
 #[derive(Subcommand)]
 enum Commands {
@@ -35,6 +36,12 @@ enum Commands {
         /// Force run, disable confirmation prompt
         #[arg(short = 'f', long = "force", default_value_t = false)]
         force: bool,
+    },
+    /// Print application version
+    Version {
+        /// Print short version number
+        #[arg(short = 's', long = "short", default_value_t = false)]
+        short: bool,
     },
 }
 
@@ -54,6 +61,14 @@ async fn main() {
 
     match cli.command {
         Some(Commands::GenerateSecret {}) => println!("{}", generate_secret()),
+        Some(Commands::Version { short }) => {
+            if short {
+                println!("{}", PKG_VERSION);
+            } else {
+                let build_timestamp = build_time::build_time_local!("%Y-%m-%d %:z");
+                println!("{} {} ({})", PKG_NAME, PKG_VERSION, build_timestamp);
+            }
+        }
         Some(Commands::Migrate { force }) => {
             // Open database connection
             if let Err(err) = futures::executor::block_on(open_db()) {
@@ -64,7 +79,7 @@ async fn main() {
         Some(Commands::CreateAdmin {}) => create_admin::prompt().await,
         None => {
             let build_timestamp = build_time::build_time_utc!();
-            println!("\nFastrue v{} ({}).\n", VERSION, build_timestamp);
+            println!("\n{} {} ({}).\n", PKG_NAME, PKG_VERSION, build_timestamp);
 
             // Open database connection
             if let Err(err) = futures::executor::block_on(open_db()) {

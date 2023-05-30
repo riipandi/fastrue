@@ -3,12 +3,18 @@
 
 use salvo::prelude::*;
 
-const VERSION: &'static str = env!("CARGO_PKG_VERSION");
+const PKG_NAME: &'static str = env!("CARGO_PKG_NAME");
+const PKG_VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
 #[handler]
 pub async fn hello(_res: &mut Response) -> Result<String, ()> {
-    let build_timestamp = build_time::build_time_utc!();
-    Ok(format!("Fastrue v{} ({})", VERSION, build_timestamp))
+    Ok(format!(
+        "{} {} {} ({})",
+        PKG_NAME,
+        PKG_VERSION,
+        format!("{}-{}", std::env::consts::ARCH, std::env::consts::OS),
+        build_time::build_time_utc!("%Y-%m-%d %H:%M:%S UTC")
+    ))
 }
 
 #[handler]

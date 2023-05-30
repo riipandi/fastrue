@@ -49,7 +49,7 @@ author = "Aris Ripandi"
 github = "https://github.com/riipandi"
 twitter = "https://twitter.com/riipandi"
 email = "aris@duck.com"
-ganalytics = ""  # Google Analytics code
+plausible_enable = ""  # Google Analytics code
 
 # If running on netlify.app site, set to true
 is_netlify = true
@@ -80,6 +80,12 @@ math = false
 library = "katex"  # options: "katex", "mathjax". default is "katex".
 
 ## Open Graph + Twitter Cards
+[extra.plausible]
+enable = true
+domain = "fastrue.netlify.app"
+script_url = "https://stats.fltr.dev/js/script.js"
+
+## Open Graph + Twitter Cards
 [extra.open]
 enable = true
 # this image will be used as fallback if a page has no image of its own
@@ -93,12 +99,11 @@ og_locale = "en_US"
 type = "Organization"
 logo = "logo-doks.png"
 twitter = "https://twitter.com/riipandi"
-linked_in = ""
+linkedin = ""
 github = "https://github.com/riipandi"
 section = "blog" # see config.extra.main~url
 ## Sitelinks Search Box
 site_links_search_box = false
-
 
 [[extra.menu.social]]
 name = "Twitter"

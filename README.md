@@ -53,11 +53,19 @@ cargo run -- migrate
 docker-compose -f compose-development.yaml up -d
 ```
 
+Create admin user using cli:
+
+```sh
+cargo run -- create-admin
+```
+
+Essential development commands:
+
 ```sh
 cargo make dev             # run in development
 cargo make build           # build binary file
-cargo make docker-build    # build docker container
-cargo make docker-run      # run the docker container
+cargo make docker-build    # build docker image
+cargo make docker-run      # run the docker image
 ```
 
 Application will run at `http://localhost:9090`
@@ -75,10 +83,31 @@ To run the application in development mode, follow the steps below:
 
 **Note**: Use `sqlx database drop` to revert the change
 
+### Faster Build Using mold
+
+[mold](https://github.com/rui314/mold) is a faster drop-in replacement for existing Unix linkers.
+
+```sh
+git clone https://github.com/rui314/mold.git
+mkdir -p mold/build && cd mold/build
+git checkout v1.11.0
+sudo ../install-build-deps.sh
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ ..
+cmake --build . -j $(nproc)
+sudo cmake --install .
+cd ../.. && rm -fr mold/
+```
+
 ### Publish Docker Image
 
 ```sh
 echo $GH_TOKEN | docker login ghcr.io --username CHANGEME --password-stdin
+```
+
+### Running Docker Image
+
+```sh
+docker run --rm -it --name fastrue --env-file .env.docker -p 9090:9090 ghcr.io/riipandi/fastrue:edge
 ```
 
 ### Simple Load Testing

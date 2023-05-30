@@ -128,7 +128,7 @@
       "logo": "{{ page_path | safe }}{{ config.extra.schema.logo }}",
       "sameAs": [
         {% if config.extra.schema.twitter %}"{{ config.extra.schema.twitter | safe }}",{% endif %}
-        {% if config.extra.schema.linked_in %}"{{ config.extra.schema.linked_in | safe }}",{% endif %}
+        {% if config.extra.schema.linkedin %}"{{ config.extra.schema.linkedin | safe }}",{% endif %}
         {% if config.extra.schema.github %}"{{ config.extra.schema.github | safe }}"{% endif %}
       ]
     }
@@ -143,7 +143,7 @@
       "name": "{{ title }}",
       "sameAs": [
         {% if config.extra.schema.twitter %}"{{ config.extra.schema.twitter | safe }}",{% endif %}
-        {% if config.extra.schema.linked_in %}"{{ config.extra.schema.linked_in | safe }}",{% endif %}
+        {% if config.extra.schema.linkedin %}"{{ config.extra.schema.linkedin | safe }}",{% endif %}
         {% if config.extra.schema.github %}"{{ config.extra.schema.github | safe }}"{% endif %}
       ]
     }
@@ -253,13 +253,7 @@
   }
 </script>
 
-{% if config.extra.ganalytics %}
-<script async src="https://www.googletagmanager.com/gtag/js?id={{config.extra.ganalytics}}"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', '{{config.extra.ganalytics}}');
-</script>
+{% if config.extra.plausible.enable %}
+<script defer data-domain="{{config.extra.plausible.domain}}" src="{{config.extra.plausible.script_url}}"></script>
 {% endif %}
 {% endmacro %}

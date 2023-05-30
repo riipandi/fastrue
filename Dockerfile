@@ -1,39 +1,46 @@
 # syntax=docker/dockerfile:1
 
-FROM debian:bullseye-slim AS base
-ARG TOMLVER="0.2.3"
-ENV TOML_CLI_PKG="https://github.com/gnprice/toml-cli/releases/download/v${TOMLVER}/toml-${TOMLVER}-x86_64-linux.tar.gz"
-RUN apt-get update && apt-get -y install jq curl && apt-get -y autoremove &&\
- curl -fsSL ${TOML_CLI_PKG} -o /tmp/toml.tar.gz && tar -xzvf /tmp/toml.tar.gz &&\
- rm -f /tmp/toml.tar.gz && chmod +x toml-${TOMLVER}-x86_64-linux/toml &&\
- mv toml-${TOMLVER}-x86_64-linux/toml /bin/toml
-
 # -----------------------------------------------------------------------------
 # Sync version information between core and web app
 # -----------------------------------------------------------------------------
-FROM base as prebuild
+FROM cgr.dev/chainguard/wolfi-base:latest as base
 WORKDIR /app
 COPY . .
-RUN \
- export APP_VERSION="$(toml get Cargo.toml package.version --raw)" &&\
- export PKG_WEB_VERSION="$(cat package.json | jq -r .version)" &&\
- sed -i "s/${PKG_WEB_VERSION}/${APP_VERSION}/" package.json
+RUN apk update && apk add --no-cache --update-cache curl jq
+RUN export PKG_WEB_VERSION=$(cat package.json | jq -r .version) &&\
+ export APP_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) &&\
+ sed -i "s/\"version\": \"$PKG_WEB_VERSION\"/\"version\": \"$APP_VERSION\"/" package.json
 
 # -----------------------------------------------------------------------------
 # Builder for Web UI
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/node:20 AS buildweb
-COPY --from=prebuild --chown=node:node /app /app
+COPY --from=base --chown=node:node /app /app
 RUN npm config set fund false && npm install --no-audit && npm run build
 
 # -----------------------------------------------------------------------------
-# Builder main application
+# Builder main application: https://endler.dev/2020/rust-compile-times
 # -----------------------------------------------------------------------------
 FROM cgr.dev/chainguard/rust:1.69 AS builder
-ARG TARGETPLATFORM
 WORKDIR /app
 COPY --from=buildweb /app /app
-RUN cargo build --release --locked
+RUN cargo build --release --bin fastrue --locked
+
+# # Step 1: Install cargo-chef subcommand
+# FROM cgr.dev/chainguard/rust:1.69 AS chef
+# WORKDIR /app
+# RUN cargo install cargo-chef --locked
+
+# # Step 2: Compute a recipe file
+# FROM chef as planner
+# COPY --from=buildweb /app /app
+# RUN cargo chef prepare --recipe-path recipe.json
+
+# # Step 3: Cache dependencies and build
+# FROM chef as builder
+# COPY --from=planner /app/recipe.json recipe.json
+# RUN cargo chef cook --release --recipe-path recipe.json
+# RUN cargo build --release --bin fastrue --locked
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
