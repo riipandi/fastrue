@@ -7,7 +7,9 @@ name: Release Stable
 on:
   push:
     branches: ['release']
-    paths: ['**/Cargo.toml', '.github/workflows/release-stable.yml']
+    paths:
+      - '**/Cargo.toml'
+      - '.github/workflows/release-stable.yml'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
