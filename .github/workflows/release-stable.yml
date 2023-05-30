@@ -30,40 +30,40 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  # docker-images:
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       platform:
-  #         - linux/amd64
-  #   name: Docker image ${{ matrix.platform }}
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
-  #     - name: Setup release version
-  #       working-directory: .
-  #       shell: bash
-  #       run: |
-  #         echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
-  #         echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+  docker-images:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - linux/amd64
+    name: Docker image ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Setup release version
+        working-directory: .
+        shell: bash
+        run: |
+          echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-  #     - name: Verify release version
-  #       shell: bash
-  #       run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
+      - name: Verify release version
+        shell: bash
+        run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
 
-  #     - name: Create and publish docker images
-  #       uses: ./.github/docker-action
-  #       with:
-  #         registry-host: ${{ env.CONTAINER_REGISTRY }}
-  #         registry-username: ${{ github.actor }}
-  #         registry-password: ${{ secrets.GITHUB_TOKEN }}
-  #         image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-  #         image-tags: |
-  #           type=raw,enable=true,priority=100,value=${{ env.RELEASE_VERSION }}
-  #           type=raw,enable=true,priority=200,value=latest
-  #         image-platform: ${{ matrix.platform }}
+      - name: Create and publish docker images
+        uses: ./.github/docker-action
+        with:
+          registry-host: ${{ env.CONTAINER_REGISTRY }}
+          registry-username: ${{ github.actor }}
+          registry-password: ${{ env.GITHUB_TOKEN }}
+          image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+          image-tags: |
+            type=raw,enable=true,priority=100,value=${{ env.RELEASE_VERSION }}
+            type=raw,enable=true,priority=200,value=latest
+          image-platform: ${{ matrix.platform }}
 
   build-binaries:
     strategy:
@@ -116,9 +116,8 @@ jobs:
         if: runner.os != 'Windows'
         shell: bash
         run: |
-          target/release/fastrue --version
           tar czf fastrue-${{ matrix.target }}.tar.gz -C target/${{ matrix.target }}/release/ fastrue
-          ls -lh | grep fastrue
+          target/${{ matrix.target }}/release/fastrue --version && ls -lh | grep fastrue
 
       - name: Upload compiled binaries
         uses: actions/upload-artifact@v3
@@ -131,7 +130,7 @@ jobs:
           retention-days: 1
 
   gh-release:
-    needs: [build-binaries]
+    needs: [build-binaries,docker-images]
     runs-on: ubuntu-latest
     name: GitHub release
     steps:
@@ -173,7 +172,7 @@ jobs:
           tag_name: v${{ env.RELEASE_VERSION }}
           target_commitish: ${{ env.BRANCH_NAME }}
           body: "Release created by @${{ github.actor }} (${{ env.SHORT_SHA }})"
-          token: ${{ github.token }}
+          token: ${{ env.GITHUB_TOKEN }}
           generate_release_notes: true
           prerelease: true
           draft: false
@@ -182,4 +181,4 @@ jobs:
             fastrue-*.zip
 
       - name: Verify created release
-        run: echo "Release URL for branch ${{ env.BRANCH_NAME }} -> ${{ steps.create-release-tag.outputs.url }}"
+        run: echo "Release v${{ env.RELEASE_VERSION }} ${{ env.BRANCH_NAME }} -> ${{ steps.create-release-tag.outputs.url }}"
