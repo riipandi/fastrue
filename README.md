@@ -81,6 +81,12 @@ To run the application in development mode, follow the steps below:
 echo $GH_TOKEN | docker login ghcr.io --username CHANGEME --password-stdin
 ```
 
+### Running Docker Image
+
+```sh
+docker run --rm -it --name fastrue --env-file .env.docker -p 9090:9090 ghcr.io/riipandi/fastrue:edge
+```
+
 ### Simple Load Testing
 
 Using [`hey`](https://github.com/rakyll/hey) to perform a simple load testing.

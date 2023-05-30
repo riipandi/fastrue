@@ -9,7 +9,7 @@ BIND_PORT = 9090
 
 [tasks.sync-version]
 script = [
-  "sed -i '' \"s/${PKG_WEB_VERSION}/${APP_VERSION}/\" package.json",
+  'sed -i "" "s/\"version\": \"$PKG_WEB_VERSION\"/\"version\": \"$APP_VERSION\"/" package.json',
   "pnpm prettier --write package.json"
 ]
 
