@@ -44,5 +44,8 @@ jobs:
         with:
           target-toolchain: ${{ matrix.target }}
 
-      - name: Compile Binaries
+      - name: Compile binaries
         run: cargo build --target ${{ matrix.target }} --release --locked
+
+      - name: Validate compiled binary
+        run: target/release/fastrue --version
