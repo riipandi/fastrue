@@ -28,43 +28,43 @@ env:
   GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
 jobs:
-  docker-images:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        platform:
-          - linux/amd64
-    name: Docker image ${{ matrix.platform }}
-    steps:
-      - uses: actions/checkout@v3
-      - name: Setup release version
-        working-directory: .
-        shell: bash
-        run: |
-          echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
-          echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
+  # docker-images:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       platform:
+  #         - linux/amd64
+  #   name: Docker image ${{ matrix.platform }}
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - name: Setup release version
+  #       working-directory: .
+  #       shell: bash
+  #       run: |
+  #         echo RELEASE_VERSION=$(sed -nE 's/^\s*version = "(.*?)"/\1/p' Cargo.toml) >> $GITHUB_ENV
+  #         echo SHORT_SHA=$(git rev-parse --short ${{ github.sha }}) >> $GITHUB_ENV
 
-      - name: Validate release version
-        shell: bash
-        run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
+  #     - name: Validate release version
+  #       shell: bash
+  #       run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
 
-      - name: Create and publish docker images
-        uses: ./.github/docker-action
-        with:
-          registry-host: ${{ env.CONTAINER_REGISTRY }}
-          registry-username: ${{ github.actor }}
-          registry-password: ${{ secrets.GITHUB_TOKEN }}
-          image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
-          image-tags: |
-            type=raw,enable=true,priority=100,value=${{ env.RELEASE_VERSION }}
-            type=raw,enable=true,priority=200,value=latest
-          image-platform: ${{ matrix.platform }}
+  #     - name: Create and publish docker images
+  #       uses: ./.github/docker-action
+  #       with:
+  #         registry-host: ${{ env.CONTAINER_REGISTRY }}
+  #         registry-username: ${{ github.actor }}
+  #         registry-password: ${{ secrets.GITHUB_TOKEN }}
+  #         image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
+  #         image-tags: |
+  #           type=raw,enable=true,priority=100,value=${{ env.RELEASE_VERSION }}
+  #           type=raw,enable=true,priority=200,value=latest
+  #         image-platform: ${{ matrix.platform }}
 
   gh-release:
-    needs: [docker-images]
+    # needs: [docker-images]
     runs-on: ubuntu-latest
-    name: GitHub Release
+    name: GitHub release
     steps:
       - uses: actions/checkout@v3
       - name: Setup release version
@@ -77,3 +77,16 @@ jobs:
       - name: Validate release version
         shell: bash
         run: echo "Creating release v${{ env.RELEASE_VERSION }} - ${{ env.SHORT_SHA }}"
+
+      - name: Auto tag latest version
+        uses: butlerlogic/action-autotag@1.1.1
+        # if: env.NEXT_VERSION != env.PREV_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          strategy: regex
+          root: Cargo.toml
+          regex_pattern: "version\\s*=\\s*\"([0-9\\.]+)\""
+          tag_suffix: "-b${{ env.SHORT_SHA }}"
+          tag_prefix: "v"
+          dry_run: true
