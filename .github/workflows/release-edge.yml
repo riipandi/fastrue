@@ -185,9 +185,10 @@ jobs:
     name: Deploy demo fly.io
     steps:
       - uses: actions/checkout@v3
+      - run: mv fly-source.toml fly.toml
       - uses: superfly/flyctl-actions@1.4
       - name: Deploy to Fly.io
-        run: flyctl -c fly-source.toml deploy --remote-only
+        run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           version: 0.1.23

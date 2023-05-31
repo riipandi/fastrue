@@ -69,9 +69,9 @@ jobs:
           registry-password: ${{ env.GITHUB_TOKEN }}
           image-name: ${{ env.CONTAINER_REGISTRY }}/${{ env.IMAGE_NAME }}
           image-tags: |
-            type=semver,enable=true,pattern={{version}},value=v${{ env.RELEASE_VERSION }}
-            type=semver,enable=true,pattern={{major}}.{{minor}},value=v${{ env.RELEASE_VERSION }}
-            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'v0.') }}
+            type=semver,pattern={{version}},value=v${{ env.RELEASE_VERSION }},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=semver,pattern={{major}}.{{minor}},value=v${{ env.RELEASE_VERSION }},enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
+            type=semver,pattern={{major}},enable=${{ !startsWith(env.RELEASE_VERSION, 'v0.') }}
             type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           image-platform: ${{ matrix.platform }}
 
