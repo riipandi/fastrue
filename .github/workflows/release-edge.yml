@@ -20,7 +20,7 @@ permissions:
   discussions: write
   id-token: write
   packages: write
-  pull-requests: write
+  pull-requests: read
 
 env:
   CARGO_TERM_COLOR: always
@@ -73,10 +73,10 @@ jobs:
         include:
           - os: ubuntu-22.04
             target: x86_64-unknown-linux-gnu
-          - os: macos-12
-            target: x86_64-apple-darwin
-          - os: macos-12
-            target: aarch64-apple-darwin
+          # - os: macos-12
+          #   target: x86_64-apple-darwin
+          # - os: macos-12
+          #   target: aarch64-apple-darwin
           # - os: windows-2022
           #   target: x86_64-pc-windows-msvc
     name: Build ${{ matrix.target }}
@@ -185,10 +185,9 @@ jobs:
     name: Deploy demo fly.io
     steps:
       - uses: actions/checkout@v3
-      - run: mv fly-source.toml fly.toml
-      - uses: superfly/flyctl-actions@1.4
+      - uses: superfly/flyctl-actions/setup-flyctl@1.4
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only
+        run: flyctl -c fly-source.toml deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
           version: 0.1.23
