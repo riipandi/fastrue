@@ -7,14 +7,14 @@ on:
   #     - '**/Cargo.toml'
   #     - '.github/workflows/release-stable.yml'
   workflow_dispatch:
-    inputs:
-      BRANCH:
-        description: 'Branch to use'
-        required: true
-        default: 'main'
-        type: choice
-        options:
-          - main
+    # inputs:
+    #   BRANCH:
+    #     description: 'Branch to use'
+    #     required: true
+    #     default: 'main'
+    #     type: choice
+    #     options:
+    #       - main
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -35,7 +35,6 @@ env:
   IMAGE_NAME: ${{ github.repository }}
   PR_NUMBER: ${{ github.event.number }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  RELEASE_BRANCH: ${{ inputs.BRANCH }}
 
 jobs:
   docker-images:
@@ -73,7 +72,7 @@ jobs:
             type=semver,enable=true,pattern={{version}},value=v${{ env.RELEASE_VERSION }}
             type=semver,enable=true,pattern={{major}}.{{minor}},value=v${{ env.RELEASE_VERSION }}
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'v0.') }}
-            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', ${{ env.RELEASE_BRANCH }}) }}
+            type=raw,value=latest,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
           image-platform: ${{ matrix.platform }}
 
   build-binaries:
