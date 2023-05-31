@@ -47,7 +47,7 @@ tsync = { version = "1.7" }
 [dev-dependencies]
 
 [build-dependencies]
-rust-embed = { version = "^6.6.1", features = ["include-exclude", "salvo-ex"] }
+rust-embed = { version = "6.6", features = ["include-exclude", "salvo-ex"] }
 
 # Reduce the Rust binary size and reduces the size of the images further.
 # https://kerkour.com/optimize-rust-binary-size
