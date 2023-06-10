@@ -28,9 +28,18 @@ pub fn about() -> String {
 }
 
 pub fn generate_secret() -> String {
-	std::iter::repeat_with(fastrand::alphanumeric)
-		.take(40)
-		.collect()
+	let mut bytes = [0u8; 40];
+	getrandom::getrandom(&mut bytes)
+		.unwrap_or_else(|err| panic!("could not retrieve random bytes: {}", err));
+
+	let chars = crate::ALPHABET_62;
+	let mask = chars.len() - 1;
+
+	bytes
+		.iter_mut()
+		.for_each(|b| *b = chars[*b as usize & mask]);
+
+	String::from_utf8_lossy(&bytes).to_string()
 }
 
 pub async fn migrate(force: bool) {
@@ -136,7 +145,7 @@ async fn process_create_admin(email: String, password: String) -> Result<Account
 
 	query(sql)
 		.bind(user.id)
-		.bind(cuid::cuid2())
+		.bind(utils::generate_uid())
 		.bind(user.email.to_string())
 		.bind(true)
 		.bind(password_hash)

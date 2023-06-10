@@ -13,6 +13,11 @@ pub fn get_envar(key: &str, default: Option<&str>) -> String {
 	}
 }
 
+pub fn generate_uid() -> String {
+	nano_id::gen!(uid, 36, b"0123456789abcdefghijklmnopqrstuvwxyz");
+	uid::<20>()
+}
+
 pub fn is_valid_email(email: &str) -> bool {
 	let parts: Vec<&str> = email.split('@').collect();
 	if parts.len() != 2 {

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS public.passwords (
   id uuid NOT NULL DEFAULT uuid_generate_v1mc(),
   user_id uuid NOT NULL UNIQUE,
-  encrypted_password varchar(255) NOT NULL,
+  encrypted_password varchar(128) NOT NULL,
   created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
   CONSTRAINT passwords_pkey PRIMARY KEY (id),
