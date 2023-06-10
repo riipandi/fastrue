@@ -31,8 +31,15 @@ tasks:
     desc: Build the project
     deps: [build-frontend]
     cmds:
-      - cargo build --release --locked
-      - ls -lh target/release
+      - cargo build --release --locked --frozen
+      - du -sh target/release/fastrue
+
+  format:
+    desc: Lint and format the code
+    cmds:
+      - pnpm format
+      - pnpm lint:fix
+      - cargo fmt -- --emit=files
 
   build-frontend:
     desc: Build the frontend
@@ -77,12 +84,9 @@ tasks:
       - pnpm install
       - cargo update
 
-  format:
-    desc: Lint and format the code
+  graph:
     cmds:
-      - pnpm format
-      - pnpm lint:fix
-      - cargo fmt -- --emit=files
+      - cargo depgraph --locked | dot -Tpng > depgraph.png
 
   sync-version:
     desc: Sync version between main app and frontend

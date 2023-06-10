@@ -7,7 +7,7 @@ authors = ["Aris Ripandi <aris@duck.com>"]
 categories = ["web-programming::http-server", "authentication"]
 keywords = ["oauth", "server", "oauth2", "jwt", "token"]
 license = "Apache-2.0"
-rust-version = "1.69"
+rust-version = "1.70"
 edition = "2021"
 publish = false
 build = "build.rs"
@@ -23,13 +23,13 @@ axum = { version = "0.6", features = ["tracing"] }
 build-time = { version = "0.1.3" }
 chrono = { version = "^0.4.23", default-features = false, features = ["clock", "serde"] }
 clap = { version = "4.0", features = ["derive"] }
-cuid = "1.3.1"
+cuid = { version = "1.3.1" }
 dialoguer = { version ="^0.10", features = ["password", "zeroize"] }
 dotenvy = { version = "^0.15" }
 fastrand = { version = "^1.8" }
 # indicatif = { version = "^0.17", features = ["tokio"] }
 # lettre = { version = "^0.10", default-features = false, features = ["smtp-transport", "pool", "tokio1-rustls-tls", "hostname", "builder"] }
-mime_guess = "2.0.4"
+mime_guess = { version = "2.0.4" }
 # jsonwebtoken = {version = "^8", default-features = false }
 password-auth = { version = "0.1.1", features = ["pbkdf2"] }
 rust-embed = { version = "6.6", features = ["include-exclude", "axum-ex"] }
@@ -50,18 +50,17 @@ uuid = { version = "^1.3", features = ["v4", "fast-rng", "serde"] }
 [build-dependencies]
 rust-embed = { version = "6.6", features = ["include-exclude", "axum-ex"] }
 
-# Reduce the Rust binary size and reduces the size of the images further.
-# https://kerkour.com/optimize-rust-binary-size
 [profile.release]
 panic = "abort"
 codegen-units = 1
 incremental = false
 debug = false
-strip = "debuginfo"
+strip = true
 opt-level = 3
 lto = true
 
 [profile.dev]
+strip = "debuginfo"
 split-debuginfo = "unpacked"
 opt-level = 1
 

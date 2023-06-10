@@ -3,7 +3,7 @@
 [![License](https://badgers.space/github/license/riipandi/fastrue?color=green&corner_radius=0)](./LICENSE)
 [![GitHub contributors](https://badgers.space/github/contributors/riipandi/fastrue?color=green&corner_radius=0)](https://github.com/riipandi/fastrue/graphs/contributors)
 [![Contributions](https://img.shields.io/badge/Contributions-welcome-blue.svg?style=flat-square)](./CODE_OF_CONDUCT.md)
-[![(Rust)](https://img.shields.io/badge/rust-v1.69-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
+[![(Rust)](https://img.shields.io/badge/rust-v1.70-orange.svg?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 [![GitHub release](https://img.shields.io/github/v/release/riipandi/fastrue?logo=docker&style=flat-square)](https://github.com/riipandi/fastrue/pkgs/container/fastrue)
 [![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue/deploys)
@@ -21,7 +21,7 @@ Fastrue (formerly Trusty) is a headless authentication server inspired from Netl
 
 The following are required to run the application in development or in production environment:
 
-- [Rust](https://www.rust-lang.org/tools/install) v1.69 or greater.
+- [Rust](https://www.rust-lang.org/tools/install) v1.70 or greater.
 - [Node.js](https://nodejs.org/en/download) v18.16.0 or greater.
 - [PostgreSQL](https://www.postgresql.org/download/) PostgreSQL server v14 or greater.
 - [sqlx](https://crates.io/crates/sqlx) for interacting with the database.

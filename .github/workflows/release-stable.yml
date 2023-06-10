@@ -111,7 +111,7 @@ jobs:
           target-toolchain: ${{ matrix.target }}
 
       - name: Compile application binary
-        run: cargo build --target ${{ matrix.target }} --release --locked
+        run: cargo build --release --locked --frozen --target ${{ matrix.target }}
 
       - name: Archiving compiled binary (Windows)
         if: runner.os == 'Windows'

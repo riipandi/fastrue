@@ -15,10 +15,10 @@ RUN npm config set fund false && npm install --no-audit && npm run build
 # -----------------------------------------------------------------------------
 # Builder main application: https://endler.dev/2020/rust-compile-times
 # -----------------------------------------------------------------------------
-FROM cgr.dev/chainguard/rust:1.69 AS builder
+FROM cgr.dev/chainguard/rust:1.70 AS builder
 WORKDIR /app
 COPY --chown=$(whoami): --from=base /app /app
-RUN cargo build --release --locked --bin fastrue
+RUN cargo build --release --locked --frozen --bin fastrue
 
 # -----------------------------------------------------------------------------
 # Final image: https://kerkour.com/rust-small-docker-image
