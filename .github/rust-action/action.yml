@@ -28,6 +28,7 @@ runs:
         rustup set auto-self-update disable
         rustup toolchain install ${{ steps.msrv.outputs.version }} --profile minimal --target ${{ inputs.target-toolchain }}
         rustup target add ${{ inputs.target-toolchain }}
+        rustup override set ${{ steps.msrv.outputs.version }}
 
     - name: Install Windows libraries
       if: runner.os == 'Windows'
@@ -36,10 +37,12 @@ runs:
         echo "VCPKG_ROOT=$env:VCPKG_INSTALLATION_ROOT" | Out-File -FilePath $env:GITHUB_ENV -Append
         vcpkg install openssl:x64-windows-static-md 7zip
 
-    - name: Install Cargo libraries
-      shell: bash
-      run: cargo install tsync --locked
+    # - name: Install Cargo libraries
+    #   shell: bash
+    #   run: cargo install tsync --locked
 
     - name: Cargo libraries check
       shell: bash
-      run: cargo check --all --bins --tests --release
+      run: |
+        rustc --version
+        cargo check --all --bins --tests --release --locked

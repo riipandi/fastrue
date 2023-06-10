@@ -1,7 +1,7 @@
 name: Purge Cache
 
 on:
-  push:
+  # push:
   schedule:
     - cron: '0 0 * * *' # Runs once a day (https://crontab.guru/once-a-day)
   workflow_dispatch:
