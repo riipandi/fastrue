@@ -4,35 +4,25 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'fastrue'",
+            "name": "Debug fastrue server",
             "cargo": {
-                "args": ["build", "--bin=fastrue", "--package=fastrue"],
-                "filter": {
-                    "name": "fastrue",
-                    "kind": "bin"
-                }
+                "args": ["build", "--bin=fastrue", "--package=fastrue", "--release", "--locked"],
+                "filter": { "name": "fastrue", "kind": "bin" }
             },
             "args": [],
             "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "internalConsoleOptions": "openOnSessionStart",
+            "presentation": {
+                "hidden": true,
+                "group": "debug",
+                "order": 1
+            }
         },
         {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable 'fastrue'",
-            "cargo": {
-                "args": ["test", "--no-run", "--bin=fastrue", "--package=fastrue"],
-                "filter": {
-                    "name": "fastrue",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        },
-        {
-            "name": "dev:frontend",
             "type": "node",
             "request": "launch",
+            "name": "Debug fastrue frontend",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["dev"],
             "skipFiles": ["<node_internals>/**"],
@@ -47,14 +37,14 @@
             "presentation": {
                 "hidden": true,
                 "group": "debug",
-                "order": 1
+                "order": 2
             }
         },
         {
-            "name": "Launch Chrome",
             "type": "chrome",
             "request": "launch",
-            "url": "http://localhost:3000",
+            "name": "Launch Chrome",
+            "url": "http://localhost:9090/ui",
             "webRoot": "${workspaceFolder}",
             "cleanUp": "wholeBrowser",
             "runtimeArgs": [
@@ -78,8 +68,8 @@
     ],
     "compounds": [
         {
-            "name": "Debug Frontend",
-            "configurations": ["dev:frontend", "Launch Chrome"],
+            "name": "Start development",
+            "configurations": ["Debug fastrue server", "Debug fastrue frontend", "Launch Chrome"],
             "stopAll": true
         }
     ]
