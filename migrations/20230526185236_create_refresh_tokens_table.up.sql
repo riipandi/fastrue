@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS public.refresh_tokens (
-  id UUID NOT NULL,
+  id uuid NOT NULL DEFAULT uuid_generate_v1mc(),
   parent varchar(255) NULL,
   "token" varchar(255) NULL,
   user_id varchar(255) NULL,

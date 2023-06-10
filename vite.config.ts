@@ -8,18 +8,21 @@ import { defineConfig } from 'vite'
 export default defineConfig({
   plugins: [react()],
   envDir: join(__dirname),
-  envPrefix: ['FASTRUE_'],
+  envPrefix: ['API_', 'VITE_'],
+  define: {
+    'import.meta.env.APP_VERSION': `"${process.env.npm_package_version}"`,
+  },
   test: {
     globals: true,
-    cache: { dir: './node_modules/.vitest' },
     environment: 'jsdom',
-    include: ['websrc/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    cache: { dir: resolve(__dirname, 'node_modules/.vitest') },
+    include: ['**/*.{test,spec}.{ts,tsx}'],
   },
-  publicDir: resolve(__dirname, 'websrc/assets/public'),
+  publicDir: resolve(__dirname, 'public'),
   root: resolve(__dirname, 'websrc'),
   build: {
     emptyOutDir: true,
-    outDir: resolve(__dirname, 'web'),
+    outDir: resolve(__dirname, 'target/web'),
     rollupOptions: {
       input: {
         app: resolve(__dirname, 'websrc/index.html'),
@@ -29,22 +32,18 @@ export default defineConfig({
   resolve: {
     alias: [
       { find: '@', replacement: resolve(__dirname, 'websrc') },
-      { find: '~', replacement: resolve(__dirname, 'websrc/assets') },
+      { find: '~', replacement: resolve(__dirname, 'public') },
     ],
   },
-  base: '/ui/',
+  base: '/ui',
   server: {
     port: 3000,
-    base: '/ui/',
+    base: '/ui',
     proxy: {
       '/api': {
         target: 'http://0.0.0.0:9090',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\//, ''),
-      },
-      '/swagger': {
-        target: 'http://0.0.0.0:9090',
-        changeOrigin: true,
       },
     },
   },

@@ -26,10 +26,10 @@ The following are required to run the application in development or in productio
 - [PostgreSQL](https://www.postgresql.org/download/) PostgreSQL server v14 or greater.
 - [sqlx](https://crates.io/crates/sqlx) for interacting with the database.
 - [sqlx-cli](https://crates.io/crates/sqlx-cli) a command line tool for sqlx.
-- [cargo watch](https://crates.io/crates/cargo-watch), a tool for watching the project files and recompiling when they change.
-- [cargo-make](https://sagiegurari.github.io/cargo-make/#installation), task runner and build tool for Rust project.
-- [toml-cli](https://github.com/gnprice/toml-cli), a simple CLI for editing and querying TOML files.
-- [Docker](https://docs.docker.com/engine/install), v2.10 or greater. This is optional, only required when building container image.
+- [cargo-px](https://crates.io/crates/cargo-px), a cargo sub-command designed to augment cargo's capabilities.
+- [cargo-watch](https://crates.io/crates/cargo-watch), a tool for watching the project files and recompiling when they change.
+- [taskfile](https://taskfile.dev/installation/), task runner and build tool to be simpler and easier to use.
+- [Docker](https://docs.docker.com/engine/install), v2.10 or greater, only required when building container image.
 
 ### Generate Secret Key
 
@@ -38,7 +38,7 @@ fill the `application secret key` with some random string. To generate a secret 
 the following command:
 
 ```sh
-cargo run -- generate-secret
+task generate-secret
 ```
 
 ### Run Database Migration
@@ -49,26 +49,25 @@ cargo run -- migrate
 
 ### Up and Running
 
-```sh
-docker-compose -f compose-development.yaml up -d
-```
-
-Create admin user using cli:
-
-```sh
-cargo run -- create-admin
-```
-
-Essential development commands:
-
-```sh
-cargo make dev             # run in development
-cargo make build           # build binary file
-cargo make docker-build    # build docker image
-cargo make docker-run      # run the docker image
-```
+1. Prepare environment: `task start-compose`
+2. Install dependencies: `task deps`
+3. Run database migration: `task migrate`
+4. Start development: `task dev`
 
 Application will run at `http://localhost:9090`
+
+### Essential Commands
+
+```sh
+task dev             # start development
+task build           # build binary file
+task run             # run release mode
+task docker-build    # build docker image
+task docker-run      # run the docker image
+task docker-push     # publish the docker image
+```
+
+> List all available tasks: `task --list-all`
 
 ## 🧑🏻‍💻 Development
 
@@ -82,21 +81,6 @@ To run the application in development mode, follow the steps below:
 6. use `sqlx migrate add -r <migration_name>` to add a new migration
 
 **Note**: Use `sqlx database drop` to revert the change
-
-### Faster Build Using mold
-
-[mold](https://github.com/rui314/mold) is a faster drop-in replacement for existing Unix linkers.
-
-```sh
-git clone https://github.com/rui314/mold.git
-mkdir -p mold/build && cd mold/build
-git checkout v1.11.0
-sudo ../install-build-deps.sh
-cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_COMPILER=c++ ..
-cmake --build . -j $(nproc)
-sudo cmake --install .
-cd ../.. && rm -fr mold/
-```
 
 ### Publish Docker Image
 

@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS public.sso_providers (
-  id UUID NOT NULL,
+  id uuid NOT NULL DEFAULT uuid_generate_v1mc(),
   resource_id text NULL,
   created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -11,8 +11,8 @@ COMMENT ON COLUMN public.sso_providers.resource_id is 'Auth: Uniquely identifies
 CREATE UNIQUE INDEX IF NOT EXISTS sso_providers_resource_id_idx on public.sso_providers (lower(resource_id));
 
 CREATE TABLE IF NOT EXISTS public.sso_domains (
-  id UUID NOT NULL,
-  sso_provider_id UUID NOT NULL,
+  id uuid NOT NULL,
+  sso_provider_id uuid NOT NULL,
   domain text NOT NULL,
   created_at timestamptz NULL,
   updated_at timestamptz NULL,
@@ -25,8 +25,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS sso_domains_domain_idx on public.sso_domains (
 COMMENT ON TABLE public.sso_domains is 'Auth: Manages SSO email address domain mapping to an SSO Identity Provider.';
 
 CREATE TABLE IF NOT EXISTS public.saml_providers (
-  id UUID NOT NULL,
-  sso_provider_id UUID NOT NULL,
+  id uuid NOT NULL,
+  sso_provider_id uuid NOT NULL,
   entity_id text NOT NULL unique,
   metadata_xml text NOT NULL,
   metadata_url text NULL,
@@ -43,8 +43,8 @@ CREATE INDEX IF NOT EXISTS saml_providers_sso_provider_id_idx on public.saml_pro
 COMMENT ON TABLE public.saml_providers is 'Auth: Manages SAML Identity Provider connections.';
 
 CREATE TABLE IF NOT EXISTS public.saml_relay_states (
-  id UUID NOT NULL,
-  sso_provider_id UUID NOT NULL,
+  id uuid NOT NULL,
+  sso_provider_id uuid NOT NULL,
   request_id text NOT NULL,
   for_email text NULL,
   redirect_to text NULL,

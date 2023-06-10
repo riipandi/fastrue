@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS public.users (
-  id UUID NOT NULL UNIQUE,
-  uid varchar(25) NOT NULL UNIQUE,
+  id uuid NOT NULL UNIQUE,
+  uid varchar(24) NOT NULL UNIQUE,
   aud varchar(255) NULL,
   "role" varchar(255) NULL,
   email varchar(255) NULL UNIQUE,

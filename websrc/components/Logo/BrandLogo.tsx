@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 
 export const BrandLogo = () => (
-  <Link to='/ui/' className='block w-20 p-5 opacity-80 hover:opacity-100'>
+  <Link to='/' className='block w-20 p-5 opacity-80 hover:opacity-100'>
     <SVGLogo />
   </Link>
 )

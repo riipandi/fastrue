@@ -2,8 +2,8 @@ CREATE TYPE factor_type AS ENUM('totp', 'webauthn');
 CREATE TYPE factor_status AS ENUM('unverified', 'verified');
 
 CREATE TABLE IF NOT EXISTS public.mfa_factors(
-  id UUID NOT NULL,
-  user_id UUID NOT NULL,
+  id uuid NOT NULL DEFAULT uuid_generate_v1mc(),
+  user_id uuid NOT NULL,
   friendly_name text NULL,
   factor_type factor_type NOT NULL,
   status factor_status NOT NULL,
@@ -18,8 +18,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS mfa_factors_user_friendly_name_unique on publi
 COMMENT ON TABLE public.mfa_factors is 'auth: stores metadata about factors';
 
 CREATE TABLE IF NOT EXISTS public.mfa_challenges(
-  id UUID NOT NULL,
-  factor_id UUID NOT NULL,
+  id uuid NOT NULL,
+  factor_id uuid NOT NULL,
   created_at timestamptz NOT NULL,
   verified_at timestamptz  NULL,
   ip_address  inet NOT NULL,
@@ -29,8 +29,8 @@ CREATE TABLE IF NOT EXISTS public.mfa_challenges(
 COMMENT ON TABLE public.mfa_challenges is 'auth: stores metadata about challenge requests made';
 
 CREATE TABLE IF NOT EXISTS public.mfa_amr_claims(
-  id UUID NOT NULL,
-  session_id UUID NOT NULL,
+  id uuid NOT NULL,
+  session_id uuid NOT NULL,
   created_at timestamptz NOT NULL,
   updated_at timestamptz NOT NULL,
   authentication_method text NOT NULL,

@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 import { FieldError } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { Eye, EyeSlash } from '@phosphor-icons/react'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid'
 
 type PropsToOmit<P> = keyof P
 
 // This is the first reusable type utility we built
 type PolymorphicComponentProp<
   T extends React.ElementType,
-  Props = {},
+  Props = {}
 > = React.PropsWithChildren<Props> & Omit<React.ComponentPropsWithoutRef<T>, PropsToOmit<T>>
 
 // This is a new type utitlity with ref!
 type PolymorphicComponentPropWithRef<
   T extends React.ElementType,
-  Props = {},
+  Props = {}
 > = PolymorphicComponentProp<T, Props> & { ref?: PolymorphicRef<T> }
 
 // This is the type for the "ref" only
@@ -38,7 +38,7 @@ type PasswordInputProps<T extends React.ElementType> = PolymorphicComponentPropW
  * This is the type used in the type annotation for the component
  */
 type PasswordInputComponent = <T extends React.ElementType = 'input'>(
-  props: PasswordInputProps<T>,
+  props: PasswordInputProps<T>
 ) => React.ReactElement | null
 
 export const PasswordInput: PasswordInputComponent = React.forwardRef(
@@ -51,10 +51,10 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
       error,
       ...props
     }: PasswordInputProps<T>,
-    ref?: PolymorphicRef<T>,
+    ref?: PolymorphicRef<T>
   ) => {
     const [reveal, setReveal] = useState<boolean>(false)
-    const RevealIcon = reveal ? Eye : EyeSlash
+    const RevealIcon = reveal ? EyeIcon : EyeSlashIcon
 
     return (
       <fieldset disabled={disabled}>
@@ -64,7 +64,7 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
           </label>
           {withResetLink && (
             <Link
-              to='/ui/recovery'
+              to='/recovery'
               className='text-sm text-blue-600 decoration-2 hover:underline'
               tabIndex={-1}
             >
@@ -85,7 +85,7 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
           />
           <div className='absolute inset-y-0 right-0 flex items-center pr-3'>
             <button type='button' onClick={() => setReveal((prevState) => !prevState)}>
-              <RevealIcon className='h-6 w-6 text-gray-500' size={28} weight='regular' />
+              <RevealIcon className='h-6 w-6 text-gray-500' />
             </button>
           </div>
           <div className='pointer-events-none absolute inset-y-0 right-0 hidden items-center pr-3'>
@@ -108,5 +108,5 @@ export const PasswordInput: PasswordInputComponent = React.forwardRef(
         )}
       </fieldset>
     )
-  },
+  }
 )

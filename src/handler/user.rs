@@ -1,41 +1,47 @@
-// Copyright 2022-current Aris Ripandi <aris@duck.com>
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2023-current Aris Ripandi <aris@duck.com>
+// SPDX-License-Identifier: MIT OR Apache-2.0
 
-use salvo::{http::StatusCode, prelude::*};
+use axum::{http::StatusCode, response::IntoResponse, Json};
+use serde_json::json;
 
-use crate::{entities, service, utils};
-
-#[derive(serde::Serialize, Debug)]
-struct JsonResponse<T> {
-    status_code: i16,
-    data: Vec<T>,
+pub async fn index() -> impl IntoResponse {
+	let body = Json(json!({
+	  "message": "Not yet implemented"
+	}));
+	(StatusCode::OK, body)
 }
 
-/// This is a summary of the operation
-///
-/// All lines of the doc comment will be included to operation description.
-#[endpoint(
-    responses(
-        (status = 200, description = "Get all users"),
-        (status = 401, description = "Unauthorized to access resource"),
-        (status = 404, description = "Resource not found")
-    ),
-)]
-pub async fn get_all(_req: &mut Request, res: &mut Response) {
-    let data: Vec<entities::User> = service::user::get_all()
-        .await
-        .map_err(|err| {
-            tracing::error!("Failed to fetch users: {}", err);
-            res.status_code(StatusCode::BAD_REQUEST);
-        })
-        .unwrap();
+// use axum::{extract::State, http::StatusCode};
+// use axum::{response::IntoResponse, Json};
+// use sqlx::PgPool;
 
-    let status = StatusCode::OK;
-    let result = JsonResponse {
-        status_code: utils::get_status_code(status),
-        data,
-    };
+// use crate::schema::User;
+// use crate::server::responder::JsonResponse;
 
-    res.status_code(status);
-    res.render(Json(result));
-}
+// pub async fn index(State(pool): State<PgPool>) -> impl IntoResponse {
+// 	let sql = "SELECT * FROM users".to_string();
+// 	let result: Result<Vec<User>, sqlx::Error> =
+// 		sqlx::query_as::<_, User>(&sql).fetch_all(&pool).await;
+
+// 	match result {
+// 		Ok(users) => (StatusCode::OK, Json(users)),
+// 		Err(err) => {
+// 			tracing::error!("error retrieving users: {:?}", err);
+// 			(StatusCode::INTERNAL_SERVER_ERROR, Json(Vec::<User>::new()))
+// 		}
+// 	}
+
+// 	// let users: Vec<User> = sqlx::query_as!(User, "select * from users")
+// 	// 	.fetch_all(&pool)
+// 	// 	.await
+// 	// 	.expect("Unable to query users table");
+
+// 	// let body: JsonResponse<Vec<User>> = JsonResponse {
+// 	// 	status_code: StatusCode::OK.as_u16(),
+// 	// 	message: Some("List all users"),
+// 	// 	data: Some(users),
+// 	// 	params: None,
+// 	// };
+
+// 	// (StatusCode::OK, Json(body))
+// }

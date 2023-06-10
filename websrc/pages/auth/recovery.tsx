@@ -64,7 +64,7 @@ export default function Recovery() {
           <div className='mt-8 text-center'>
             <p className='text-sm text-gray-600 dark:text-gray-400'>
               {'Remember your password? '}
-              <Link to='/ui/login' className='text-blue-600 decoration-2 hover:underline'>
+              <Link to='/login' className='text-blue-600 decoration-2 hover:underline'>
                 Sign in here
               </Link>
             </p>

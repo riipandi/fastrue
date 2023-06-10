@@ -17,7 +17,7 @@ services:
       timeout: 20s
       retries: 3
     networks:
-      - fastnet
+      - intranet
 
   fastrue:
     image: ghcr.io/riipandi/fastrue:latest
@@ -27,12 +27,12 @@ services:
       - 9090:9090
     env_file: .env.docker
     networks:
-      - fastnet
+      - intranet
     depends_on:
       - pgsql
 
 networks:
-  fastnet:
+  intranet:
     driver: bridge
 
 volumes:

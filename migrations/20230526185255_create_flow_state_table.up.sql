@@ -1,6 +1,6 @@
 CREATE TYPE code_challenge_method AS ENUM('s256', 'plain');
 CREATE TABLE IF NOT EXISTS public.flow_state(
-  id UUID PRIMARY KEY,
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v1mc(),
   user_id UUID NULL,
   auth_code text NOT NULL,
   code_challenge_method code_challenge_method NOT NULL,

@@ -13,7 +13,7 @@ export const Card = <T extends ElementType = 'div'>({ as, children, className }:
     <Component
       className={clsx(
         'rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800',
-        className,
+        className
       )}
     >
       {children}

@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useFetch } from 'usehooks-ts'
+import { Link } from 'react-router-dom'
 
 import { Alert } from '@/components/Alerts/Alert'
 import { Button } from '@/components/Buttons'
 import { Card } from '@/components/Containers'
 import { HorizontalDivider } from '@/components/Dividers'
 import { PasswordInput, TextInput } from '@/components/Inputs'
-import PageLoader from '@/components/PageLoader'
 import { GitHubButton, GoogleButton } from '@/components/SocialButton'
 import { auth, useAuthentication } from '@/hooks/AuthProvider'
 
@@ -19,7 +18,6 @@ interface LoginTypes {
 export default function Login() {
   const { login, loggedOut } = useAuthentication()
   const [failed, setFailed] = useState<string | null>()
-  const { data, error } = useFetch<any>(`/api/users`)
 
   const {
     register,
@@ -36,9 +34,6 @@ export default function Login() {
       .catch((error) => setFailed(error.message))
   }
 
-  if (error) return <p>Error</p>
-  if (!data) return <PageLoader />
-
   return (
     <main className='mx-auto w-full max-w-md p-6'>
       {failed && <Alert variant='danger'>{failed}</Alert>}
@@ -54,6 +49,7 @@ export default function Login() {
             <GoogleButton />
             <GitHubButton />
           </div>
+
           <HorizontalDivider label='Or' />
 
           <form autoComplete='off' onSubmit={handleSubmit(handleLogin)}>
@@ -85,6 +81,14 @@ export default function Login() {
               </Button>
             </div>
           </form>
+
+          <div className='mt-8 text-center'>
+            <p className='text-sm text-gray-600 dark:text-gray-400'>
+              <Link to='/' className='text-blue-600 decoration-2 hover:underline'>
+                &larr; Go back to homepage
+              </Link>
+            </p>
+          </div>
         </div>
       </Card>
     </main>

@@ -1,7 +1,7 @@
 CREATE TYPE aal_level as ENUM('aal1', 'aal2', 'aal3');
 CREATE TABLE IF NOT EXISTS public.sessions (
-  id UUID NOT NULL,
-  user_id UUID NOT NULL,
+  id uuid NOT NULL DEFAULT uuid_generate_v1mc(),
+  user_id uuid NOT NULL,
   factor_id UUID NULL,
   aal aal_level NULL,
   not_after timestamptz,

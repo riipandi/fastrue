@@ -24,9 +24,10 @@ services:
     container_name: pgweb
     restart: always
     ports:
-      - '8081:8081'
+      - '54321:8081'
     environment:
       DATABASE_URL: 'postgres://postgres:postgres@pgsql:5432/fastrue?sslmode=disable'
+      PGWEB_LOCK_SESSION: true
     depends_on:
       - pgsql
 

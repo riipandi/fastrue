@@ -1,5 +1,5 @@
 CREATE TABLE public.audit_log_entries (
-  id UUID NOT NULL,
+  id uuid NOT NULL DEFAULT uuid_generate_v1mc(),
   payload json NULL,
   ip_address varchar(64) NOT NULL DEFAULT '',
   created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,

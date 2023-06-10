@@ -1,0 +1,86 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'fastrue'",
+            "cargo": {
+                "args": ["build", "--bin=fastrue", "--package=fastrue"],
+                "filter": {
+                    "name": "fastrue",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'fastrue'",
+            "cargo": {
+                "args": ["test", "--no-run", "--bin=fastrue", "--package=fastrue"],
+                "filter": {
+                    "name": "fastrue",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "dev:frontend",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "pnpm",
+            "runtimeArgs": ["dev"],
+            "skipFiles": ["<node_internals>/**"],
+            "serverReadyAction": {
+                "action": "debugWithChrome",
+                "pattern": "started server on .+, url: (https?://.+)",
+                "webRoot": "${workspaceFolder}",
+                "uriFormat": "%s"
+            },
+            "console": "internalConsole",
+            "internalConsoleOptions": "openOnSessionStart",
+            "presentation": {
+                "hidden": true,
+                "group": "debug",
+                "order": 1
+            }
+        },
+        {
+            "name": "Launch Chrome",
+            "type": "chrome",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}",
+            "cleanUp": "wholeBrowser",
+            "runtimeArgs": [
+                "--auto-open-devtools-for-tabs",
+                "--start-maximized",
+                "--bwsi",
+                "--allow-insecure-localhost",
+                "--disable-component-update",
+                "--disable-crash-reporter",
+                "--disable-extensions",
+                "--disable-hang-monitor",
+                "--suppress-message-center-popups"
+            ],
+            "internalConsoleOptions": "openOnSessionStart",
+            "presentation": {
+                "hidden": true,
+                "group": "debug",
+                "order": 3
+            }
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Debug Frontend",
+            "configurations": ["dev:frontend", "Launch Chrome"],
+            "stopAll": true
+        }
+    ]
+}

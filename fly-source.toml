@@ -1,7 +1,6 @@
-# fly.toml app configuration file generated for fastrue on 2023-05-20T18:10:21+07:00
-#
+##
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+##
 
 app = "fastrue"
 primary_region = "sjc"
@@ -19,7 +18,6 @@ kill_timeout = "5s"
   # release_command = "/sbin/fastrue migrate --force"
 
 [env]
-  PORT = "9090"
   PRIMARY_REGION = "sjc"
 
 [[services]]

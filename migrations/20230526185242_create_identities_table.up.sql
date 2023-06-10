@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS public.identities (
     id text NOT NULL,
-    user_id UUID NOT NULL,
+    user_id uuid NOT NULL,
     identity_data jsonb NOT NULL,
     provider text NOT NULL,
     email text GENERATED ALWAYS AS (lower(identity_data->>'email')) STORED,

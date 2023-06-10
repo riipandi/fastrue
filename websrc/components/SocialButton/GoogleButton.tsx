@@ -1,10 +1,13 @@
 import type { FC } from 'react'
-
+import { toast } from 'sonner'
 export const GoogleButton: FC = () => {
   return (
     <button
       type='button'
       className='inline-flex w-full items-center justify-center gap-2 rounded-md border bg-white px-4 py-3 align-middle text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:ring-offset-white dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-slate-800 dark:hover:text-white dark:focus:ring-offset-gray-800'
+      onClick={() => {
+        toast.error('Not yet implemented!')
+      }}
     >
       <svg className='h-auto w-4' width={46} height={47} viewBox='0 0 46 47' fill='none'>
         <path
@@ -24,7 +27,7 @@ export const GoogleButton: FC = () => {
           fill='#EB4335'
         />
       </svg>
-      Sign in with Google
+      <span>Sign in with Google</span>
     </button>
   )
 }

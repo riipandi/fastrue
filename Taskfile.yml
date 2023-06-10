@@ -1,0 +1,147 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+version: "3"
+
+env:
+  DOCKER_REGISTRY: '{{default "ghcr.io" .DOCKER_REGISTRY}}'
+  DOCKER_USERNAME: '{{default "riipandi" .DOCKER_USERNAME}}'
+
+vars:
+  # On macOS you need gnu-sed: brew install gnu-sed
+  CMD_SED: '{{if eq OS "darwin"}}gsed{{else}}sed{{end}}'
+  APP_NAME: {sh: '{{.CMD_SED}} -nE ''s/^\s*name = "(.*?)"/\1/p'' Cargo.toml'}
+  APP_VERSION: {sh: '{{.CMD_SED}} -nE ''s/^\s*version = "(.*?)"/\1/p'' Cargo.toml'}
+  GIT_SHA: {sh: git rev-parse --short HEAD}
+  PKG_WEB_NAME: {sh: cat package.json | jq -r .name}
+  PKG_WEB_VERSION: {sh: cat package.json | jq -r .version}
+  CURRENT_TIME: {sh: date -u +"%Y-%m-%dT%H:%M:%SZ"}
+  DOCKER_IMAGE_NAME: "{{.DOCKER_REGISTRY}}/{{.DOCKER_USERNAME}}/{{.APP_NAME}}"
+  BIND_PORT: '{{default "9090" .BIND_PORT}}'
+
+tasks:
+  dev:
+    desc: Run frontend and server concurrently
+    deps:
+      - task: dev-frontend
+        silent: true
+      - task: dev-server
+    cmds:
+      - echo "Running {{.DOCKER_IMAGE_NAME}} in development mode"
+
+  build:
+    desc: Build the project
+    deps: [build-frontend]
+    cmds:
+      - cargo build --release --locked
+      - ls -lh target/release
+
+  build-frontend:
+    desc: Build the frontend
+    internal: false
+    deps: [install-deps]
+    cmds: [pnpm build]
+
+  generate-secret:
+    aliases: [gen-secret]
+    desc: Generate secret key
+    silent: true
+    cmds: [cargo run --quiet --locked -- generate-secret]
+
+  migrate:
+    desc: Run database migration
+    silent: true
+    interactive: true
+    cmds: [cargo run --quiet --locked -- migrate]
+
+  create-admin:
+    desc: Create administrator user
+    silent: true
+    interactive: true
+    cmds: [cargo run --quiet --locked -- create-admin]
+
+  dev-frontend:
+    desc: Run frontend in development mode
+    internal: true
+    deps: [install-deps]
+    cmds: [pnpm dev]
+
+  dev-server:
+    desc: Run the server in development mode
+    internal: true
+    cmds:
+      - cargo watch -qcx 'run -- --address 127.0.0.1 --port {{.BIND_PORT}}'
+
+  install-deps:
+    deps: [sync-version]
+    desc: Install required dependencies
+    cmds:
+      - pnpm install
+      - cargo update
+
+  format:
+    desc: Lint and format the code
+    cmds:
+      - pnpm format
+      - pnpm lint:fix
+      - cargo fmt -- --emit=files
+
+  sync-version:
+    desc: Sync version between main app and frontend
+    internal: false
+    silent: true
+    cmds:
+      - 'sed -i "" "s/\"name\": \"{{.PKG_WEB_NAME}}\"/\"name\": \"{{.APP_NAME}}\"/" package.json'
+      - 'sed -i "" "s/\"version\": \"{{.PKG_WEB_VERSION}}\"/\"version\": \"{{.APP_VERSION}}\"/" package.json'
+
+  start-compose:
+    desc: Start database and local mailer
+    cmds: [docker-compose -f compose-development.yaml up -d]
+
+  stop-compose:
+    desc: Stop database and local mailer
+    cmds: [docker-compose -f compose-development.yaml down --remove-orphans]
+
+  docker-build-edge:
+    desc: Build docker container image (edge)
+    cmds:
+      - echo "Building {{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}} docker image"
+      - |
+          docker build -f Dockerfile \
+            --build-arg BIND_PORT={{.BIND_PORT}} \
+            -t "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}" \
+            -t "{{.DOCKER_IMAGE_NAME}}:edge" .
+
+  docker-push-edge:
+    desc: Push docker container to registry (edge)
+    cmds:
+      - |
+          docker push \
+            -t "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}" \
+            -t "{{.DOCKER_IMAGE_NAME}}:edge"
+
+  docker-build-latest:
+    desc: Build docker container image (latest)
+    cmds:
+      - echo "Building {{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}} docker image"
+      - |
+          docker build -f Dockerfile \
+            --build-arg BIND_PORT={{.BIND_PORT}} \
+            -t "{{.DOCKER_IMAGE_NAME}}:{{.APP_VERSION}}" \
+            -t "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}" \
+            -t "{{.DOCKER_IMAGE_NAME}}:latest" .
+
+  docker-push-latest:
+    desc: Push docker container to registry (latest)
+    cmds:
+      - |
+          docker push \
+            -t "{{.DOCKER_IMAGE_NAME}}:{{.APP_VERSION}}" \
+            -t "{{.DOCKER_IMAGE_NAME}}:latest"
+
+  docker-run:
+    desc: Run the docker container
+    cmds:
+      - echo "Running {{.DOCKER_IMAGE_NAME}} container"
+      - |
+          docker run --rm -it --name {{.APP_NAME}} --env-file .env.docker \
+            -e BIND_PORT={{.BIND_PORT}} -e BIND_ADDR=0.0.0.0 \
+            -p {{.BIND_PORT}}:{{.BIND_PORT}} "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}"

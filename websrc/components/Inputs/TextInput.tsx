@@ -6,13 +6,13 @@ type PropsToOmit<P> = keyof P
 // This is the first reusable type utility we built
 type PolymorphicComponentProp<
   T extends React.ElementType,
-  Props = {},
+  Props = {}
 > = React.PropsWithChildren<Props> & Omit<React.ComponentPropsWithoutRef<T>, PropsToOmit<T>>
 
 // This is a new type utitlity with ref!
 type PolymorphicComponentPropWithRef<
   T extends React.ElementType,
-  Props = {},
+  Props = {}
 > = PolymorphicComponentProp<T, Props> & { ref?: PolymorphicRef<T> }
 
 // This is the type for the "ref" only
@@ -35,13 +35,13 @@ type TextInputProps<T extends React.ElementType> = PolymorphicComponentPropWithR
  * This is the type used in the type annotation for the component
  */
 type TextInputComponent = <T extends React.ElementType = 'input'>(
-  props: TextInputProps<T>,
+  props: TextInputProps<T>
 ) => React.ReactElement | null
 
 export const TextInput: TextInputComponent = React.forwardRef(
   <T extends React.ElementType = 'input'>(
     { name, label, disabled = false, error, ...props }: TextInputProps<T>,
-    ref?: PolymorphicRef<T>,
+    ref?: PolymorphicRef<T>
   ) => {
     return (
       <fieldset disabled={disabled}>
@@ -79,5 +79,5 @@ export const TextInput: TextInputComponent = React.forwardRef(
         )}
       </fieldset>
     )
-  },
+  }
 )

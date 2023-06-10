@@ -1,0 +1,169 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+      {
+        "label": "task build",
+        "type": "shell",
+        "command": "cargo",
+        "args": [
+          "make",
+          "build"
+        ],
+        "detail": "Build the application",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      },
+      {
+        "label": "task dev",
+        "type": "shell",
+        "command": "cargo",
+        "args": [
+          "make",
+          "dev"
+        ],
+        "detail": "Run in development mode",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "focus": true,
+          "clear": true,
+          "echo": false,
+          "close": true
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      },
+      {
+        "label": "task watch-server",
+        "type": "shell",
+        "command": "cargo",
+        "args": [
+          "make",
+          "watch-server"
+        ],
+        "detail": "Run debug server",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "none",
+          "isDefault": false
+        },
+        "problemMatcher": []
+      },
+      {
+        "label": "cargo build server",
+        "type": "shell",
+        "command": "cargo",
+        "args": [
+          "px",
+          "build",
+          "--release",
+          "--locked"
+        ],
+        "detail": "Build server application only",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      },
+      {
+        "label": "pnpm build",
+        "type": "npm",
+        "script": "build",
+        "detail": "Build application",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      },
+      {
+        "label": "pnpm lint",
+        "type": "npm",
+        "script": "lint:fix",
+        "detail": "Lint and fix code",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      },
+      {
+        "label": "pnpm format",
+        "type": "npm",
+        "script": "format",
+        "detail": "Format code",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      },
+      {
+        "label": "pnpm test:ui",
+        "type": "npm",
+        "script": "test:ui",
+        "detail": "Run frontend test",
+        "isBackground": false,
+        "presentation": {
+          "reveal": "silent",
+          "showReuseMessage": false,
+          "clear": true,
+          "echo": false,
+          "close": false
+        },
+        "group": {
+          "kind": "build",
+          "isDefault": false
+        }
+      }
+    ]
+}

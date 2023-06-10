@@ -12,7 +12,7 @@ export default function Error404() {
         </div>
         <div className='mt-8 flex flex-col items-center justify-center'>
           <Link
-            to='/ui/'
+            to='/'
             className='inline-flex w-full items-center justify-center gap-2 rounded-md border border-transparent px-3 py-2 text-sm font-semibold text-blue-500 ring-offset-white transition-all hover:text-blue-700 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:ring-offset-2 dark:ring-offset-slate-900 sm:w-auto'
           >
             <svg className='h-2.5 w-2.5' width={20} height={20} viewBox='0 0 16 16' fill='none'>

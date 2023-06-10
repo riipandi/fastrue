@@ -14,9 +14,11 @@
     ".cache",
     "*.d.ts",
     "*.cjs",
+    "target",
     "build",
     "dist",
-    "out"
+    "out",
+    "web"
   ],
   "parser": "@typescript-eslint/parser",
   "settings": {
