@@ -4,7 +4,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug fastrue server",
+            "name": "Debug Server",
             "cargo": {
                 "args": ["build", "--bin=fastrue", "--package=fastrue", "--release", "--locked"],
                 "filter": { "name": "fastrue", "kind": "bin" }
@@ -16,13 +16,12 @@
             "presentation": {
                 "hidden": true,
                 "group": "debug",
-                "order": 1
             }
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug fastrue frontend",
+            "name": "Debug Frontend",
             "runtimeExecutable": "pnpm",
             "runtimeArgs": ["dev"],
             "skipFiles": ["<node_internals>/**"],
@@ -37,7 +36,6 @@
             "presentation": {
                 "hidden": true,
                 "group": "debug",
-                "order": 2
             }
         },
         {
@@ -62,14 +60,13 @@
             "presentation": {
                 "hidden": true,
                 "group": "debug",
-                "order": 3
             }
         }
     ],
     "compounds": [
         {
             "name": "Start development",
-            "configurations": ["Debug fastrue server", "Debug fastrue frontend", "Launch Chrome"],
+            "configurations": ["Debug Server", "Debug Frontend", "Launch Chrome"],
             "stopAll": true
         }
     ]
