@@ -127,8 +127,7 @@ tasks:
       - echo "Running {{.DOCKER_IMAGE_WITH_TAG}} container"
       - |
           docker run --rm -it --name {{.APP_NAME}} --env-file .env.docker \
-            -e BIND_PORT={{.BIND_PORT}} -e BIND_ADDR=0.0.0.0 \
-            -p {{.BIND_PORT}}:{{.BIND_PORT}} {{.DOCKER_IMAGE_WITH_TAG}}
+            -p {{.BIND_PORT}}:9090 {{.DOCKER_IMAGE_WITH_TAG}}
 
   deploy-demo:
     desc: Deploy demo instance to Fly.io
