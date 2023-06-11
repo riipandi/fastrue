@@ -12,7 +12,7 @@ kill_timeout = "5s"
 
 [deploy]
   strategy = "rolling"
-  # release_command = "/sbin/fastrue migrate --force"
+  release_command = "/usr/local/bin/fastrue migrate --force"
 
 [env]
   PRIMARY_REGION = "sjc"

@@ -100,7 +100,7 @@ docker run --rm -it --name fastrue --env-file .env.docker -p 9090:9090 ghcr.io/r
 Using [`hey`](https://github.com/rakyll/hey) to perform a simple load testing.
 
 ```sh
-hey -m GET -n 200 -z 10s http://127.0.0.1:9090/api
+hey -n 1000 -c 200 -z 30s -m GET -T "application/json" https://fastrue.fly.dev/api
 ```
 
 ## 🚀 Deployment

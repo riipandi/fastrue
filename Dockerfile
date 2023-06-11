@@ -20,8 +20,7 @@ FROM rust:1.70-alpine AS builder
 RUN apk update && apk add --no-cache musl-dev libc-dev && update-ca-certificates
 WORKDIR /app
 COPY --from=base /app /app
-RUN cargo check --all --bins --release --locked
-RUN cargo build --release --locked --frozen
+RUN cargo build --release --locked
 RUN strip -s /app/target/release/fastrue
 
 # -----------------------------------------------------------------------------
@@ -31,15 +30,11 @@ LABEL org.opencontainers.image.source "https://github.com/riipandi/fastrue"
 LABEL org.opencontainers.image.description "Fastrue is a headless authentication server, inspired from Netlify GoTrue."
 FROM alpine:3.18 as runner
 
-ARG BIND_PORT 9090
-ARG BIND_ADDR 0.0.0.0
 ARG DATABASE_URL
 ARG DATABASE_AUTO_MIGRATE
 ARG FASTRUE_SECRET_KEY
 ARG FASTRUE_HEADLESS_MODE
 
-ENV BIND_PORT $BIND_PORT
-ENV BIND_ADDR $BIND_ADDR
 ENV DATABASE_URL $DATABASE_URL
 ENV DATABASE_AUTO_MIGRATE $DATABASE_AUTO_MIGRATE
 ENV FASTRUE_SECRET_KEY $FASTRUE_SECRET_KEY
@@ -54,6 +49,6 @@ RUN adduser --disabled-password --gecos "" \
 COPY --from=builder --chown=nonroot:nonroot /app/target/release/fastrue /usr/local/bin/fastrue
 
 USER nonroot:nonroot
-EXPOSE $BIND_PORT
+EXPOSE 9090
 
-ENTRYPOINT ["/usr/local/bin/fastrue", "--port", "${BIND_PORT}"]
+ENTRYPOINT ["/usr/local/bin/fastrue", "--port=9090"]

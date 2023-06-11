@@ -9,13 +9,10 @@ kill_timeout = "5s"
 
 [build]
   dockerfile = "Dockerfile"
-  [build.args]
-    BIND_ADDR = "0.0.0.0"
-    BIND_PORT = "9090"
 
 [deploy]
   strategy = "rolling"
-  # release_command = "/sbin/fastrue migrate --force"
+  release_command = "/usr/local/bin/fastrue migrate --force"
 
 [env]
   PRIMARY_REGION = "sjc"
