@@ -25,7 +25,7 @@ tasks:
         silent: true
       - task: dev-server
     cmds:
-      - echo "Running {{.DOCKER_IMAGE_NAME}} in development mode"
+      - echo "Running {{.APP_NAME}} in development mode"
 
   build:
     desc: Build the project
@@ -104,48 +104,32 @@ tasks:
     desc: Stop database and local mailer
     cmds: [docker-compose -f compose-development.yaml down --remove-orphans]
 
-  docker-build-edge:
-    desc: Build docker container image (edge)
+  docker-build:
+    desc: Build docker container image
+    vars:
+      DOCKER_IMAGE_WITH_TAG: '{{.DOCKER_IMAGE_NAME}}:git-{{.GIT_SHA}}'
     cmds:
-      - echo "Building {{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}} docker image"
+      - echo "Building {{.DOCKER_IMAGE_WITH_TAG}} docker image"
       - |
-          docker build -f Dockerfile \
+          docker build -f Dockerfile --platform=linux/{{ARCH}} \
             --build-arg BIND_PORT={{.BIND_PORT}} \
-            -t "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}" \
-            -t "{{.DOCKER_IMAGE_NAME}}:edge" .
+            -t {{.DOCKER_IMAGE_WITH_TAG}} .
 
-  docker-push-edge:
-    desc: Push docker container to registry (edge)
-    cmds:
-      - |
-          docker push \
-            -t "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}" \
-            -t "{{.DOCKER_IMAGE_NAME}}:edge"
-
-  docker-build-latest:
-    desc: Build docker container image (latest)
-    cmds:
-      - echo "Building {{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}} docker image"
-      - |
-          docker build -f Dockerfile \
-            --build-arg BIND_PORT={{.BIND_PORT}} \
-            -t "{{.DOCKER_IMAGE_NAME}}:{{.APP_VERSION}}" \
-            -t "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}" \
-            -t "{{.DOCKER_IMAGE_NAME}}:latest" .
-
-  docker-push-latest:
-    desc: Push docker container to registry (latest)
-    cmds:
-      - |
-          docker push \
-            -t "{{.DOCKER_IMAGE_NAME}}:{{.APP_VERSION}}" \
-            -t "{{.DOCKER_IMAGE_NAME}}:latest"
+  docker-push:
+    desc: Push docker image to registry
+    cmds: ['docker push -t {{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}} -t {{.DOCKER_IMAGE_NAME}}:edge']
 
   docker-run:
     desc: Run the docker container
+    vars:
+      DOCKER_IMAGE_WITH_TAG: '{{.DOCKER_IMAGE_NAME}}:git-{{.GIT_SHA}}'
     cmds:
-      - echo "Running {{.DOCKER_IMAGE_NAME}} container"
+      - echo "Running {{.DOCKER_IMAGE_WITH_TAG}} container"
       - |
           docker run --rm -it --name {{.APP_NAME}} --env-file .env.docker \
             -e BIND_PORT={{.BIND_PORT}} -e BIND_ADDR=0.0.0.0 \
-            -p {{.BIND_PORT}}:{{.BIND_PORT}} "{{.DOCKER_IMAGE_NAME}}:{{.GIT_SHA}}"
+            -p {{.BIND_PORT}}:{{.BIND_PORT}} {{.DOCKER_IMAGE_WITH_TAG}}
+
+  deploy-demo:
+    desc: Deploy demo instance to Fly.io
+    cmds: [flyctl -c fly-source.toml deploy --remote-only]

@@ -1,5 +1,5 @@
 // Copyright 2023-current Aris Ripandi <aris@duck.com>
-// SPDX-License-Identifier: MIT OR Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 
 use std::{net::SocketAddr, time::Duration};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt, EnvFilter};

@@ -1,6 +1,6 @@
 [package]
 name = "fastrue"
-version = "0.0.3"
+version = "0.0.4"
 description = "Fastrue is a headless authentication server, inspired from Netlify GoTrue."
 repository = "https://github.com/riipandi/fastrue"
 authors = ["Aris Ripandi <aris@duck.com>"]
@@ -19,7 +19,6 @@ include = ["src/**/*", "LICENSE-*", "README.md", "build.rs"]
 anyhow = { version = "1.0" }
 async-trait = { version = "0.1.68" }
 axum = { version = "0.6", features = ["tracing"] }
-# bcrypt = { version = "^0.14" }
 build-time = { version = "0.1.3" }
 chrono = { version = "^0.4.23", default-features = false, features = ["clock", "serde"] }
 clap = { version = "4.0", features = ["derive"] }

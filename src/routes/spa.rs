@@ -1,5 +1,5 @@
 // Copyright 2023-current Aris Ripandi <aris@duck.com>
-// SPDX-License-Identifier: MIT OR Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 
 // Original code taken from rust-embed example:
 // https://github.com/pyrossh/rust-embed/tree/master/examples/axum-spa

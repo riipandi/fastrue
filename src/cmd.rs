@@ -1,5 +1,5 @@
 // Copyright 2023-current Aris Ripandi <aris@duck.com>
-// SPDX-License-Identifier: MIT OR Apache-2.0
+// SPDX-License-Identifier: Apache-2.0
 
 use dialoguer::{theme::ColorfulTheme, Confirm, Input, Password};
 use sqlx::{migrate::Migrator, query, Pool, Postgres};
