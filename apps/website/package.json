@@ -1,6 +1,6 @@
 {
     "name": "website",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "private": true,
     "scripts": {
         "dev": "next dev",
@@ -19,8 +19,8 @@
         "@types/node": "^20.8.3",
         "@types/react-dom": "^18.2.11",
         "@types/react": "^18.2.25",
-        "eslint-config-custom": "workspace:*",
-        "tsconfig": "workspace:*",
+        "eslint-config-custom": "workspace:^",
+        "tsconfig": "workspace:^",
         "typescript": "^4.5.3"
     }
 }

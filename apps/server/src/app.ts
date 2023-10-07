@@ -1,7 +1,9 @@
+import { join } from 'node:path'
+
 import Fastify, { FastifyInstance, FastifyPluginAsync } from 'fastify'
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload'
 import fastifyRequestLogger from '@mgcrea/fastify-request-logger'
-import { join } from 'path'
+import fastifyAuthPlugin from '@fastrue/fastify'
 
 export type AppOptions = {
   // Place your custom options for app below here.
@@ -26,6 +28,12 @@ const server: FastifyInstance = Fastify({
 // Register fastify plugins
 server.register(fastifyRequestLogger)
 
+// Register Fastrue plugin
+server.register(fastifyAuthPlugin, {
+  driver: 'pg',
+  routePrefix: '/auth',
+})
+
 server.register(AutoLoad, {
   dir: join(__dirname, 'plugins'),
 })
@@ -37,9 +45,8 @@ server.register(AutoLoad, {
 
 const start = async () => {
   try {
-    await server.listen({ port: 3000 })
-    const address = server.server.address()
-    const port = typeof address === 'string' ? address : address?.port
+    const port = Number(process.env.PORT) || 8090
+    await server.listen({ port })
   } catch (err) {
     server.log.error(err)
     process.exit(1)
