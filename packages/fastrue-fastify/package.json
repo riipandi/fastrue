@@ -6,10 +6,10 @@
     "access": "public",
     "type": "module",
     "exports": {
-        "default": "./dist/index.cjs",
-        "require": "./dist/index.cjs",
-        "import": "./dist/index.mjs",
-        "node": "./dist/index.cjs"
+        ".": {
+            "require": "./dist/index.cjs",
+            "import": "./dist/index.js"
+        }
     },
     "main": "./dist/index.cjs",
     "module": "./dist/index.js",
@@ -22,7 +22,7 @@
         "dev": "tsup --watch",
         "clean": "rimraf .turbo && rimraf node_modules",
         "publish": "pnpm build && npm-packlist",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\""
     },
     "dependencies": {
         "fastify-plugin": "^4.5.1"

@@ -3,7 +3,7 @@ import fastifyPlugin from 'fastify-plugin'
 import loginRoute from './routes/login'
 import settingRoutes from './routes/settings'
 
-export type FastrueOptions = {
+type FastrueOptions = {
   driver?: 'pg' | 'postgres'
   dbSchema?: string
   routePrefix?: string
@@ -27,3 +27,5 @@ export default fastifyPlugin(plugin, {
   fastify: '4.x',
   name: 'fastrue',
 })
+
+export type { FastrueOptions }

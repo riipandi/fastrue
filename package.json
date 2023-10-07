@@ -8,7 +8,9 @@
         "start": "turbo run start --filter=!website",
         "deps": "pnpm dlx npm-check-updates -x typescript --deep --interactive",
         "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "lint": "turbo run lint"
+        "preinstall": "npx only-allow pnpm",
+        "lint": "turbo run lint",
+        "test": "turbo run test"
     },
     "devDependencies": {
         "eslint-config-turbo": "^1.10.15",

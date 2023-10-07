@@ -5,8 +5,8 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     return {
       providers: {
         email_otp: true,
-        github: false,
         google: false,
+        github: false,
       },
       disable_signup: false,
       autoconfirm: false,
