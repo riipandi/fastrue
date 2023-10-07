@@ -37,10 +37,10 @@
     "homepage": "https://fastrue.ripandis.com",
     "repository": {
         "type": "git",
-        "url": "https://github.com/riipandi/fastrue-js"
+        "url": "https://github.com/riipandi/fastrue"
     },
     "bugs": {
-        "url": "https://github.com/riipandi/fastrue-js/issues"
+        "url": "https://github.com/riipandi/fastrue/issues"
     },
     "keywords": [
         "api",
