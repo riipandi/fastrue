@@ -16,7 +16,7 @@ const opts: RouteShorthandOptions = {
 }
 
 const root: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
-  fastify.get('/', opts, async (_request, _reply) => {
+  fastify.get('/', opts, async (request, reply) => {
     return { pong: 'it worked!' }
   })
 }

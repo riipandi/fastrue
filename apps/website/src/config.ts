@@ -15,6 +15,6 @@ export const env = createEnv({
 
 export const siteMeta = {
   title: 'Fastrue',
-  description: 'A fast authentication library, inspired from Netlify GoTrue.',
+  description: 'A fast authentication library, inspired from Netlify GoTrue',
   baseUrl: env.NEXT_PUBLIC_SITE_URL,
 }

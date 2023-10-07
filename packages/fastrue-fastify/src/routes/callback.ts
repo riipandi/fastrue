@@ -1,19 +1,18 @@
 import { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get('/user', opts, async (request, _reply) => {
+  fastify.get('/callback', opts, async (request, reply) => {
     return {
-      description: 'Fetch the latest user account information',
+      description: 'Redirects OAuth flow errors to the frontend app',
       headers: request.headers,
       query: request.query,
       body: request.body,
       params: request.params,
     }
   })
-
-  fastify.put('/user', opts, async (request, reply) => {
+  fastify.post('/callback', opts, async (request, reply) => {
     return {
-      description: 'Update certain properties of the current user account',
+      description: 'Redirects OAuth flow errors to the frontend app',
       headers: request.headers,
       query: request.query,
       body: request.body,

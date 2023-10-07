@@ -1,19 +1,19 @@
 import { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get('/user', opts, async (request, _reply) => {
+  fastify.get('/verify', opts, async (request, reply) => {
     return {
-      description: 'Fetch the latest user account information',
+      description:
+        'Authenticate by verifying the posession of a one-time token. Usually for use as clickable links',
       headers: request.headers,
       query: request.query,
       body: request.body,
       params: request.params,
     }
   })
-
-  fastify.put('/user', opts, async (request, reply) => {
+  fastify.post('/verify', opts, async (request, reply) => {
     return {
-      description: 'Update certain properties of the current user account',
+      description: 'Authenticate by verifying the posession of a one-time token',
       headers: request.headers,
       query: request.query,
       body: request.body,
