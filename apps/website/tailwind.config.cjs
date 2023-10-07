@@ -1,11 +1,11 @@
 const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
-const { iconsPlugin, getIconCollections } = require('@egoist/tailwindcss-icons')
+const withTwistail = require('@twistail/core/config')
 
 /** @type {import('tailwindcss').Config} */
 const tailwindConfig = {
   content: ['src/**/*!(*.stories|*.spec).{ts,tsx}'],
-  // darkMode: ['class'],
+  darkMode: ['class'],
   theme: {
     extend: {
       fontFamily: {
@@ -15,28 +15,12 @@ const tailwindConfig = {
       colors: {
         black: '#121314',
         gray: colors.gray,
-        primary: colors.blue,
-        secondary: colors.indigo,
-      },
-    },
-    debugScreens: {
-      position: ['bottom', 'right'],
-      ignore: ['dark'],
-      prefix: '',
-      style: {
-        backgroundColor: '#f9fafb',
-        borderTopLeftRadius: '4px',
-        color: 'black',
+        primary: colors.sky,
+        secondary: colors.violet,
       },
     },
   },
-  plugins: [
-    require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/typography'),
-    require('tailwindcss-debug-screens'),
-    iconsPlugin({ collections: getIconCollections(['heroicons', 'lucide']) }),
-  ],
+  plugins: [],
 }
 
-module.exports = tailwindConfig
+module.exports = withTwistail(tailwindConfig)

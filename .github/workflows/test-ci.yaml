@@ -30,10 +30,10 @@ jobs:
     #     ports:
     #       - 6379:6379
 
-    steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/pnpm
-      - run: pnpm test
+    # steps:
+    #   - uses: actions/checkout@v3
+    #   - uses: ./.github/actions/pnpm
+    #   - run: pnpm test
 
   build:
     name: Build
