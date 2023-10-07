@@ -1,8 +1,33 @@
 {
-  "extends": "tsconfig/nextjs.json",
-  "compilerOptions": {
-    "plugins": [{ "name": "next" }]
-  },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+    "compilerOptions": {
+        "target": "es5",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "esModuleInterop": true,
+        "module": "esnext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "incremental": true,
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "plugins": [{ "name": "next" }],
+        "paths": {
+            "@/*": ["./src/*"],
+            "~/*": ["./public/*"]
+        }
+    },
+    "ts-node": {
+        "swc": false,
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    },
+    "include": ["next-env.d.ts", "src/**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+    "exclude": ["node_modules"]
 }

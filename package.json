@@ -2,6 +2,7 @@
     "name": "fastrue",
     "private": true,
     "scripts": {
+        "clean": "turbo run clean",
         "dev": "turbo run dev --filter=!website",
         "build": "turbo run build --filter=!website",
         "start": "turbo run start --filter=!website",
@@ -10,9 +11,10 @@
         "lint": "turbo run lint"
     },
     "devDependencies": {
+        "eslint-config-turbo": "^1.10.15",
         "eslint": "^8.51.0",
         "prettier": "^3.0.3",
-        "tsconfig": "workspace:^",
+        "rimraf": "^5.0.5",
         "turbo": "^1.10.15"
     },
     "packageManager": "pnpm@8.8.0"

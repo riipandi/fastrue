@@ -1,4 +1,6 @@
 {
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Fastify",
     "compilerOptions": {
         "allowJs": true,
         "baseUrl": ".",
