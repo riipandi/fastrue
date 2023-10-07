@@ -21,8 +21,7 @@
         "build": "tsup",
         "dev": "tsup --watch",
         "clean": "rimraf .turbo && rimraf node_modules",
-        "publish": "pnpm build && npm-packlist",
-        "test": "echo \"Error: no test specified\""
+        "publish": "pnpm build && npm-packlist"
     },
     "dependencies": {
         "fastify-plugin": "^4.5.1"
@@ -31,7 +30,7 @@
         "fastify": "^4.23.2",
         "npm-packlist": "^8.0.0",
         "tsup": "^7.2.0",
-        "typescript": "^4.9.5"
+        "typescript": "~5.1.6"
     },
     "license": "MIT",
     "homepage": "https://fastrue.ripandis.com",
