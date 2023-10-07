@@ -1,8 +1,8 @@
 import { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.post('/login', opts, async (_request, _reply) => {
-    return { message: 'auth login' }
+  fastify.get('/user', opts, async (request, _reply) => {
+    return { message: 'nobody', headers: request.headers }
   })
 }
 

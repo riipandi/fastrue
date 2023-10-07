@@ -10,43 +10,27 @@
 <hr/>
 
 > **WARNING!** This project still in development.
-> Everything is experimental, breaking changes can happen and the long-term purpose of this project is not yet clear, use at your own risk!
+> Everything is experimental, breaking changes can happen and the long-term purpose
+> of this project is not yet clear, use at your own risk!
 
-This is an isomorphic Javascript client library for Fastrue JavaScript client library
-for the [Fastrue](https://github.com/riipandi/fastrue) API, a Fastify authentication plugin
-inspired by Netlify GoTrue.
+## Introduction
 
-It lets you create and authenticate users and is a building block for constructing
-the UI for signups, password recovery, login and logout.
+Fastrue is a fast and robust authentication library for Fastify, inspired by Supabase GoTrue
+(originally from Netlify GoTrue).
 
-## Installation
+#### Notes
 
-```sh
-# Install with npm
-npm install fastrue-js
+- HTTP 5XX errors are not listed for each endpoint. These should be handled globally. Not all HTTP 5XX errors are generated from Fastrue, and they may serve non-JSON content. Make sure you inspect the Content-Type header before parsing as JSON.
+- Error responses are somewhat inconsistent. Avoid using the msg and HTTP status code to identify errors. HTTP 400 and 422 are used interchangeably in many APIs.
+- If the server has CAPTCHA protection enabled, the verification token should be included in the request body.
+- Rate limit errors are consistently raised with the HTTP 429 code.
+- Enums are used only in request bodies / parameters and not in responses to ensure wide compatibility with code generators that fail to include an unknown enum case.
 
-# Install with yarn
-yarn add fastrue-js
+#### Backward compatibility:
 
-# Install with pnpm
-pnpm install fastrue-js
-```
-
-## Usage
-
-```js
-import Fastrue from 'fastrue-js'
-
-/**
- * Instantiate the Fastrue auth client with an optional configuration.
- */
-
-auth = new Fastrue({
-  apiUrl: 'http://localhost:9999',
-  audience: 'my-web-app',
-  setCookie: false,
-})
-```
+- Endpoints marked as Experimental may change without notice.
+- Endpoints marked as Deprecated will be supported for at least 3 months since being marked as deprecated.
+- HTTP status codes like 400, 404, 422 may change for the same underlying error condition.
 
 ## License
 

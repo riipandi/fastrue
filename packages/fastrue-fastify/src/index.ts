@@ -1,7 +1,5 @@
 import type { FastifyPluginAsync, FastifyRequest } from 'fastify'
 import fastifyPlugin from 'fastify-plugin'
-import loginRoute from './routes/login'
-import settingRoutes from './routes/settings'
 
 type FastrueOptions = {
   driver?: 'pg' | 'postgres'
@@ -19,8 +17,9 @@ const plugin: FastifyPluginAsync<FastrueOptions> = async (fastify, options = {})
   fastify.addHook('onResponse', async (_request, _reply) => {})
 
   // Register authentication routes
-  fastify.register(settingRoutes, { prefix: routePrefix })
-  fastify.register(loginRoute, { prefix: routePrefix })
+  fastify.register(import('./routes/settings'), { prefix: routePrefix })
+  fastify.register(import('./routes/login'), { prefix: routePrefix })
+  fastify.register(import('./routes/user'), { prefix: routePrefix })
 }
 
 export default fastifyPlugin(plugin, {

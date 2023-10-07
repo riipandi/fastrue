@@ -1,6 +1,6 @@
 {
-    "name": "@fastrue/fastify",
-    "version": "0.0.3",
+    "name": "@fastrue/driver-postgres",
+    "version": "0.0.0",
     "author": "Aris Ripandi <aris@duck.com>",
     "contributors": [],
     "access": "public",
@@ -24,11 +24,9 @@
         "release": "pnpm pack && pnpm publish --no-git-checks"
     },
     "dependencies": {
-        "fastify-plugin": "^4.5.1",
-        "jose": "^4.15.2"
+        "postgres": "^3.3.5"
     },
     "devDependencies": {
-        "fastify": "^4.23.2",
         "tsup": "^7.2.0",
         "typescript": "~5.1.6"
     },
