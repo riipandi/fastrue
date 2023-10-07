@@ -1,4 +1,4 @@
-# Fastrue JS Library
+# Fastrue
 
 [![Creator Badge](https://badgen.net/badge/icon/Made%20by%20Aris%20Ripandi?icon=bitcoin-lightning&label&color=blue&labelColor=black&style=flat-square)](https://ripandis.com)
 [![Twitter Badge](https://badgen.net/badge/icon/Follow%20Twitter?icon=twitter&label&color=blue&labelColor=black&style=flat-square)](https://twitter.com/riipandi)
@@ -12,9 +12,12 @@
 > **WARNING!** This project still in development.
 > Everything is experimental, breaking changes can happen and the long-term purpose of this project is not yet clear, use at your own risk!
 
-This is a JavaScript client library for the [Fastrue](https://github.com/riipandi/fastrue) API.
+This is an isomorphic Javascript client library for Fastrue JavaScript client library
+for the [Fastrue](https://github.com/riipandi/fastrue) API, a Fastify authentication plugin
+inspired by Netlify GoTrue.
 
-It lets you create and authenticate users and is a building block for constructing the UI for signups, password recovery, login and logout.
+It lets you create and authenticate users and is a building block for constructing
+the UI for signups, password recovery, login and logout.
 
 ## Installation
 
@@ -32,17 +35,17 @@ pnpm install fastrue-js
 ## Usage
 
 ```js
-import Fastrue from "fastrue-js";
+import Fastrue from 'fastrue-js'
 
 /**
  * Instantiate the Fastrue auth client with an optional configuration.
  */
 
 auth = new Fastrue({
-    apiUrl: "http://localhost:9999",
-    audience: "my-web-app",
-    setCookie: false,
-});
+  apiUrl: 'http://localhost:9999',
+  audience: 'my-web-app',
+  setCookie: false,
+})
 ```
 
 ## License
