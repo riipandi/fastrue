@@ -8,7 +8,7 @@ This is a JavaScript client library for the Fastrue API. It lets you create and 
 users and is a building block for constructing the UI for signups, password recovery, login
 and logout.
 
-Visit the [documentation](https://fastrue.netlify.app) page for more detailed information.
+Visit the [documentation](https://fastrue.ripandis.com) page for more detailed information.
 
 ## Installation
 

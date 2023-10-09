@@ -4,7 +4,7 @@
 [![npm downloads](https://img.shields.io/npm/dm/@fastrue/core)](https://www.npmjs.com/package/@fastrue/core)
 [![License](https://img.shields.io/github/license/riipandi/fastrue)](https://github.com/riipandi/fastrue/blob/main/LICENSE)
 
-Visit the [documentation](https://fastrue.netlify.app) page for more detailed information.
+Visit the [documentation](https://fastrue.ripandis.com) page for more detailed information.
 
 ## Installation
 
