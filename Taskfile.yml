@@ -1,0 +1,47 @@
+# yaml-language-server: $schema = https://taskfile.dev/schema.json
+
+version: '3'
+
+dotenv: ['.env', '.env.local', '.env.{{.ENV}}']
+
+vars:
+  CONCURRENCY: '{{.CONCURRENCY | default "20"}}'
+  GIT_SHA: { sh: git rev-parse --short HEAD }
+  ROOT_DIR: { sh: pwd }
+
+tasks:
+  clean:
+    desc: Cleanup node_modules and output files
+    cmd: 'pnpm turbo run clean'
+
+  deps:
+    desc: Update npm dependencies for each packages
+    cmd: pnpm rimraf tmp && pnpm dlx npm-check-updates --configFileName .ncurc.json
+
+  dev:
+    desc: Start development excluding website
+    cmd: pnpm turbo run dev --no-cache --continue --concurrency={{.CONCURRENCY}} --filter=!website
+
+  build:
+    desc: Build all packages excluding website
+    cmd: pnpm turbo run build --filter=!website
+
+  start:
+    desc: Start standalone server for testing
+    cmd: pnpm turbo run start --filter=!website
+
+  dev:website:
+    desc: Start development for website
+    cmds: ['pnpm install', 'pnpm turbo run dev --filter=website...']
+
+  build:website:
+    desc: Build website for release
+    cmds: ['pnpm install', 'pnpm turbo run build --filter=website...']
+
+  lint:
+    desc: Code format and lint check
+    cmds: ['pnpm prettier --write "**/*.{ts,tsx,md}"', 'pnpm turbo run lint:fix']
+
+  test:
+    desc: Run unit testing
+    cmd: pnpm turbo run test

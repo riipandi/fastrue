@@ -2,15 +2,7 @@
     "name": "fastrue",
     "private": true,
     "scripts": {
-        "clean": "turbo run clean",
-        "dev": "turbo run dev --filter=!website",
-        "build": "turbo run build --filter=!website",
-        "start": "turbo run start --filter=!website",
-        "deps": "pnpm dlx npm-check-updates -x typescript --deep --interactive",
-        "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-        "preinstall": "npx only-allow pnpm",
-        "lint": "turbo run lint",
-        "test": "turbo run test"
+        "preinstall": "npx only-allow pnpm"
     },
     "devDependencies": {
         "eslint-config-turbo": "^1.10.15",

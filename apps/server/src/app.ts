@@ -30,8 +30,9 @@ server.register(fastifyRequestLogger)
 
 // Register Fastrue plugin
 server.register(fastifyAuthPlugin, {
-  driver: 'pg',
+  driver: 'postgres',
   routePrefix: '/auth',
+  dbSchema: 'public',
 })
 
 server.register(AutoLoad, {
