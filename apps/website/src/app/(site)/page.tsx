@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   },
 }
 
-export default function Page() {
+export default async function Page() {
   return (
     <>
       <main className='mx-auto flex w-full max-w-4xl grow flex-col justify-center px-4 sm:px-6 lg:px-8'>
