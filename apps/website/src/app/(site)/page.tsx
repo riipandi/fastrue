@@ -4,11 +4,11 @@ import Link from 'next/link'
 
 import { ExternalLink } from '@/components/external-link'
 
-import VercelLogo from '~/images/vercel.svg'
+import NextjsLogo from '~/images/next.svg'
 
 export const metadata: Metadata = {
   title: {
-    absolute: 'Next.js Tailwind Starter',
+    absolute: 'Fastrue - Fast and robust authentication library',
   },
 }
 
@@ -34,24 +34,29 @@ export default async function Page() {
                 href='/about'
                 className='inline-flex items-center rounded-md border border-transparent bg-primary-600 px-6 py-4 text-base font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-400 focus:ring-offset-2'
               >
-                Example about page
+                About Fastrue
               </Link>
-              <ExternalLink
-                href='https://beta.nextjs.org/docs'
+              <Link
+                href='/docs'
                 className='inline-flex items-center rounded-md border border-transparent bg-primary-100 px-6 py-4 text-base font-medium text-primary-600 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2'
               >
-                Learn about Next.js
-              </ExternalLink>
+                Read the docs
+              </Link>
             </div>
           </div>
         </div>
         <div className='mt-4 flex items-center justify-center'>
           <ExternalLink
-            href='https://vercel.com?utm_source=next-start&utm_medium=next-start&utm_campaign=next-start'
+            href='https://nextjs.org/?utm_source=next-start&utm_medium=next-start&utm_campaign=next-start'
             className='pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0'
           >
-            <span className='font-medium dark:invert'>Hosted at</span>
-            <Image src={VercelLogo} alt='Vercel Logo' className='h-5 w-auto dark:invert' priority />
+            <span className='font-medium dark:invert'>Powered by</span>
+            <Image
+              src={NextjsLogo}
+              alt='Next.js Logo'
+              className='h-3 w-auto dark:invert'
+              priority
+            />
           </ExternalLink>
         </div>
       </main>

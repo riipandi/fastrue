@@ -4,10 +4,25 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Next.js",
-            "runtimeExecutable": "pnpm",
-            "runtimeArgs": ["dev"],
+            "name": "Debug Fastify",
+            "runtimeExecutable": "turbo",
+            "runtimeArgs": ["run", "dev", "--filter=!website"],
             "skipFiles": ["<node_internals>/**"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "openOnSessionStart",
+            "presentation": {
+                "hidden": false,
+                "group": "debug"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start Website",
+            "runtimeExecutable": "turbo",
+            "runtimeArgs": ["run", "dev", "--filter=website"],
+            "skipFiles": ["<node_internals>/**"],
+            "console": "integratedTerminal",
             // "serverReadyAction": {
             //     "action": "debugWithChrome",
             //     "pattern": "started server on .+, url: (https?://.+)",
@@ -15,7 +30,6 @@
             //     "killOnServerStop": true,
             //     "uriFormat": "%s"
             // },
-            "console": "internalConsole",
             "internalConsoleOptions": "openOnSessionStart",
             "presentation": {
                 "hidden": true,
@@ -25,7 +39,7 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Browser Debug",
+            "name": "Debug with Chrome",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
             "cleanUp": "wholeBrowser",
@@ -41,6 +55,7 @@
                 "--disable-background-networking",
                 "--suppress-message-center-popups"
             ],
+            "preLaunchTask": "Sleepdelay",
             "internalConsoleOptions": "openOnSessionStart",
             "presentation": {
                 "hidden": true,
@@ -50,8 +65,8 @@
     ],
     "compounds": [
         {
-            "name": "Start Development",
-            "configurations": ["Debug Next.js", "Browser Debug"],
+            "name": "Debug Website",
+            "configurations": ["Start Website", "Debug with Chrome"],
             "stopAll": true
         }
     ]

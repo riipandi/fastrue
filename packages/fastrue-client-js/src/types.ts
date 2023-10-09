@@ -1,7 +1,7 @@
 export type SettingReponse = {
   description: string
   providers: {
-    email_otp: boolean
+    email: boolean
     google: boolean
     github: boolean
   }

@@ -1,6 +1,6 @@
 {
-    "name": "@fastrue/fastify",
-    "version": "0.0.4",
+    "name": "@fastrue/core",
+    "version": "0.0.0",
     "author": "Aris Ripandi <aris@duck.com>",
     "contributors": [],
     "access": "public",
@@ -23,12 +23,8 @@
         "clean": "rimraf .turbo && rimraf node_modules",
         "release": "pnpm pack && pnpm publish --no-git-checks"
     },
-    "dependencies": {
-        "fastify-plugin": "^4.5.1",
-        "jose": "^4.15.2"
-    },
+    "dependencies": {},
     "devDependencies": {
-        "fastify": "^4.23.2",
         "tsup": "^7.2.0",
         "typescript": "~5.1.6"
     },
@@ -43,8 +39,6 @@
     },
     "keywords": [
         "api",
-        "authentication",
-        "authorization",
         "identity"
     ],
     "publishConfig": {
