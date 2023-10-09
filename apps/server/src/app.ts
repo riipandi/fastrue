@@ -1,16 +1,23 @@
-import { join } from 'node:path'
+import path, { join } from 'node:path'
 
-import Fastify, { FastifyInstance, FastifyPluginAsync } from 'fastify'
+import Fastify, { FastifyInstance } from 'fastify'
 import AutoLoad, { AutoloadPluginOptions } from '@fastify/autoload'
 import fastifyRequestLogger from '@mgcrea/fastify-request-logger'
-import fastifyAuthPlugin from '@fastrue/fastify'
+import fastifyStaticPlugin from '@fastify/static'
+import fastifyAuthPlugin, { FastrueOptions } from '@fastrue/fastify'
 
 export type AppOptions = {
-  // Place your custom options for app below here.
+  fastrue: FastrueOptions
 } & Partial<AutoloadPluginOptions>
 
 // Pass --options via CLI arguments in command to enable these options.
-const options: AppOptions = {}
+const options: AppOptions = {
+  fastrue: {
+    driver: 'postgres',
+    dbSchema: 'public',
+    routePrefix: '/api',
+  },
+}
 
 const server: FastifyInstance = Fastify({
   logger: {
@@ -30,13 +37,31 @@ server.register(fastifyRequestLogger)
 
 // Register Fastrue plugin
 server.register(fastifyAuthPlugin, {
-  driver: 'postgres',
-  routePrefix: '/auth',
+  driver: options.fastrue.driver,
+  routePrefix: options.fastrue.routePrefix,
   dbSchema: 'public',
 })
 
-server.register(AutoLoad, {
-  dir: join(__dirname, 'plugins'),
+server.register(fastifyStaticPlugin, {
+  root: path.join(__dirname, 'public'),
+  index: false,
+  list: false,
+  wildcard: true,
+  allowedPath(pathName: string, _root, _request) {
+    return !pathName.startsWith(options.fastrue.routePrefix || '/api')
+  },
+})
+
+// Not found handler
+server.setNotFoundHandler((req, res) => {
+  if (req.raw.url && !req.raw.url.startsWith(options.fastrue.routePrefix || '/api')) {
+    return res.status(200).sendFile('index.html')
+  }
+  res.status(404).send({
+    statusCode: 404,
+    error: 'Not Found',
+    message: `Route ${req.method}:${req.raw.url} not found`,
+  })
 })
 
 server.register(AutoLoad, {
