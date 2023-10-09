@@ -4,14 +4,40 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Debug Fastify",
+            "name": "Start Server",
             "runtimeExecutable": "turbo",
             "runtimeArgs": ["run", "dev", "--filter=!website"],
             "skipFiles": ["<node_internals>/**"],
             "console": "integratedTerminal",
             "internalConsoleOptions": "openOnSessionStart",
             "presentation": {
-                "hidden": false,
+                "hidden": true,
+                "group": "debug"
+            }
+        },
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Debug portal with Chrome",
+            "url": "http://localhost:8091",
+            "webRoot": "${workspaceFolder}",
+            "cleanUp": "wholeBrowser",
+            "userDataDir": true,
+            "runtimeArgs": [
+                "--start-maximized",
+                "--bwsi",
+                "--allow-insecure-localhost",
+                "--disable-component-update",
+                "--disable-crash-reporter",
+                "--disable-extensions",
+                "--disable-hang-monitor",
+                "--disable-background-networking",
+                "--suppress-message-center-popups"
+            ],
+            "preLaunchTask": "Sleepdelay",
+            "internalConsoleOptions": "openOnSessionStart",
+            "presentation": {
+                "hidden": true,
                 "group": "debug"
             }
         },
@@ -39,10 +65,11 @@
         {
             "type": "chrome",
             "request": "launch",
-            "name": "Debug with Chrome",
+            "name": "Debug website with Chrome",
             "url": "http://localhost:3000",
             "webRoot": "${workspaceFolder}",
             "cleanUp": "wholeBrowser",
+            "userDataDir": true,
             "runtimeArgs": [
                 "--auto-open-devtools-for-tabs",
                 "--start-maximized",
@@ -65,8 +92,13 @@
     ],
     "compounds": [
         {
+            "name": "Debug Server",
+            "configurations": ["Start Server", "Debug portal with Chrome"],
+            "stopAll": true
+        },
+        {
             "name": "Debug Website",
-            "configurations": ["Start Website", "Debug with Chrome"],
+            "configurations": ["Start Website", "Debug website with Chrome"],
             "stopAll": true
         }
     ]
