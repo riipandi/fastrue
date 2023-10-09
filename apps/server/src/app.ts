@@ -70,13 +70,13 @@ server.register(AutoLoad, {
 })
 
 const start = async () => {
-  try {
-    const port = Number(process.env.PORT) || 8090
-    await server.listen({ port })
-  } catch (err) {
-    server.log.error(err)
-    process.exit(1)
-  }
+  const port = Number(process.env.PORT) || 8090
+  server.listen({ port, host: '0.0.0.0' }, (err, _address) => {
+    if (err) {
+      server.log.error(err)
+      process.exit(1)
+    }
+  })
 }
 
 start()

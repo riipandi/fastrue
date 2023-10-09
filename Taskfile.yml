@@ -2,6 +2,8 @@
 
 version: '3'
 
+silent: true
+
 dotenv: ['.env', '.env.local', '.env.{{.ENV}}']
 
 vars:
@@ -14,15 +16,20 @@ tasks:
     desc: Cleanup node_modules and output files
     cmd: 'pnpm turbo run clean'
 
-  deps:
+  update-deps:
     desc: Update npm dependencies for each packages
     cmd: pnpm rimraf tmp && pnpm dlx npm-check-updates --configFileName .ncurc.json
+
+  install-deps:
+    internal: true
+    cmd: pnpm install
 
   dev:
     desc: Start development excluding website
     cmd: pnpm turbo run dev --no-cache --continue --concurrency={{.CONCURRENCY}} --filter=!website
 
   build:
+    deps: ['install-deps']
     desc: Build all packages excluding website
     cmd: pnpm turbo run build --filter=!website
 
@@ -45,3 +52,11 @@ tasks:
   test:
     desc: Run unit testing
     cmd: pnpm turbo run test
+
+  docker:build:
+    cmds:
+      - docker build -f apps/server/Dockerfile . -t fastrue:latest
+
+  docker:run:
+    cmds:
+      - docker run --rm -it --name fastrue -p 8090:8090 --env-file .env.docker fastrue:latest

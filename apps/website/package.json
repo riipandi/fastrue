@@ -10,7 +10,7 @@
         "lint": "TIMING=1 next lint",
         "lint:fix": "next lint --fix",
         "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,mdx}\"",
-        "clean": "rimraf .turbo && rimraf node_modules && rimraf .next",
+        "clean": "rimraf .turbo node_modules .next",
         "deps": "pnpm dlx npm-check-updates -x typescript --deep --interactive"
     },
     "dependencies": {

@@ -22,7 +22,7 @@ export default defineConfig({
   root: resolve(__dirname),
   build: {
     emptyOutDir: true,
-    outDir: resolve(__dirname, '../server/dist/public'),
+    outDir: resolve(__dirname, 'dist'),
     rollupOptions: {
       input: {
         app: resolve(__dirname, 'index.html'),

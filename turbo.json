@@ -28,6 +28,12 @@
         },
         "release": {
             "cache": false
+        },
+        "standalone-server#dev": {
+            "dependsOn": ["portal#build"]
+        },
+        "standalone-server#build": {
+            "dependsOn": ["portal#build"]
         }
     }
 }

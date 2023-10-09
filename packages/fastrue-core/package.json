@@ -20,7 +20,7 @@
     "scripts": {
         "build": "tsup",
         "dev": "tsup --watch",
-        "clean": "rimraf .turbo && rimraf node_modules",
+        "clean": "rimraf .turbo node_modules",
         "release": "pnpm pack && pnpm publish --no-git-checks"
     },
     "dependencies": {},
