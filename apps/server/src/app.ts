@@ -35,6 +35,15 @@ const server: FastifyInstance = Fastify({
 // Register fastify plugins
 server.register(fastifyRequestLogger)
 
+server.register(AutoLoad, {
+  dir: join(__dirname, 'routes'),
+  dirNameRoutePrefix: true, // lack of prefix will mean no prefix, instead of directory name
+})
+
+server.register(AutoLoad, {
+  dir: join(__dirname, 'plugins'),
+})
+
 // Register Fastrue plugin
 server.register(fastifyAuthPlugin, {
   driver: options.fastrue.driver,
@@ -54,7 +63,11 @@ server.register(fastifyStaticPlugin, {
 
 // Not found handler
 server.setNotFoundHandler((req, res) => {
-  if (req.raw.url && !req.raw.url.startsWith(options.fastrue.routePrefix || '/api')) {
+  if (
+    req.raw.url &&
+    !req.raw.url.startsWith(options.fastrue.routePrefix || '/api') &&
+    !req.raw.url.startsWith(options.fastrue.routePrefix || '/swagger')
+  ) {
     return res.status(200).sendFile('index.html')
   }
   res.status(404).send({
@@ -62,11 +75,6 @@ server.setNotFoundHandler((req, res) => {
     error: 'Not Found',
     message: `Route ${req.method}:${req.raw.url} not found`,
   })
-})
-
-server.register(AutoLoad, {
-  dir: join(__dirname, 'routes'),
-  dirNameRoutePrefix: true, // lack of prefix will mean no prefix, instead of directory name
 })
 
 const start = async () => {

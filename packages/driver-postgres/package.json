@@ -29,7 +29,7 @@
         "postgres": "^3.3.5"
     },
     "devDependencies": {
-        "@types/pg": "^8.10.3",
+        "@types/pg": "^8.10.4",
         "tsup": "^7.2.0",
         "typescript": "~5.1.6"
     },

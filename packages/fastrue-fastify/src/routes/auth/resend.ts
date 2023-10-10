@@ -1,15 +1,31 @@
 import { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.post('/resend', opts, async (request, reply) => {
-    return {
-      description: 'Resends a one-time password (OTP) through email or SMS',
-      headers: request.headers,
-      query: request.query,
-      body: request.body,
-      params: request.params,
+  fastify.post(
+    '/resend',
+    {
+      schema: {
+        summary: 'Resend a one-time password (OTP) throught email or SMS',
+        description: 'Put long description here...',
+        tags: ['Authentication'],
+        response: {
+          default: {
+            description: 'Default response',
+            type: 'object',
+            properties: {},
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      return {
+        headers: request.headers,
+        query: request.query,
+        body: request.body,
+        params: request.params,
+      }
     }
-  })
+  )
 }
 
 export default routes

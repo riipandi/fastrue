@@ -1,21 +1,41 @@
-import { FastifyPluginAsync } from 'fastify'
+import { FastifyPluginAsync, type RouteShorthandOptions } from 'fastify'
 
-const description = 'Retrieve some of the public settings of the server'
+const routeOptions: RouteShorthandOptions = {}
 
-const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.get('/settings', opts, async (request, reply) => {
-    const result = {
-      description,
-      providers: {
-        email: true,
-        google: false,
-        github: false,
+const routes: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
+  fastify.get(
+    '/settings',
+    {
+      schema: {
+        summary: 'Retrieve some of the public settings of the server',
+        description: 'Put long description here...',
+        tags: ['General'],
+        response: {
+          default: {
+            description: 'Default response',
+            type: 'object',
+            properties: {
+              name: { type: 'string' },
+              version: { type: 'string' },
+              description: { type: 'string' },
+            },
+          },
+        },
       },
-      disable_signup: false,
-      autoconfirm: false,
+    },
+    async (request, reply) => {
+      const result = {
+        providers: {
+          email: true,
+          google: false,
+          github: false,
+        },
+        disable_signup: false,
+        autoconfirm: false,
+      }
+      reply.code(200).header('Content-Type', 'application/json; charset=utf-8').send(result)
     }
-    reply.code(200).header('Content-Type', 'application/json; charset=utf-8').send(result)
-  })
+  )
 }
 
 export default routes

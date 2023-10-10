@@ -1,15 +1,31 @@
 import { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
-  fastify.post('/recover', opts, async (request, reply) => {
-    return {
-      description: 'Request password recovery',
-      headers: request.headers,
-      query: request.query,
-      body: request.body,
-      params: request.params,
+  fastify.post(
+    '/recover',
+    {
+      schema: {
+        summary: 'Request password recovery',
+        description: 'Put long description here...',
+        tags: ['Recovery'],
+        response: {
+          default: {
+            description: 'Default response',
+            type: 'object',
+            properties: {},
+          },
+        },
+      },
+    },
+    async (request, reply) => {
+      return {
+        headers: request.headers,
+        query: request.query,
+        body: request.body,
+        params: request.params,
+      }
     }
-  })
+  )
 }
 
 export default routes
