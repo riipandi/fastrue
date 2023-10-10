@@ -8,13 +8,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Begin enrolling a new factor for MFA',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {
@@ -34,13 +27,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Create a new challenge for a MFA factor',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {
@@ -60,13 +46,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Verify a challenge on a factor',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {
@@ -86,13 +65,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Remove a MFA factor from a user',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {

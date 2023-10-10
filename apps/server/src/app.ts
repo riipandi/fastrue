@@ -6,14 +6,20 @@ import fastifyRequestLogger from '@mgcrea/fastify-request-logger'
 import fastifyStaticPlugin from '@fastify/static'
 import fastifyAuthPlugin, { FastrueOptions } from '@fastrue/fastify'
 
+import postgres from 'postgres'
+
 export type AppOptions = {
   fastrue: FastrueOptions
 } & Partial<AutoloadPluginOptions>
+
+// Postgres database client
+const sql = postgres(process.env.DATABASE_URL!)
 
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {
   fastrue: {
     driver: 'postgres',
+    dbClient: sql,
     dbSchema: 'public',
     routePrefix: '/api',
   },

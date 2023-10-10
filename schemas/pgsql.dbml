@@ -120,14 +120,14 @@ Indexes {
   Note: 'Auth: Store of tokens used to refresh JWT tokens once they expire.'
 }
 
-Table "audit_log_entries" {
+Table "audit_log" {
   "id" UUID [not null]
   "payload" json
   "ip_address" varchar(64) [not null, default: ""]
   "created_at" timestamptz [not null, default: `timezone('utc'::text,now())`]
 
 Indexes {
-  id [pk, name: "audit_log_entries_pkey"]
+  id [pk, name: "audit_log_pkey"]
 }
   Note: 'Auth: Audit trail for user actions.'
 }

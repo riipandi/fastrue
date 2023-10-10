@@ -8,13 +8,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Fetch audit log events',
         description: 'Put long description here...',
         tags: ['admin'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {

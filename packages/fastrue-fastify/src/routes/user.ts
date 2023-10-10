@@ -1,6 +1,9 @@
 import { FastifyPluginAsync } from 'fastify'
+import postgres from 'postgres'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
+  const sql = postgres('postgres://postgres:postgres@127.0.0.1:5432/fastrue?sslmode=disable')
+
   fastify.get(
     '/user',
     {
@@ -8,21 +11,16 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Fetch the latest user account information',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, _reply) => {
+      const data = await sql`select * from users`
       return {
         headers: request.headers,
         query: request.query,
         body: request.body,
         params: request.params,
+        data,
       }
     }
   )
@@ -34,13 +32,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Update certain properties of the current user account',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {

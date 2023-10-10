@@ -9,13 +9,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         description:
           'Sends an invitation email which contains a link that allows the user to sign-in.',
         tags: ['admin'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {

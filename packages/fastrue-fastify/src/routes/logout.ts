@@ -8,13 +8,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Logs out a user',
         description: 'Put long description here...',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, _reply) => {

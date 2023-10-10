@@ -1,10 +1,7 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { ExternalLink } from '@/components/external-link'
-
-import VercelLogo from '~/images/vercel.svg'
 
 export const metadata: Metadata = {
   title: {

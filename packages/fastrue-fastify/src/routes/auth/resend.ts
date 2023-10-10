@@ -8,13 +8,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Resend a one-time password (OTP) throught email or SMS',
         description: 'Put long description here...',
         tags: ['auth'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {

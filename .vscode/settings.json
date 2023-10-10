@@ -17,12 +17,14 @@
     "files.watcherExclude": {
         "**/.github": true,
         "**/.vscode": true,
-        "**/.next": true
+        "**/.next": true,
+        "**/*.gz": true
     },
     "search.exclude": {
         "**/.github": true,
         "**/.vscode": true,
-        "**/.next": true
+        "**/.next": true,
+        "**/*.gz": true
     },
     "tailwindCSS.emmetCompletions": true,
     "tailwindCSS.experimental.classRegex": [

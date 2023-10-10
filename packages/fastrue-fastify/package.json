@@ -26,12 +26,27 @@
     "dependencies": {
         "fastify-plugin": "^4.5.1",
         "jose": "^4.15.2",
+        "pg": "^8.11.3",
+        "postgres": "^3.3.5",
         "urlcat": "^3.1.0"
     },
     "devDependencies": {
+        "@types/pg": "^8.10.4",
         "fastify": "^4.23.2",
         "tsup": "^7.2.0",
         "typescript": "~5.1.6"
+    },
+    "peerDependencies": {
+        "pg": "^8.11.3",
+        "postgres": "^3.3.5"
+    },
+    "peerDependenciesMeta": {
+        "pg": {
+            "optional": true
+        },
+        "postgres": {
+            "optional": true
+        }
     },
     "license": "MIT",
     "homepage": "https://fastrue.ripandis.com",

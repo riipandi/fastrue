@@ -9,16 +9,10 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         description: 'Put long description here...',
         tags: ['auth', 'oauth'],
         required: ['grant_type'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {
+      // const select = fastify.db
       const result = {
         headers: request.headers,
         query: request.query,

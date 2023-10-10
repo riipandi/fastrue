@@ -172,18 +172,18 @@ COMMENT ON TABLE public.refresh_tokens is 'Auth: Store of tokens used to refresh
 ---------------------------------------------------------------------------------------------------
 -- Audit log table
 ---------------------------------------------------------------------------------------------------
--- Drop table audit_log_entries
-DROP TABLE IF EXISTS public.audit_log_entries;
+-- Drop table audit_log
+DROP TABLE IF EXISTS public.audit_log;
 
--- Create table audit_log_entries
-CREATE TABLE public.audit_log_entries (
+-- Create table audit_log
+CREATE TABLE public.audit_log (
   id UUID NOT NULL,
   payload json NULL,
   ip_address varchar(64) NOT NULL DEFAULT '',
   created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
-  CONSTRAINT audit_log_entries_pkey PRIMARY KEY (id)
+  CONSTRAINT audit_log_pkey PRIMARY KEY (id)
 );
-COMMENT ON TABLE public.audit_log_entries is 'Auth: Audit trail for user actions.';
+COMMENT ON TABLE public.audit_log is 'Auth: Audit trail for user actions.';
 
 ---------------------------------------------------------------------------------------------------
 -- Identities table

@@ -1,7 +1,8 @@
 import type { Sql, PostgresError, PendingQuery } from 'postgres'
+import { User } from './schemas/users'
 
 type AdapterOptions = {
-  schema: string
+  schema?: string
   tables?: {
     audit_log?: string
     flow_state?: string
@@ -39,38 +40,11 @@ export const postgresAdapter = (sql: Sql, opts: AdapterOptions): any => {
   const SSO_PROVIDERS_TABLE = escapeName(opts.tables?.sso_providers || 'sso_providers')
   const USERS_TABLE = escapeName(opts.tables?.users || 'users')
 
-  // return (LuciaError) => {
-  return {
-    getUser: async (userId: string) => {},
-    setUser: async (user: string, key: string) => {},
-    deleteUser: async (userId: string) => {},
-    updateUser: async (userId: string, partialUser: string) => {},
-    getSession: async (sessionId: string) => {},
-    getSessionsByUserId: async (userId: string) => {},
-    setSession: async (session: string) => {},
-    deleteSession: async (sessionId: string) => {},
-    deleteSessionsByUserId: async (userId: string) => {},
-    updateSession: async (sessionId: string, partialSession: string) => {},
-    getKey: async (keyId: string) => {},
-    getKeysByUserId: async (userId: string) => {},
-    setKey: async (key: string) => {},
-    deleteKey: async (keyId: string) => {},
-    deleteKeysByUserId: async (userId: string) => {},
-    updateKey: async (keyId: string, partialKey: string) => {},
-    getSessionAndUser: async (sessionId: string) => {},
+  return () => {
+    return {
+      getAllUsers: async () => {
+        console.log('getAllUsers called')
+      },
+    }
   }
-  // }
-}
-
-export async function get<_Schema extends {}>(queryPromise: PendingQuery<_Schema[]>) {
-  const result = await queryPromise
-  return result.at(0) ?? null
-}
-
-export async function getAll<_Schema extends {}>(queryPromise: PendingQuery<_Schema[]>) {
-  return await queryPromise
-}
-
-function processException(e: any) {
-  return e as Partial<PostgresError>
 }

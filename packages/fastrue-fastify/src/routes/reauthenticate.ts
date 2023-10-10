@@ -9,13 +9,6 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         description:
           'Reauthenticates the possession of an email or phone number for the purpose of password change',
         tags: ['account'],
-        // response: {
-        //   default: {
-        //     description: 'Default response',
-        //     type: 'object',
-        //     properties: {},
-        //   },
-        // },
       },
     },
     async (request, reply) => {
