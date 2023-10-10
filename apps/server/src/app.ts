@@ -7,6 +7,7 @@ import fastifyStaticPlugin from '@fastify/static'
 import fastifyAuthPlugin, { FastrueOptions } from '@fastrue/fastify'
 
 import postgres from 'postgres'
+import { defaultApiRoute, healthCheckRoute } from './routes'
 
 export type AppOptions = {
   fastrue: FastrueOptions
@@ -41,9 +42,14 @@ const server: FastifyInstance = Fastify({
 // Register fastify plugins
 server.register(fastifyRequestLogger)
 
-server.register(AutoLoad, {
-  dir: join(__dirname, 'routes'),
-  dirNameRoutePrefix: true, // lack of prefix will mean no prefix, instead of directory name
+// Register route for root endpoint
+server.register(defaultApiRoute, {
+  prefix: options.fastrue.routePrefix || '/api',
+})
+
+// Register route for service health check
+server.register(healthCheckRoute, {
+  prefix: options.fastrue.routePrefix || '/api',
 })
 
 server.register(AutoLoad, {
@@ -51,14 +57,10 @@ server.register(AutoLoad, {
 })
 
 // Register Fastrue plugin
-server.register(fastifyAuthPlugin, {
-  driver: options.fastrue.driver,
-  routePrefix: options.fastrue.routePrefix,
-  dbSchema: 'public',
-})
+server.register(fastifyAuthPlugin, options.fastrue)
 
 server.register(fastifyStaticPlugin, {
-  root: path.join(__dirname, 'public'),
+  root: path.join(__dirname, '../public'),
   index: false,
   list: false,
   wildcard: true,

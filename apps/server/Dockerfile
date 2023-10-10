@@ -66,7 +66,7 @@ RUN apk update && apk add --no-cache tini
 COPY --from=builder --chown=nonroot:nonroot /app/pruned/package.json ./package.json
 COPY --from=builder --chown=nonroot:nonroot /app/pruned/node_modules ./node_modules
 COPY --from=builder --chown=nonroot:nonroot /app/pruned/dist ./dist
-COPY --from=builder --chown=nonroot:nonroot /app/apps/portal/dist ./dist/public
+COPY --from=builder --chown=nonroot:nonroot /app/apps/portal/dist ./public
 
 USER nonroot:nonroot
 EXPOSE $PORT
