@@ -5,6 +5,7 @@
         "EditorConfig.EditorConfig",
         "esbenp.prettier-vscode",
         "foxundermoon.shell-format",
+        "matt-meyers.vscode-dbml",
         "unifiedjs.vscode-mdx"
     ]
 }

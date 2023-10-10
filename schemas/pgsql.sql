@@ -8,9 +8,26 @@ DROP SCHEMA IF EXISTS auth;
 
 -- Initialize database schema
 CREATE USER fastrue_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION PASSWORD 'securedb';
-CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION fastrue_admin;
+CREATE SCHEMA auth AUTHORIZATION fastrue_admin;
 GRANT CREATE ON DATABASE postgres TO fastrue_admin;
 ALTER USER fastrue_admin SET search_path = 'auth';
+
+---------------------------------------------------------------------------------------------------
+-- Auth function
+---------------------------------------------------------------------------------------------------
+-- Drop auth_functions
+DROP FUNCTION IF EXISTS public.jwt();
+
+-- Create auth_functions
+CREATE OR REPLACE FUNCTION public.jwt()
+RETURNS jsonb
+LANGUAGE sql stable
+AS $$
+  select coalesce(
+    nullif(current_setting('request.jwt.claim', true), ''),
+    nullif(current_setting('request.jwt.claims', true), '')
+  )::jsonb
+$$;
 
 ---------------------------------------------------------------------------------------------------
 -- Users table
@@ -25,7 +42,7 @@ DROP INDEX IF EXISTS public.reauthentication_token_idx;
 DROP TABLE IF EXISTS public.users
 
 -- Create users table
-CREATE TABLE IF NOT EXISTS public.users (
+CREATE TABLE public.users (
   id UUID NOT NULL UNIQUE,
   uid varchar(25) NOT NULL UNIQUE,
   aud varchar(255) NULL,
@@ -62,12 +79,12 @@ CREATE TABLE IF NOT EXISTS public.users (
   CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS confirmation_token_idx ON public.users USING btree (confirmation_token) WHERE confirmation_token !~ '^[0-9 ]*$';
-CREATE UNIQUE INDEX IF NOT EXISTS recovery_token_idx ON public.users USING btree (recovery_token) WHERE recovery_token !~ '^[0-9 ]*$';
-CREATE UNIQUE INDEX IF NOT EXISTS email_change_token_current_idx ON public.users USING btree (email_change_token_current) WHERE email_change_token_current !~ '^[0-9 ]*$';
-CREATE UNIQUE INDEX IF NOT EXISTS email_change_token_new_idx ON public.users USING btree (email_change_token_new) WHERE email_change_token_new !~ '^[0-9 ]*$';
-CREATE UNIQUE INDEX IF NOT EXISTS reauthentication_token_idx ON public.users USING btree (reauthentication_token) WHERE reauthentication_token !~ '^[0-9 ]*$';
-CREATE UNIQUE INDEX IF NOT EXISTS users_email_partial_key ON public.users (email) WHERE (is_sso_user = false);
+CREATE UNIQUE INDEX confirmation_token_idx ON public.users USING btree (confirmation_token) WHERE confirmation_token !~ '^[0-9 ]*$';
+CREATE UNIQUE INDEX recovery_token_idx ON public.users USING btree (recovery_token) WHERE recovery_token !~ '^[0-9 ]*$';
+CREATE UNIQUE INDEX email_change_token_current_idx ON public.users USING btree (email_change_token_current) WHERE email_change_token_current !~ '^[0-9 ]*$';
+CREATE UNIQUE INDEX email_change_token_new_idx ON public.users USING btree (email_change_token_new) WHERE email_change_token_new !~ '^[0-9 ]*$';
+CREATE UNIQUE INDEX reauthentication_token_idx ON public.users USING btree (reauthentication_token) WHERE reauthentication_token !~ '^[0-9 ]*$';
+CREATE UNIQUE INDEX users_email_partial_key ON public.users (email) WHERE (is_sso_user = false);
 
 COMMENT ON TABLE public.users is 'Auth: Stores user login data within a secure schema.';
 COMMENT ON COLUMN public.users.is_sso_user is 'Auth: Set this column to true when the account comes from SSO. These accounts can have duplicate emails.';
@@ -81,7 +98,7 @@ DROP INDEX IF EXISTS public.passwords_user_id_idx;
 DROP TABLE IF EXISTS public.passwords;
 
 -- Create passwords table
-CREATE TABLE IF NOT EXISTS public.passwords (
+CREATE TABLE public.passwords (
   id UUID NOT NULL,
   user_id UUID NOT NULL UNIQUE,
   encrypted_password varchar(255) NOT NULL,
@@ -91,7 +108,7 @@ CREATE TABLE IF NOT EXISTS public.passwords (
   CONSTRAINT passwords_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS passwords_user_id_idx on public.passwords (user_id);
+CREATE INDEX passwords_user_id_idx on public.passwords (user_id);
 COMMENT ON TABLE public.passwords is 'Auth: Stores encrypted password associated to a user.';
 
 ---------------------------------------------------------------------------------------------------
@@ -104,7 +121,7 @@ DROP TYPE IF EXISTS aal_level;
 
 -- Create sessions table
 CREATE TYPE aal_level as ENUM('aal1', 'aal2', 'aal3');
-CREATE TABLE IF NOT EXISTS public.sessions (
+CREATE TABLE public.sessions (
   id UUID NOT NULL,
   user_id UUID NOT NULL,
   factor_id UUID NULL,
@@ -116,8 +133,8 @@ CREATE TABLE IF NOT EXISTS public.sessions (
   CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX IF NOT EXISTS sessions_user_id_idx on public.sessions (user_id);
-CREATE INDEX IF NOT EXISTS sessions_not_after_idx ON public.sessions (not_after desc);
+CREATE INDEX sessions_user_id_idx on public.sessions (user_id);
+CREATE INDEX sessions_not_after_idx ON public.sessions (not_after desc);
 COMMENT ON TABLE public.sessions is 'Auth: Stores session data associated to a user.';
 COMMENT ON COLUMN public.sessions.not_after is 'Auth: Not after is a nullable column that contains a timestamp after which the session should be regarded as expired.';
 
@@ -131,7 +148,7 @@ DROP INDEX IF EXISTS public.refresh_tokens_session_id_revoked_idx;
 DROP TABLE IF EXISTS public.refresh_tokens;
 
 -- Create refresh_tokens table
-CREATE TABLE IF NOT EXISTS public.refresh_tokens (
+CREATE TABLE public.refresh_tokens (
   id UUID NOT NULL,
   parent varchar(255) NULL,
   "token" varchar(255) NULL,
@@ -145,10 +162,10 @@ CREATE TABLE IF NOT EXISTS public.refresh_tokens (
   CONSTRAINT refresh_tokens_session_id_fkey FOREIGN KEY (session_id) REFERENCES public.sessions(id) on delete cascade
 );
 
-CREATE INDEX IF NOT EXISTS refresh_tokens_token_idx ON public.refresh_tokens USING btree (token);
-CREATE INDEX IF NOT EXISTS refresh_tokens_parent_idx ON public.refresh_tokens USING btree (parent);
-CREATE INDEX IF NOT EXISTS refresh_tokens_session_id_revoked_idx on public.refresh_tokens (session_id, revoked);
-CREATE INDEX IF NOT EXISTS refresh_tokens_updated_at_idx ON public.refresh_tokens (updated_at desc);
+CREATE INDEX refresh_tokens_token_idx ON public.refresh_tokens USING btree (token);
+CREATE INDEX refresh_tokens_parent_idx ON public.refresh_tokens USING btree (parent);
+CREATE INDEX refresh_tokens_session_id_revoked_idx on public.refresh_tokens (session_id, revoked);
+CREATE INDEX refresh_tokens_updated_at_idx ON public.refresh_tokens (updated_at desc);
 
 COMMENT ON TABLE public.refresh_tokens is 'Auth: Store of tokens used to refresh JWT tokens once they expire.';
 
@@ -177,42 +194,26 @@ DROP INDEX IF EXISTS public.identities_email_idx;
 DROP TABLE IF EXISTS public.identities;
 
 -- Create tables identities
-CREATE TABLE IF NOT EXISTS public.identities (
+CREATE TABLE public.identities (
     id text NOT NULL,
     user_id UUID NOT NULL,
     identity_data jsonb NOT NULL,
     provider text NOT NULL,
-    email text GENERATED ALWAYS AS (lower(identity_data->>'email')) STORED,
+    -- email text GENERATED ALWAYS AS (lower(identity_data->>'email')) STORED,
+    email text,
     last_sign_in_at timestamptz NULL,
     created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
     updated_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
     CONSTRAINT identities_pkey PRIMARY KEY (provider, id),
     CONSTRAINT identities_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) ON DELETE CASCADE
 );
-CREATE INDEX IF NOT EXISTS identities_user_id_idx ON public.identities using btree (user_id);
+CREATE INDEX identities_user_id_idx ON public.identities using btree (user_id);
 COMMENT ON TABLE public.identities is 'Auth: Stores identities associated to a user.';
 COMMENT ON COLUMN public.identities.email is 'Auth: Email is a generated column that REFERENCES the optional email property in the identity_data';
 
 --- This part incompatible with CockroachDB (issue: operator classes)
-CREATE INDEX IF NOT EXISTS identities_email_idx on public.identities (email text_pattern_ops);
+CREATE INDEX identities_email_idx on public.identities (email text_pattern_ops);
 COMMENT ON INDEX public.identities_email_idx is 'Auth: Ensures indexed queries on the email column';
-
----------------------------------------------------------------------------------------------------
--- Auth function
----------------------------------------------------------------------------------------------------
--- Drop auth_functions
-DROP FUNCTION IF EXISTS public.jwt();
-
--- Create auth_functions
-CREATE OR REPLACE FUNCTION public.jwt()
-RETURNS jsonb
-LANGUAGE sql stable
-AS $$
-  select coalesce(
-    nullif(current_setting('request.jwt.claim', true), ''),
-    nullif(current_setting('request.jwt.claims', true), '')
-  )::jsonb
-$$;
 
 ---------------------------------------------------------------------------------------------------
 -- MFA tables
@@ -231,7 +232,7 @@ DROP TYPE IF EXISTS factor_status;
 CREATE TYPE factor_type AS ENUM('totp', 'webauthn');
 CREATE TYPE factor_status AS ENUM('unverified', 'verified');
 
-CREATE TABLE IF NOT EXISTS public.mfa_factors(
+CREATE TABLE public.mfa_factors(
   id UUID NOT NULL,
   user_id UUID NOT NULL,
   friendly_name text NULL,
@@ -244,11 +245,11 @@ CREATE TABLE IF NOT EXISTS public.mfa_factors(
   CONSTRAINT mfa_factors_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id) on delete cascade
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS mfa_factors_user_friendly_name_unique on public.mfa_factors (friendly_name, user_id) WHERE TRIM(friendly_name) <> '';
-CREATE INDEX IF NOT EXISTS mfa_factors_user_id_idx ON public.mfa_factors(user_id);
+CREATE UNIQUE INDEX mfa_factors_user_friendly_name_unique on public.mfa_factors (friendly_name, user_id) WHERE TRIM(friendly_name) <> '';
+CREATE INDEX mfa_factors_user_id_idx ON public.mfa_factors(user_id);
 COMMENT ON TABLE public.mfa_factors is 'auth: stores metadata about factors';
 
-CREATE TABLE IF NOT EXISTS public.mfa_challenges(
+CREATE TABLE public.mfa_challenges(
   id UUID NOT NULL,
   factor_id UUID NOT NULL,
   created_at timestamptz NOT NULL,
@@ -257,7 +258,7 @@ CREATE TABLE IF NOT EXISTS public.mfa_challenges(
   CONSTRAINT mfa_challenges_pkey PRIMARY KEY (id),
   CONSTRAINT mfa_challenges_auth_factor_id_fkey FOREIGN KEY (factor_id) REFERENCES public.mfa_factors(id) on delete cascade
 );
-CREATE INDEX IF NOT EXISTS mfa_challenge_created_at_idx ON public.mfa_challenges (created_at desc);
+CREATE INDEX mfa_challenge_created_at_idx ON public.mfa_challenges (created_at desc);
 COMMENT ON TABLE public.mfa_challenges is 'auth: stores metadata about challenge requests made';
 
 create table if not exists public.mfa_amr_claims(
@@ -270,8 +271,8 @@ create table if not exists public.mfa_amr_claims(
   CONSTRAINT mfa_amr_claims_session_id_authentication_method_pkey unique(session_id, authentication_method),
   CONSTRAINT mfa_amr_claims_session_id_fkey FOREIGN KEY(session_id) REFERENCES public.sessions(id) on delete cascade
 );
-CREATE INDEX IF NOT EXISTS user_id_created_at_idx on public.sessions (user_id, created_at);
-CREATE INDEX IF NOT EXISTS factor_id_created_at_idx on public.mfa_factors (user_id, created_at);
+CREATE INDEX user_id_created_at_idx on public.sessions (user_id, created_at);
+CREATE INDEX factor_id_created_at_idx on public.mfa_factors (user_id, created_at);
 COMMENT ON TABLE public.mfa_amr_claims is 'auth: stores authenticator method REFERENCE claims for multi factor authentication';
 
 ---------------------------------------------------------------------------------------------------
@@ -285,7 +286,7 @@ DROP TYPE IF EXISTS code_challenge_method;
 
 -- Create flow_state table
 CREATE TYPE code_challenge_method AS ENUM('s256', 'plain');
-CREATE TABLE IF NOT EXISTS public.flow_state(
+CREATE TABLE public.flow_state(
   id UUID PRIMARY KEY,
   user_id UUID NULL,
   auth_code text NOT NULL,
@@ -300,7 +301,7 @@ CREATE TABLE IF NOT EXISTS public.flow_state(
 );
 CREATE INDEX idx_auth_code ON public.flow_state(auth_code);
 CREATE INDEX idx_user_id_auth_method ON public.flow_state (user_id, authentication_method);
-CREATE INDEX IF NOT EXISTS flow_state_created_at_idx ON public.flow_state (created_at desc);
+CREATE INDEX flow_state_created_at_idx ON public.flow_state (created_at desc);
 COMMENT ON TABLE public.flow_state is 'stores metadata for oauth provider logins';
 
 ---------------------------------------------------------------------------------------------------
@@ -322,7 +323,7 @@ DROP INDEX IF EXISTS public.sso_providers_resource_id_idx;
 DROP TABLE IF EXISTS public.sso_providers
 
 -- Create table saml
-CREATE TABLE IF NOT EXISTS public.sso_providers (
+CREATE TABLE public.sso_providers (
   id UUID NOT NULL,
   resource_id text NULL,
   created_at timestamptz DEFAULT timezone('utc'::text, now()) NOT NULL,
@@ -332,9 +333,9 @@ CREATE TABLE IF NOT EXISTS public.sso_providers (
 );
 COMMENT ON TABLE public.sso_providers is 'Auth: Manages SSO identity provider information; see saml_providers for SAML.';
 COMMENT ON COLUMN public.sso_providers.resource_id is 'Auth: Uniquely identifies a SSO provider according to a user-chosen resource ID (case insensitive), useful in infrastructure as code.';
-CREATE UNIQUE INDEX IF NOT EXISTS sso_providers_resource_id_idx on public.sso_providers (lower(resource_id));
+CREATE UNIQUE INDEX sso_providers_resource_id_idx on public.sso_providers (lower(resource_id));
 
-CREATE TABLE IF NOT EXISTS public.sso_domains (
+CREATE TABLE public.sso_domains (
   id UUID NOT NULL,
   sso_provider_id UUID NOT NULL,
   domain text NOT NULL,
@@ -344,11 +345,11 @@ CREATE TABLE IF NOT EXISTS public.sso_domains (
   FOREIGN KEY (sso_provider_id) REFERENCES public.sso_providers (id) ON DELETE CASCADE,
   CONSTRAINT "domain not empty" CHECK (char_length(domain) > 0)
 );
-CREATE INDEX IF NOT EXISTS sso_domains_sso_provider_id_idx on public.sso_domains (sso_provider_id);
-CREATE UNIQUE INDEX IF NOT EXISTS sso_domains_domain_idx on public.sso_domains (lower(domain));
+CREATE INDEX sso_domains_sso_provider_id_idx on public.sso_domains (sso_provider_id);
+CREATE UNIQUE INDEX sso_domains_domain_idx on public.sso_domains (lower(domain));
 COMMENT ON TABLE public.sso_domains is 'Auth: Manages SSO email address domain mapping to an SSO Identity Provider.';
 
-CREATE TABLE IF NOT EXISTS public.saml_providers (
+CREATE TABLE public.saml_providers (
   id UUID NOT NULL,
   sso_provider_id UUID NOT NULL,
   entity_id text NOT NULL unique,
@@ -363,10 +364,10 @@ CREATE TABLE IF NOT EXISTS public.saml_providers (
   CONSTRAINT "metadata_url not empty" CHECK (metadata_url = null or char_length(metadata_url) > 0),
   CONSTRAINT "entity_id not empty" CHECK (char_length(entity_id) > 0)
 );
-CREATE INDEX IF NOT EXISTS saml_providers_sso_provider_id_idx on public.saml_providers (sso_provider_id);
+CREATE INDEX saml_providers_sso_provider_id_idx on public.saml_providers (sso_provider_id);
 COMMENT ON TABLE public.saml_providers is 'Auth: Manages SAML Identity Provider connections.';
 
-CREATE TABLE IF NOT EXISTS public.saml_relay_states (
+CREATE TABLE public.saml_relay_states (
   id UUID NOT NULL,
   sso_provider_id UUID NOT NULL,
   flow_state_id UUID,
@@ -381,7 +382,7 @@ CREATE TABLE IF NOT EXISTS public.saml_relay_states (
   FOREIGN KEY (flow_state_id) REFERENCES public.flow_state (id) ON DELETE CASCADE,
   CONSTRAINT "request_id not empty" CHECK(char_length(request_id) > 0)
 );
-CREATE INDEX IF NOT EXISTS saml_relay_states_sso_provider_id_idx on public.saml_relay_states (sso_provider_id);
-CREATE INDEX IF NOT EXISTS saml_relay_states_for_email_idx on public.saml_relay_states (for_email);
-CREATE INDEX IF NOT EXISTS saml_relay_states_created_at_idx ON public.saml_relay_states (created_at desc);
+CREATE INDEX saml_relay_states_sso_provider_id_idx on public.saml_relay_states (sso_provider_id);
+CREATE INDEX saml_relay_states_for_email_idx on public.saml_relay_states (for_email);
+CREATE INDEX saml_relay_states_created_at_idx ON public.saml_relay_states (created_at desc);
 COMMENT ON TABLE public.saml_relay_states is 'Auth: Contains SAML Relay State information for each Service Provider initiated login.';

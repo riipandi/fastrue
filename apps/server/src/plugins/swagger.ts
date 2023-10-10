@@ -55,7 +55,7 @@ export default fp<FastifySwaggerUiOptions | FastifySwaggerOptions>(async (fastif
     routePrefix: '/swagger',
     uiConfig: {
       layout: 'BaseLayout',
-      docExpansion: 'none',
+      docExpansion: 'list',
       deepLinking: false,
     },
     uiHooks: {
