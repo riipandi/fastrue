@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Initiate a Single-Sign On Flow',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['saml'],
         // response: {
         //   default: {
         //     description: 'Default response',

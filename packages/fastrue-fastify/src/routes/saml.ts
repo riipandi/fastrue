@@ -6,8 +6,9 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     {
       schema: {
         summary: 'Returns the SAML 2.0 Metadata XML',
-        description: 'Put long description here...',
-        tags: ['SAML'],
+        description:
+          'The metadata XML can be downloaded or used for the SAML 2.0 Metadata URL discovery mechanism. This URL is the SAML 2.0 EntityID of the Service Provider implemented by this server.',
+        tags: ['saml'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -31,8 +32,9 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     {
       schema: {
         summary: 'SAML 2.0 Assertion Consumer Service (ACS) endpoint',
-        description: 'Put long description here...',
-        tags: ['SAML'],
+        description:
+          'Implements the SAML 2.0 Assertion Consumer Service (ACS) endpoint supporting the POST and Artifact bindings.',
+        tags: ['saml'],
         // response: {
         //   default: {
         //     description: 'Default response',

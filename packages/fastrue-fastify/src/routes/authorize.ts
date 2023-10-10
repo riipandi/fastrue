@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Redirects to an external OAuth provider',
         description: 'Usually for use as clickable links.',
-        tags: ['Authentication'],
+        tags: ['oauth'],
         // response: {
         //   default: {
         //     description: 'Default response',

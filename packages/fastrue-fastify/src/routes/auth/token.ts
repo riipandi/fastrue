@@ -5,9 +5,10 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
     '/token',
     {
       schema: {
-        summary: 'Issues access and refresh tokens based on grant type',
+        summary: 'Issues access and refresh tokens based on grant type.',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['auth', 'oauth'],
+        required: ['grant_type'],
         // response: {
         //   default: {
         //     description: 'Default response',

@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Resend a one-time password (OTP) throught email or SMS',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['auth'],
         // response: {
         //   default: {
         //     description: 'Default response',

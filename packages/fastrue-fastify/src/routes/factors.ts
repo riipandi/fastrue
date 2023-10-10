@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Begin enrolling a new factor for MFA',
         description: 'Put long description here...',
-        tags: ['MFA'],
+        tags: ['account'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -33,7 +33,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Create a new challenge for a MFA factor',
         description: 'Put long description here...',
-        tags: ['MFA'],
+        tags: ['account'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -59,7 +59,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Verify a challenge on a factor',
         description: 'Put long description here...',
-        tags: ['MFA'],
+        tags: ['account'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -85,7 +85,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Remove a MFA factor from a user',
         description: 'Put long description here...',
-        tags: ['MFA'],
+        tags: ['account'],
         // response: {
         //   default: {
         //     description: 'Default response',

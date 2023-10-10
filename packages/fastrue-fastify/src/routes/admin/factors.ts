@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'List all of the MFA factors for a user',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -33,7 +33,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch audit log events',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -60,7 +60,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Removea user MFA factor',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',

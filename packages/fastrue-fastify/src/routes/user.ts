@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch the latest user account information',
         description: 'Put long description here...',
-        tags: ['Account'],
+        tags: ['account'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -33,7 +33,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Update certain properties of the current user account',
         description: 'Put long description here...',
-        tags: ['Account'],
+        tags: ['account'],
         // response: {
         //   default: {
         //     description: 'Default response',

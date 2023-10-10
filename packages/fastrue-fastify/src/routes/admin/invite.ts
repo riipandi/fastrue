@@ -2,12 +2,13 @@ import { FastifyPluginAsync } from 'fastify'
 
 const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
   fastify.post(
-    '/generate_link',
+    '/invite',
     {
       schema: {
-        summary: 'Generate a link to send in an email message',
-        description: 'Put long description here...',
-        tags: ['Authentication'],
+        summary: 'Invite a user by email',
+        description:
+          'Sends an invitation email which contains a link that allows the user to sign-in.',
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',

@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch a list of all registered SSO providers',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -33,7 +33,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Register a new SSO provider',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -59,7 +59,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch SSO provider details',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -85,7 +85,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Update details about a SSO provider',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -111,7 +111,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Remove an SSO provider',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',

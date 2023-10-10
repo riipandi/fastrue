@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Redirect OAuth flow errors to the frontend app',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['oauth'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -32,7 +32,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Redirect OAuth flow errors to the frontend app',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['oauth'],
         // response: {
         //   default: {
         //     description: 'Default response',

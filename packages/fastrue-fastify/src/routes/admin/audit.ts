@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch audit log events',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',

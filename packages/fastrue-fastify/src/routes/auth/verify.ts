@@ -8,7 +8,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary:
           'Authenticate by verifying the posession of a one-time token. Usually for use as clickable links',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['auth'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -33,7 +33,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Authenticate by verifying the posession of a one-time token',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['auth'],
         // response: {
         //   default: {
         //     description: 'Default response',

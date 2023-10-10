@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Signs a user up, create a new user',
         description: 'Put long description here...',
-        tags: ['Authentication'],
+        tags: ['auth'],
         // response: {
         //   default: {
         //     description: 'Default response',

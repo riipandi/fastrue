@@ -8,8 +8,9 @@ const routes: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
     {
       schema: {
         summary: 'Retrieve some of the public settings of the server',
-        description: 'Put long description here...',
-        tags: ['General'],
+        description:
+          'Use this endpoint to configure parts of any authentication UIs depending on the configured settings.',
+        tags: ['general'],
         // response: {
         //   default: {
         //     description: 'Default response',

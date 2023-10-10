@@ -1,6 +1,6 @@
 {
     "name": "@fastrue/fastify",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "author": "Aris Ripandi <aris@duck.com>",
     "contributors": [],
     "access": "public",
@@ -25,7 +25,8 @@
     },
     "dependencies": {
         "fastify-plugin": "^4.5.1",
-        "jose": "^4.15.2"
+        "jose": "^4.15.2",
+        "urlcat": "^3.1.0"
     },
     "devDependencies": {
         "fastify": "^4.23.2",

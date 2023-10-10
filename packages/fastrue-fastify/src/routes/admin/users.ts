@@ -7,7 +7,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch a listing of users',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -33,7 +33,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Fetch user account data for a user',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -59,7 +59,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Update user account data',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
@@ -85,7 +85,7 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
       schema: {
         summary: 'Delete a user',
         description: 'Put long description here...',
-        tags: ['Administration'],
+        tags: ['admin'],
         // response: {
         //   default: {
         //     description: 'Default response',
