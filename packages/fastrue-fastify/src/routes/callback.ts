@@ -8,13 +8,13 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Redirect OAuth flow errors to the frontend app',
         description: 'Put long description here...',
         tags: ['Authentication'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {},
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {},
+        //   },
+        // },
       },
     },
     async (request, reply) => {
@@ -33,13 +33,13 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Redirect OAuth flow errors to the frontend app',
         description: 'Put long description here...',
         tags: ['Authentication'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {},
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {},
+        //   },
+        // },
       },
     },
     async (request, reply) => {

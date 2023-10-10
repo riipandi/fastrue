@@ -9,13 +9,13 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
           'Authenticate by verifying the posession of a one-time token. Usually for use as clickable links',
         description: 'Put long description here...',
         tags: ['Authentication'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {},
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {},
+        //   },
+        // },
       },
     },
     async (request, reply) => {
@@ -34,13 +34,13 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Authenticate by verifying the posession of a one-time token',
         description: 'Put long description here...',
         tags: ['Authentication'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {},
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {},
+        //   },
+        // },
       },
     },
     async (request, reply) => {

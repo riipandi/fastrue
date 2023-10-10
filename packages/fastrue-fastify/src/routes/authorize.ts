@@ -8,13 +8,13 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Redirects to an external OAuth provider',
         description: 'Usually for use as clickable links.',
         tags: ['Authentication'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {},
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {},
+        //   },
+        // },
       },
     },
     async (request, reply) => {

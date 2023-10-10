@@ -8,13 +8,13 @@ const routes: FastifyPluginAsync = async (fastify, opts): Promise<void> => {
         summary: 'Request password recovery',
         description: 'Put long description here...',
         tags: ['Recovery'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {},
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {},
+        //   },
+        // },
       },
     },
     async (request, reply) => {

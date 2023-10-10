@@ -10,17 +10,17 @@ const routes: FastifyPluginAsync = async (fastify, _opts): Promise<void> => {
         summary: 'Retrieve some of the public settings of the server',
         description: 'Put long description here...',
         tags: ['General'],
-        response: {
-          default: {
-            description: 'Default response',
-            type: 'object',
-            properties: {
-              name: { type: 'string' },
-              version: { type: 'string' },
-              description: { type: 'string' },
-            },
-          },
-        },
+        // response: {
+        //   default: {
+        //     description: 'Default response',
+        //     type: 'object',
+        //     properties: {
+        //       name: { type: 'string' },
+        //       version: { type: 'string' },
+        //       description: { type: 'string' },
+        //     },
+        //   },
+        // },
       },
     },
     async (request, reply) => {
