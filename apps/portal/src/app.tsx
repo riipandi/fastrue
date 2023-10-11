@@ -9,15 +9,16 @@ import ActivityLogsPage from '@/pages/activity-logs'
 import ManageUsersPage from '@/pages/manage-users'
 import OverviewPage from '@/pages/overview'
 import SettingsPage from '@/pages/settings'
-import UserPortalPage from '@/pages/user-portal'
+import AccountPage from '@/pages/account'
 import LoginPage from '@/pages/login'
+import NotFoundPage from '@/pages/not-found'
 
 const AppRoutes = () => {
   return useRoutes([
-    { path: '/', element: <Navigate to='/user-portal' replace /> },
+    { path: '/', element: <Navigate to='/login' replace /> },
     {
       element: <UserLayout />,
-      children: [{ path: '/user-portal', element: <UserPortalPage /> }],
+      children: [{ path: '/account', element: <AccountPage /> }],
     },
     {
       path: '/admin',
@@ -33,7 +34,7 @@ const AppRoutes = () => {
       element: <AuthLayout />,
       children: [{ path: '/login', element: <LoginPage /> }],
     },
-    // { path: '*', element: <Error404 /> },
+    { path: '*', element: <NotFoundPage /> },
   ])
 }
 

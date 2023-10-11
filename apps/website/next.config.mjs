@@ -1,15 +1,7 @@
-import nextMDX from '@next/mdx'
+import { withContentlayer } from 'next-contentlayer'
 
 // Avoid build and lint error in Docker or Vercel deployment
 const isProduction = process.env.NODE_ENV === 'production' || process.env.IS_VERCEL_ENV === 'true'
-
-const withMDX = nextMDX({
-  extension: /\.mdx?$/,
-  options: {
-    remarkPlugins: [],
-    rehypePlugins: [],
-  },
-})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,4 +17,4 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: isProduction },
 }
 
-export default withMDX(nextConfig)
+export default withContentlayer(nextConfig)

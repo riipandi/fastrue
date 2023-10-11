@@ -1,5 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { getMDXComponent } from 'next-contentlayer/hooks'
+import { allDocs, Doc } from 'contentlayer/generated'
+import { compareDesc, format, parseISO } from 'date-fns'
 
 import { ExternalLink } from '@/components/external-link'
 
@@ -9,24 +12,40 @@ export const metadata: Metadata = {
   },
 }
 
+function DocCard(doc: Doc) {
+  const Content = getMDXComponent(doc.body.code)
+
+  return (
+    <div className='mb-8'>
+      <h2 className='text-xl'>
+        <Link href={doc.url} className='text-blue-700 hover:text-blue-900' legacyBehavior>
+          {doc.title}
+        </Link>
+      </h2>
+      <time dateTime={doc.date} className='block mb-2 text-xs text-gray-600'>
+        {format(parseISO(doc.date), 'LLLL d, yyyy')}
+      </time>
+      <div className='text-sm'>
+        <Content />
+      </div>
+    </div>
+  )
+}
+
 export default async function Page() {
+  const docs = allDocs.sort((a, b) => compareDesc(new Date(a.date), new Date(b.date)))
+
   return (
     <>
       <main className='mx-auto flex w-full max-w-4xl grow flex-col justify-center px-4 sm:px-6 lg:px-8'>
         <div className='py-16'>
-          <div className='text-center'>
-            <h1 className='mt-4 text-2xl font-bold tracking-tight text-gray-900 dark:invert sm:text-3xl lg:text-5xl'>
-              Fastrue documentation
-            </h1>
-            <div className='mt-8 sm:mt-12'>
-              <Link
-                href='/'
-                className='inline-flex items-center rounded-lg border border-gray-200 bg-gray-900 px-6 py-3 text-center text-sm font-medium text-white hover:bg-gray-700 hover:text-gray-100 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700 dark:focus:ring-gray-600'
-              >
-                <span className='i-heroicons-chevron-double-left -ml-1 mr-1 h-4 w-4' />
-                Back to homepage
-              </Link>
-            </div>
+          <h1 className='mt-4 text-2xl font-bold tracking-tight text-gray-900 dark:invert sm:text-3xl lg:text-5xl'>
+            Fastrue documentation
+          </h1>
+          <div className='mt-8 sm:mt-12'>
+            {docs.map((item, idx) => (
+              <DocCard key={idx} {...item} />
+            ))}
           </div>
         </div>
       </main>

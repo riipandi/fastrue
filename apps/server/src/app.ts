@@ -14,7 +14,8 @@ export type AppOptions = {
 } & Partial<AutoloadPluginOptions>
 
 // Postgres database client
-const sql = postgres(process.env.DATABASE_URL!)
+// TODO replace with the value from envars
+const sql = postgres('postgres://postgres:postgres@127.0.0.1:5432/fastrue?sslmode=disable')
 
 // Pass --options via CLI arguments in command to enable these options.
 const options: AppOptions = {

@@ -138,16 +138,25 @@ export default function AdminLayout() {
                       )}
                     >
                       <MenuItem
+                        as={Link}
+                        to='/account'
                         className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
-                        onClick={() => alert('Edit')}
                       >
-                        Edit
+                        User Profile
                       </MenuItem>
-                      <MenuItem className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
-                        Share
+                      <MenuItem
+                        as={Link}
+                        to='#'
+                        className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                      >
+                        Preferences
                       </MenuItem>
                       <MenuSeparator className='separator' />
-                      <MenuItem className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
+                      <MenuItem
+                        as={Link}
+                        to='/login'
+                        className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'
+                      >
                         Log out
                       </MenuItem>
                     </Menu>
