@@ -2,14 +2,19 @@
     "name": "fastrue",
     "private": true,
     "scripts": {
-        "preinstall": "npx only-allow pnpm"
+        "deps": "npm-check-updates --configFileName .ncurc.json",
+        "format": "prettier --write \"**/*.{json,js,jsx,ts,tsx,md,mdx}\" --log-level warn",
+        "preinstall": "pnpm dlx only-allow pnpm",
+        "prepare": "husky install"
     },
     "devDependencies": {
-        "eslint-config-turbo": "^1.10.15",
-        "eslint": "^8.51.0",
+        "@nx/js": "17.0.3",
+        "husky": "^8.0.3",
+        "mintlify": "^4.0.45",
+        "npm-check-updates": "^16.14.6",
+        "nx": "17.0.3",
         "prettier": "^3.0.3",
         "rimraf": "^5.0.5",
-        "turbo": "^1.10.15"
-    },
-    "packageManager": "pnpm@8.9.0"
+        "tsup": "^7.2.0"
+    }
 }

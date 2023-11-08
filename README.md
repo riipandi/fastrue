@@ -6,7 +6,6 @@
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](./CODE_OF_CONDUCT.md)
 [![License Bagde](https://badgen.net/github/license/riipandi/fastrue?label=license&color=blue&labelColor=black)](./LICENSE)
 [![Github Sponsor](https://badgen.net/badge/icon/sponsors?icon=github&label&color=green&labelColor=black)](https://github.com/sponsors/riipandi)
-[![Netlify Status](https://api.netlify.com/api/v1/badges/a8f331bd-3c3a-4080-84a3-70cebb40480c/deploy-status)](https://app.netlify.com/sites/fastrue/deploys)
 
 <hr/>
 

@@ -1,0 +1,17 @@
+{
+    "name": "fastrue-fastify",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/fastrue-fastify",
+    "projectType": "library",
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "packages/fastrue-fastify",
+                "commands": ["node index.js"],
+                "parallel": false
+            }
+        }
+    },
+    "tags": []
+}

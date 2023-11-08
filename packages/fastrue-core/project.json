@@ -1,0 +1,17 @@
+{
+    "name": "fastrue-core",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/fastrue-core",
+    "projectType": "library",
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "packages/fastrue-core",
+                "commands": ["node index.js"],
+                "parallel": false
+            }
+        }
+    },
+    "tags": []
+}
