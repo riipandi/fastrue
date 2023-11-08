@@ -1,0 +1,17 @@
+{
+    "name": "website",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/website",
+    "projectType": "application",
+    "targets": {
+        "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "apps/website",
+                "command": "pnpm dev",
+                "parallel": false
+            }
+        }
+    },
+    "tags": []
+}

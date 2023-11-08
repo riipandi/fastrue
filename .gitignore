@@ -1,3 +1,19 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+dist/
+dist-ssr
+/out-tsc
+.dist
+.output
+.build*
+**/builds
+**/build/*
+**/tmp/
+**/temp/
+**/vendor/
+**/.cache
+
 # Essentials
 .DS_Store
 .DS_Store?
@@ -21,28 +37,29 @@ lib-cov
 *.pem
 logs/
 
-# IDE settings
-.idea/
-.fleet/
+# IDEs and editors
+/.idea
+/.fleet
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# compiled output
-dist/
-dist-ssr
-/out-tsc
-.dist
-.output
-.build*
-**/builds
-**/build/*
-**/tmp/
-**/temp/
-**/vendor/
-**/.cache
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+/typings
 
 # debug
 npm-debug.log*
@@ -54,24 +71,21 @@ testem.log
 *.local
 *.tsbuildinfo
 
-# envars
-.env.*
-!.env.example
+# monorepo
+.nx/cache
+.turbo
 
 # local env files
 .env*
 !.env*.example
-
-# turbo
-.turbo
-
-# next.js
-.next/
-out/
-build
 
 # vercel
 .vercel
 
 # contentlayer
 .contentlayer
+
+# next.js
+.next/
+out/
+build
