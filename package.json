@@ -7,10 +7,10 @@
         "preinstall": "pnpm dlx only-allow pnpm",
         "prepare": "husky install"
     },
-    "dependencies": {},
     "devDependencies": {
         "@nx/js": "17.0.3",
         "husky": "^8.0.3",
+        "mintlify": "^4.0.45",
         "npm-check-updates": "^16.14.6",
         "nx": "17.0.3",
         "prettier": "^3.0.3",
