@@ -211,6 +211,9 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
+      fast-sort:
+        specifier: ^3.4.0
+        version: 3.4.0
       next:
         specifier: 13.5.4
         version: 13.5.4(@opentelemetry/api@1.6.0)(react-dom@18.2.0)(react@18.2.0)
@@ -233,6 +236,9 @@ importers:
       '@iconify-json/lucide':
         specifier: ^1.1.132
         version: 1.1.132
+      '@types/mdx':
+        specifier: ^2.0.8
+        version: 2.0.8
       '@types/node':
         specifier: 20.8.4
         version: 20.8.4
@@ -1878,7 +1884,6 @@ packages:
 
   /@types/mdx@2.0.8:
     resolution: {integrity: sha512-r7/zWe+f9x+zjXqGxf821qz++ld8tp6Z4jUS6qmPZUXH6tfh4riXOhAqb12tWGWAevCFtMt1goLWkQMqIJKpsA==}
-    dev: false
 
   /@types/ms@0.7.32:
     resolution: {integrity: sha512-xPSg0jm4mqgEkNhowKgZFBNtwoEwF6gJ4Dhww+GFpm3IgtNseHQZ5IqdNwnquZEoANxyDAKDRAdVo4Z72VvD/g==}
@@ -3681,6 +3686,10 @@ packages:
 
   /fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
+    dev: false
+
+  /fast-sort@3.4.0:
+    resolution: {integrity: sha512-c/cMBGA5mH3OYjaXedtLIM3hQjv+KuZuiD2QEH5GofNOZeQVDIYIN7Okc2AW1KPhk44g5PTZnXp8t2lOMl8qhQ==}
     dev: false
 
   /fast-uri@2.2.0:

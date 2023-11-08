@@ -4,29 +4,31 @@
     "license": "MIT",
     "private": true,
     "scripts": {
-        "dev": "next dev",
+        "dev": "contentlayer dev & next dev",
         "build": "next build",
         "start": "next start",
         "lint": "TIMING=1 next lint",
         "lint:fix": "next lint --fix",
         "format": "prettier --write \"**/*.{js,jsx,ts,tsx,md,mdx}\"",
-        "clean": "rimraf .turbo node_modules .next",
-        "deps": "pnpm dlx npm-check-updates -x typescript --deep --interactive"
+        "deps": "pnpm dlx npm-check-updates -x typescript --deep --interactive",
+        "clean": "rimraf .turbo node_modules .next"
     },
     "dependencies": {
         "@t3-oss/env-nextjs": "^0.7.0",
         "@twistail/core": "^0.2.0",
         "contentlayer": "^0.3.4",
         "date-fns": "^2.30.0",
-        "next-contentlayer": "^0.3.4",
+        "fast-sort": "^3.4.0",
         "next": "13.5.4",
-        "react-dom": "18.2.0",
+        "next-contentlayer": "^0.3.4",
         "react": "18.2.0",
+        "react-dom": "18.2.0",
         "zod": "^3.22.4"
     },
     "devDependencies": {
         "@iconify-json/heroicons": "^1.1.12",
         "@iconify-json/lucide": "^1.1.132",
+        "@types/mdx": "^2.0.8",
         "@types/node": "20.8.4",
         "@types/react": "18.2.27",
         "@types/react-dom": "18.2.12",

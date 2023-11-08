@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import Link, { LinkProps } from 'next/link'
-
-import { cn } from '@/utils/helpers'
+import { cn } from '@twistail/core/utils'
 
 interface ExternalLinkProps extends LinkProps {
   children: React.ReactNode

@@ -18,6 +18,9 @@ const tailwindConfig = {
         primary: colors.sky,
         secondary: colors.violet,
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
     },
   },
   plugins: [],

@@ -15,6 +15,10 @@ vars:
   ROOT_DIR: { sh: pwd }
 
 tasks:
+  default:
+    desc: 'Print all available tasks'
+    cmd: 'task --list-all'
+
   clean:
     desc: Cleanup node_modules and output files
     cmd: 'pnpm turbo run clean'

@@ -15,6 +15,16 @@ const Doc = defineDocumentType(() => ({
       description: 'The date of the post',
       required: true,
     },
+    section_id: {
+      type: 'number',
+      description: 'Section ID',
+      required: true,
+    },
+    order_id: {
+      type: 'number',
+      description: 'Order ID',
+      required: true,
+    },
   },
   computedFields: {
     url: {

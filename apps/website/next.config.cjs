@@ -1,4 +1,4 @@
-import { withContentlayer } from 'next-contentlayer'
+const { withContentlayer } = require('next-contentlayer')
 
 // Avoid build and lint error in Docker or Vercel deployment
 const isProduction = process.env.NODE_ENV === 'production' || process.env.IS_VERCEL_ENV === 'true'
@@ -17,4 +17,4 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: isProduction },
 }
 
-export default withContentlayer(nextConfig)
+module.exports = withContentlayer(nextConfig)

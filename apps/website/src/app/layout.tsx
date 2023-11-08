@@ -1,8 +1,8 @@
 import { Metadata } from 'next/types'
+import { cn } from '@twistail/core/utils'
 
 import { siteMeta } from '@/config'
 import { fontInter, fontMono } from '@/utils/fontloader'
-import { cn } from '@/utils/helpers'
 
 import '@/assets/styles/globals.css'
 

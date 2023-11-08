@@ -39,7 +39,7 @@ DROP INDEX IF EXISTS public.recovery_token_idx;
 DROP INDEX IF EXISTS public.email_change_token_current_idx;
 DROP INDEX IF EXISTS public.email_change_token_new_idx;
 DROP INDEX IF EXISTS public.reauthentication_token_idx;
-DROP TABLE IF EXISTS public.users
+DROP TABLE IF EXISTS public.users;
 
 -- Create users table
 CREATE TABLE public.users (
@@ -313,14 +313,14 @@ DROP INDEX IF EXISTS public.sso_domains_domain_idx;
 DROP TABLE IF EXISTS public.sso_domains;
 
 DROP INDEX IF EXISTS public.saml_providers_sso_provider_id_idx;
-DROP TABLE IF EXISTS public.saml_providers
+DROP TABLE IF EXISTS public.saml_providers;
 
 DROP INDEX IF EXISTS public.saml_relay_states_sso_provider_id_idx;
 DROP INDEX IF EXISTS public.saml_relay_states_for_email_idx;
 DROP TABLE IF EXISTS public.saml_relay_states;
 
 DROP INDEX IF EXISTS public.sso_providers_resource_id_idx;
-DROP TABLE IF EXISTS public.sso_providers
+DROP TABLE IF EXISTS public.sso_providers;
 
 -- Create table saml
 CREATE TABLE public.sso_providers (
