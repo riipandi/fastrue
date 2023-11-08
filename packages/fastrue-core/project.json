@@ -4,11 +4,19 @@
     "sourceRoot": "packages/fastrue-core",
     "projectType": "library",
     "targets": {
+        "build": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "packages/fastrue-core",
+                "command": "pnpm build",
+                "parallel": false
+            }
+        },
         "dev": {
             "executor": "nx:run-commands",
             "options": {
                 "cwd": "packages/fastrue-core",
-                "commands": ["node index.js"],
+                "command": "pnpm dev",
                 "parallel": false
             }
         }
