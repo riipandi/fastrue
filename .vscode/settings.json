@@ -43,5 +43,8 @@
     "tailwindCSS.files.exclude": ["**/.github/**", "**/*.{md,js,ts,json}"],
     "[toml]": {
         "editor.formatOnSave": false
+    },
+    "[markdown]": {
+        "editor.formatOnSave": false
     }
 }

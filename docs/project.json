@@ -11,6 +11,14 @@
                 "command": "mintlify dev",
                 "parallel": false
             }
+        },
+        "generate-endpoint": {
+            "executor": "nx:run-commands",
+            "options": {
+                "cwd": "docs",
+                "command": "pnpm dlx @mintlify/scraping@latest openapi-file api-reference/openapi.yaml -o api-reference/endpoint",
+                "parallel": false
+            }
         }
     },
     "tags": []
