@@ -29,8 +29,8 @@
         "postgres": "^3.4.3"
     },
     "devDependencies": {
-        "@types/pg": "^8.10.9",
-        "tsup": "^7.2.0",
+        "@types/pg": "^8.11.0",
+        "tsup": "^8.0.1",
         "typescript": "~5.1.6"
     },
     "peerDependencies": {

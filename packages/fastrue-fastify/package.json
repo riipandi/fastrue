@@ -25,15 +25,15 @@
     },
     "dependencies": {
         "fastify-plugin": "^4.5.1",
-        "jose": "^5.1.0",
+        "jose": "^5.2.0",
         "pg": "^8.11.3",
         "postgres": "^3.4.3",
         "urlcat": "^3.1.0"
     },
     "devDependencies": {
-        "@types/pg": "^8.10.9",
-        "fastify": "^4.24.3",
-        "tsup": "^7.2.0",
+        "@types/pg": "^8.11.0",
+        "fastify": "^4.26.0",
+        "tsup": "^8.0.1",
         "typescript": "~5.1.6"
     },
     "peerDependencies": {
