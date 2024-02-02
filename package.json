@@ -2,10 +2,11 @@
     "name": "fastrue",
     "private": true,
     "scripts": {
-        "deps": "npm-check-updates --configFileName .ncurc.json",
         "format": "prettier --write \"**/*.{json,js,jsx,ts,tsx,md,mdx}\" --log-level warn",
+        "update-deps": "npm-check-updates --configFileName .ncurc.json",
         "preinstall": "pnpm dlx only-allow pnpm",
-        "prepare": "husky install"
+        "pre-commit": "sh .husky/pre-commit",
+        "prepare": "husky || true"
     },
     "devDependencies": {
         "@nx/js": "17.3.1",
