@@ -8,7 +8,7 @@ import { AppRoutes } from '@/routes'
 export default function App() {
   return (
     <div className={clsx(import.meta.env.DEV ? 'debug-screens' : '')}>
-      <BrowserRouter basename='/ui'>
+      <BrowserRouter basename='/_/'>
         <AuthProvider>
           <AppRoutes />
           <Toaster richColors position='bottom-right' duration={3000} />
